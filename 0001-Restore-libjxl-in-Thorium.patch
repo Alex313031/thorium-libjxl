@@ -710,7 +710,7 @@ index 254d54b0bbed0..1c6f948abd334 100644
                                                           "delay-in-ms", 0};
  
 +// Enables the JPEG XL Image File Format (JXL).
-+BASE_FEATURE(kJXL, "JXL", base::FEATURE_DISABLED_BY_DEFAULT);
++BASE_FEATURE(kJXL, "JXL", base::FEATURE_ENABLED_BY_DEFAULT);
 +
  // Make all pending 'display: auto' web fonts enter the swap or failure period
  // immediately before reaching the LCP time limit (~2500ms), so that web fonts
