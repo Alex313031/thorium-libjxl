@@ -1,0 +1,173 @@
+From 4be0ad5b59df3d7fb9af878e7a173d22e5d1f659 Mon Sep 17 00:00:00 2001
+From: Ho Cheung <uioptt24@gmail.com>
+Date: Mon, 27 Feb 2023 06:10:44 +0100
+Subject: [PATCH] Restore libjxl image type emulation in Thorium
+
+---
+ front_end/core/sdk/EmulationModel.ts          |  7 ++++-
+ front_end/core/sdk/sdk-meta.ts                | 26 ++++++++++++++++++
+ .../inspector_main/RenderingOptions.ts        | 27 ++++++++++++++++++-
+ front_end/generated/protocol.ts               |  1 +
+ .../front_end/helpers/EnvironmentHelpers.ts   |  1 +
+ 5 files changed, 60 insertions(+), 2 deletions(-)
+
+diff --git a/front_end/core/sdk/EmulationModel.ts b/front_end/core/sdk/EmulationModel.ts
+index f0ab4f584..2fe180814 100644
+--- a/front_end/core/sdk/EmulationModel.ts
++++ b/front_end/core/sdk/EmulationModel.ts
+@@ -152,6 +152,7 @@ export class EmulationModel extends SDKModel<void> {
+     }
+ 
+     const avifFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('avifFormatDisabled');
++    const jpegXlFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('jpegXlFormatDisabled');
+     const webpFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled');
+ 
+     const updateDisabledImageFormats = (): void => {
+@@ -159,6 +160,9 @@ export class EmulationModel extends SDKModel<void> {
+       if (avifFormatDisabledSetting.get()) {
+         types.push(Protocol.Emulation.DisabledImageType.Avif);
+       }
++      if (jpegXlFormatDisabledSetting.get()) {
++        types.push(Protocol.Emulation.DisabledImageType.Jxl);
++      }
+       if (webpFormatDisabledSetting.get()) {
+         types.push(Protocol.Emulation.DisabledImageType.Webp);
+       }
+@@ -167,8 +171,9 @@ export class EmulationModel extends SDKModel<void> {
+ 
+     avifFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
+     webpFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
++    jpegXlFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
+ 
+-    if (avifFormatDisabledSetting.get() || webpFormatDisabledSetting.get()) {
++    if (avifFormatDisabledSetting.get() || jpegXlFormatDisabledSetting.get() || webpFormatDisabledSetting.get()) {
+       updateDisabledImageFormats();
+     }
+ 
+diff --git a/front_end/core/sdk/sdk-meta.ts b/front_end/core/sdk/sdk-meta.ts
+index 10fd7ae97..171771f0d 100644
+--- a/front_end/core/sdk/sdk-meta.ts
++++ b/front_end/core/sdk/sdk-meta.ts
+@@ -274,6 +274,14 @@ const UIStrings = {
+   */
+   enableAvifFormat: 'Enable `AVIF` format',
+   /**
++  *@description Title of a setting that disables JPEG XL format
++  */
++  disableJpegXlFormat: 'Disable `JPEG XL` format',
++  /**
++  *@description Title of a setting that enables JPEG XL format
++  */
++  enableJpegXlFormat: 'Enable `JPEG XL` format',
++  /**
+   *@description Title of a setting that disables WebP format
+   */
+   disableWebpFormat: 'Disable `WebP` format',
+@@ -959,6 +967,24 @@ Common.Settings.registerSettingExtension({
+   defaultValue: false,
+ });
+ 
++Common.Settings.registerSettingExtension({
++  category: Common.Settings.SettingCategory.RENDERING,
++  settingName: 'jpegXlFormatDisabled',
++  settingType: Common.Settings.SettingType.BOOLEAN,
++  storageType: Common.Settings.SettingStorageType.Session,
++  options: [
++    {
++      value: true,
++      title: i18nLazyString(UIStrings.disableJpegXlFormat),
++    },
++    {
++      value: false,
++      title: i18nLazyString(UIStrings.enableJpegXlFormat),
++    },
++  ],
++  defaultValue: false,
++});
++
+ Common.Settings.registerSettingExtension({
+   category: Common.Settings.SettingCategory.RENDERING,
+   settingName: 'webpFormatDisabled',
+diff --git a/front_end/entrypoints/inspector_main/RenderingOptions.ts b/front_end/entrypoints/inspector_main/RenderingOptions.ts
+index bc3da3d56..2a4cc7739 100644
+--- a/front_end/entrypoints/inspector_main/RenderingOptions.ts
++++ b/front_end/entrypoints/inspector_main/RenderingOptions.ts
+@@ -167,6 +167,11 @@ const UIStrings = {
+   */
+   disableAvifImageFormat: 'Disable `AVIF` image format',
+   /**
++  * @description The name of a checkbox setting in the Rendering tool. This setting disables the
++  * page from loading images with the JPEG XL format.
++  */
++  disableJpegXlImageFormat: 'Disable `JPEG XL` image format',
++  /**
+   * @description Explanation text for both the 'Disable AVIF image format' and 'Disable WebP image
+   * format' settings in the Rendering tool.
+   */
+@@ -200,6 +205,17 @@ const supportsPrefersContrast = (): boolean => {
+   return window.matchMedia(query).media === query;
+ };
+ 
++const supportsJpegXl = async(): Promise<boolean> => {
++  const JPEG_XL_IMAGE_URL = 'data:image/jxl;base64,/wr/BwiDBAwASyAY';
++  const promise = new Promise<boolean>((resolve): void => {
++    const img = document.createElement('img');
++    img.onload = (): void => resolve(true);
++    img.onerror = (): void => resolve(false);
++    img.src = JPEG_XL_IMAGE_URL;
++  });
++  return promise;
++};
++
+ let renderingOptionsViewInstance: RenderingOptionsView;
+ 
+ export class RenderingOptionsView extends UI.Widget.VBox {
+@@ -276,11 +292,20 @@ export class RenderingOptionsView extends UI.Widget.VBox {
+         i18nString(UIStrings.disableAvifImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
+         Common.Settings.Settings.instance().moduleSetting('avifFormatDisabled'));
+ 
+-    this.#appendCheckbox(
++    const webpCheckbox = this.#appendCheckbox(
+         i18nString(UIStrings.disableWebpImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
+         Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled'));
+ 
+     this.contentElement.createChild('div').classList.add('panel-section-separator');
++
++    void supportsJpegXl().then(hasSupport => {
++      if (!hasSupport) {
++        return;
++      }
++      webpCheckbox.before(this.#createCheckbox(
++          i18nString(UIStrings.disableJpegXlImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
++          Common.Settings.Settings.instance().moduleSetting('jpegXlFormatDisabled')));
++    });
+   }
+ 
+   static instance(opts: {
+diff --git a/front_end/generated/protocol.ts b/front_end/generated/protocol.ts
+index 5f2cdc8ac..618adb596 100644
+--- a/front_end/generated/protocol.ts
++++ b/front_end/generated/protocol.ts
+@@ -5310,6 +5310,7 @@ export namespace Emulation {
+   export const enum DisabledImageType {
+     Avif = 'avif',
+     Webp = 'webp',
++    Jxl = "Jxl",
+   }
+ 
+   export interface CanEmulateResponse extends ProtocolResponseWithError {
+diff --git a/test/unittests/front_end/helpers/EnvironmentHelpers.ts b/test/unittests/front_end/helpers/EnvironmentHelpers.ts
+index fde49b378..af51fdbd2 100644
+--- a/test/unittests/front_end/helpers/EnvironmentHelpers.ts
++++ b/test/unittests/front_end/helpers/EnvironmentHelpers.ts
+@@ -150,6 +150,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
+     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showScrollBottleneckRects', false),
+     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showWebVitals', false),
+     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'webpFormatDisabled', false),
++    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'jpegXlFormatDisabled', false),
+     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'allowScrollPastEof', true),
+     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'cssSourceMapsEnabled', true),
+     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'inlineVariableValues', true),
+-- 
+2.34.1
+
