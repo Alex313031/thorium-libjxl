@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/Alex313031/Thorium/main/logos/NEW/thorium.svg" width="64">&nbsp;&nbsp;&nbsp;<img src="https://raw.githubusercontent.com/Alex313031/thorium-libjxl/main/plus-sign.svg" width="64">&nbsp;&nbsp;&nbsp;<img src="https://raw.githubusercontent.com/Alex313031/thorium-libjxl/main/JPEG_XL_logo.svg" width="54">
 
- - [libjxl](https://github.com/libjxl/libjxl) for Thorium Browser - restores [JPEG-XL](https://jpegxl.info/) functionality to Thorium versions [post M109](https://chromium-review.googlesource.com/c/chromium/src/+/4081749).
+ - [libjxl](https://github.com/libjxl/libjxl) for Thorium Browser: Restores [JPEG-XL](https://jpegxl.info/) functionality to Thorium/Chromium versions [post M109](https://chromium-review.googlesource.com/c/chromium/src/+/4081749).
 
  - This repo is added as a submodule to [the main Thorium repo](https://github.com/Alex313031/Thorium), and `setup.sh` copies this repos __//src/__ dir over the
  Chromium tree, and then Thorium's __//src/__ dir.
