@@ -13,3 +13,5 @@
 
  &ndash; Both libjxl and libhighway versions were bumped to ~ Jan. 2023 revisions. \
  &ndash; Note that PGO might be slightly less effective unless you generate your own *.profdata* file from a debug build of Thorium/Chromium.
+
+ &ndash; __*NOTE:*__ the __//external/__ dir contains two files. These are modified by Thorium and so are excluded from here and are instead in the main Thorium repo. If you want to integrate libjxl back into a [vanilla Chromium build](https://www.chromium.org/developers/how-tos/get-the-code/), you will need to copy these into __~/chromium/src/__
