@@ -4,8 +4,8 @@
 
  - [libjxl](https://github.com/libjxl/libjxl) for Thorium Browser - restores [JPEG-XL](https://jpegxl.info/) functionality to Thorium versions [post M109](https://chromium-review.googlesource.com/c/chromium/src/+/4081749).
 
- - This repo is added as a submodule to [the main Thorium repo](https://github.com/Alex313031/Thorium), and `setup.sh` copies this repos _//src/_ dir over the
- Chromium tree, and then Thorium's _//src/_ dir.
+ - This repo is added as a submodule to [the main Thorium repo](https://github.com/Alex313031/Thorium), and `setup.sh` copies this repos __//src/__ dir over the
+ Chromium tree, and then Thorium's __//src/__ dir.
 
  &#62; @mo271's patch which this is based on: https://chromium-review.googlesource.com/c/chromium/src/+/4255409 \
  &#62; @gz83's patch which restores jxl devtools functionality: https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/4257582 \
