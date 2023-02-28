@@ -1,4 +1,4 @@
-# Copyright 2020 The Chromium Authors
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -22,6 +22,7 @@ source_set("libjxl") {
   cflags_cc = [
     "-Wno-shadow",
     "-Wno-unused-function",
+    "-O3", "-mavx", "-maes",
   ]
 
   defines = libjxl_version_defines + [
