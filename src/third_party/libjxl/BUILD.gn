@@ -22,8 +22,8 @@ source_set("libjxl") {
   cflags_cc = [
     "-Wno-shadow",
     "-Wno-unused-function",
-    "-O3", "-mavx", "-maes",
   ]
+  if (is_linux) { cflags_cc += [ "-O3", "-mavx", "-maes", ] }
 
   defines = libjxl_version_defines + [
               "JPEGXL_ENABLE_SKCMS=1",
