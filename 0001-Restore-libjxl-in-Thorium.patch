@@ -491,7 +491,7 @@ index 4628d3ef97b78..3b7b909fe6ee3 100644
 +  {
 +    "name": "enable-jxl",
 +    "owners": [ "eustas@chromium.org", "firsching", "sboukortt", "veluca" ],
-+    "expiry_milestone": 115
++    "expiry_milestone": -1
 +  },
    {
      "name": "enable-keyboard-backlight-toggle",
