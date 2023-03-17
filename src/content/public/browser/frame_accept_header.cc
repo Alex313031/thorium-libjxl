@@ -27,7 +27,6 @@ std::string FrameAcceptHeaderValue(bool allow_sxg_responses,
     header_value.append(header_value_suffix);
   }
 #endif  // BUILDFLAG(ENABLE_JXL_DECODER)
-
   if (allow_sxg_responses &&
       content::signed_exchange_utils::IsSignedExchangeHandlingEnabled(
           browser_context)) {

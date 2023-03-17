@@ -1013,6 +1013,8 @@ export namespace Audits {
   export const enum GenericIssueErrorType {
     CrossOriginPortalPostMessageError = 'CrossOriginPortalPostMessageError',
     FormLabelForNameError = 'FormLabelForNameError',
+    FormDuplicateIdForInputError = 'FormDuplicateIdForInputError',
+    FormInputWithNoLabelError = 'FormInputWithNoLabelError',
   }
 
   /**
@@ -1054,6 +1056,7 @@ export namespace Audits {
     NoSysexWebMIDIWithoutPermission = 'NoSysexWebMIDIWithoutPermission',
     NotificationInsecureOrigin = 'NotificationInsecureOrigin',
     NotificationPermissionRequestedIframe = 'NotificationPermissionRequestedIframe',
+    ObsoleteCreateImageBitmAPImageOrientationNone = 'ObsoleteCreateImageBitmapImageOrientationNone',
     ObsoleteWebRtcCipherSuite = 'ObsoleteWebRtcCipherSuite',
     OpenWebDatabaseInsecureContext = 'OpenWebDatabaseInsecureContext',
     OverflowVisibleOnReplacedElement = 'OverflowVisibleOnReplacedElement',
@@ -1070,6 +1073,7 @@ export namespace Audits {
     PrefixedVideoExitFullscreen = 'PrefixedVideoExitFullscreen',
     PrefixedVideoExitFullScreen = 'PrefixedVideoExitFullScreen',
     PrefixedVideoSupportsFullscreen = 'PrefixedVideoSupportsFullscreen',
+    PrivacySandboxExtensionsAPI = 'PrivacySandboxExtensionsAPI',
     RangeExpand = 'RangeExpand',
     RequestedSubresourceWithEmbeddedCredentials = 'RequestedSubresourceWithEmbeddedCredentials',
     RTCConstraintEnableDtlsSrtpFalse = 'RTCConstraintEnableDtlsSrtpFalse',
@@ -1116,6 +1120,7 @@ export namespace Audits {
     WellKnownHttpNotFound = 'WellKnownHttpNotFound',
     WellKnownNoResponse = 'WellKnownNoResponse',
     WellKnownInvalidResponse = 'WellKnownInvalidResponse',
+    WellKnownListEmpty = 'WellKnownListEmpty',
     ConfigNotInWellKnown = 'ConfigNotInWellKnown',
     WellKnownTooBig = 'WellKnownTooBig',
     ConfigHttpNotFound = 'ConfigHttpNotFound',
@@ -1130,6 +1135,7 @@ export namespace Audits {
     AccountsHttpNotFound = 'AccountsHttpNotFound',
     AccountsNoResponse = 'AccountsNoResponse',
     AccountsInvalidResponse = 'AccountsInvalidResponse',
+    AccountsListEmpty = 'AccountsListEmpty',
     IdTokenHttpNotFound = 'IdTokenHttpNotFound',
     IdTokenNoResponse = 'IdTokenNoResponse',
     IdTokenInvalidResponse = 'IdTokenInvalidResponse',
@@ -1430,6 +1436,7 @@ export namespace Browser {
     ProtectedMediaIdentifier = 'protectedMediaIdentifier',
     Sensors = 'sensors',
     StorageAccess = 'storageAccess',
+    TopLevelStorageAccess = 'topLevelStorageAccess',
     VideoCapture = 'videoCapture',
     VideoCapturePanTiltZoom = 'videoCapturePanTiltZoom',
     WakeLockScreen = 'wakeLockScreen',
@@ -5292,7 +5299,13 @@ export namespace Emulation {
    * Missing optional values will be filled in by the target with what it would normally use.
    */
   export interface UserAgentMetadata {
+    /**
+     * Brands appearing in Sec-CH-UA.
+     */
     brands?: UserAgentBrandVersion[];
+    /**
+     * Brands appearing in Sec-CH-UA-Full-Version-List.
+     */
     fullVersionList?: UserAgentBrandVersion[];
     fullVersion?: string;
     platform: string;
@@ -9445,6 +9458,7 @@ export namespace Network {
     ResourceExhausted = 'ResourceExhausted',
     AlreadyExists = 'AlreadyExists',
     Unavailable = 'Unavailable',
+    Unauthorized = 'Unauthorized',
     BadResponse = 'BadResponse',
     InternalError = 'InternalError',
     UnknownError = 'UnknownError',
@@ -10440,12 +10454,14 @@ export namespace Page {
     OtpCredentials = 'otp-credentials',
     Payment = 'payment',
     PictureInPicture = 'picture-in-picture',
+    PrivateAggregation = 'private-aggregation',
     PublickeyCredentialsGet = 'publickey-credentials-get',
     RunAdAuction = 'run-ad-auction',
     ScreenWakeLock = 'screen-wake-lock',
     Serial = 'serial',
     SharedAutofill = 'shared-autofill',
     SharedStorage = 'shared-storage',
+    SharedStorageSelectUrl = 'shared-storage-select-url',
     SmartCard = 'smart-card',
     StorageAccess = 'storage-access',
     SyncXhr = 'sync-xhr',
@@ -10454,6 +10470,7 @@ export namespace Page {
     Usb = 'usb',
     VerticalScroll = 'vertical-scroll',
     WebShare = 'web-share',
+    WindowManagement = 'window-management',
     WindowPlacement = 'window-placement',
     XrSpatialTracking = 'xr-spatial-tracking',
   }
@@ -11123,6 +11140,7 @@ export namespace Page {
     InjectedJavascript = 'InjectedJavascript',
     InjectedStyleSheet = 'InjectedStyleSheet',
     KeepaliveRequest = 'KeepaliveRequest',
+    IndexedDBEvent = 'IndexedDBEvent',
     Dummy = 'Dummy',
     AuthorizationHeader = 'AuthorizationHeader',
     ContentSecurityHandler = 'ContentSecurityHandler',
@@ -11243,6 +11261,11 @@ export namespace Page {
     ActivationNavigationParameterMismatch = 'ActivationNavigationParameterMismatch',
     ActivatedInBackground = 'ActivatedInBackground',
     EmbedderHostDisallowed = 'EmbedderHostDisallowed',
+    ActivationNavigationDestroyedBeforeSuccess = 'ActivationNavigationDestroyedBeforeSuccess',
+    TabClosedByUserGesture = 'TabClosedByUserGesture',
+    TabClosedWithoutUserGesture = 'TabClosedWithoutUserGesture',
+    PrimaryMainFrameRendererProcessCrashed = 'PrimaryMainFrameRendererProcessCrashed',
+    PrimaryMainFrameRendererProcessKilled = 'PrimaryMainFrameRendererProcessKilled',
   }
 
   export interface AddScriptToEvaluateOnLoadRequest {
@@ -13371,6 +13394,10 @@ export namespace Storage {
     ownerOrigin: string;
   }
 
+  export interface ResetSharedStorageBudgetRequest {
+    ownerOrigin: string;
+  }
+
   export interface SetSharedStorageTrackingRequest {
     enable: boolean;
   }
@@ -13894,6 +13921,10 @@ export namespace Target {
      * false by default).
      */
     background?: boolean;
+    /**
+     * Whether to create the target of type "tab".
+     */
+    forTab?: boolean;
   }
 
   export interface CreateTargetResponse extends ProtocolResponseWithError {
@@ -15007,6 +15038,12 @@ export namespace WebAuthn {
      * Defaults to false.
      */
     hasMinPinLength?: boolean;
+    /**
+     * If set to true, the authenticator will support the prf extension.
+     * https://w3c.github.io/webauthn/#prf-extension
+     * Defaults to false.
+     */
+    hasPrf?: boolean;
     /**
      * If set to true, tests of user presence will succeed immediately.
      * Otherwise, they will not be resolved. Defaults to true.
@@ -17301,6 +17338,15 @@ export namespace Runtime {
      */
     throwOnSideEffect?: boolean;
     /**
+     * An alternative way to specify the execution context to call function on.
+     * Compared to contextId that may be reused across processes, this is guaranteed to be
+     * system-unique, so it can be used to prevent accidental function call
+     * in context different than intended (e.g. as a result of navigation across process
+     * boundaries).
+     * This is mutually exclusive with `executionContextId`.
+     */
+    uniqueContextId?: string;
+    /**
      * Whether the result should contain `webDriverValue`, serialized according to
      * https://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but
      * resulting `objectId` is still provided.
@@ -17762,6 +17808,10 @@ export namespace Runtime {
      * Id of the destroyed context
      */
     executionContextId: ExecutionContextId;
+    /**
+     * Unique Id of the destroyed context
+     */
+    executionContextUniqueId: string;
   }
 
   /**

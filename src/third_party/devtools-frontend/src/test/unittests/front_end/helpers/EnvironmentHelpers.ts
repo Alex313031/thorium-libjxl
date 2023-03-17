@@ -30,7 +30,7 @@ function initializeTargetManagerIfNecessary(): SDK.TargetManager.TargetManager {
 
 let uniqueTargetId = 0;
 
-export function createTarget({id, name = 'test', type = SDK.Target.Type.Frame, parentTarget, subtype}: {
+export function createTarget({id, name, type = SDK.Target.Type.Frame, parentTarget, subtype}: {
   id?: Protocol.Target.TargetID,
   name?: string,
   type?: SDK.Target.Type,
@@ -46,7 +46,7 @@ export function createTarget({id, name = 'test', type = SDK.Target.Type.Frame, p
   }
   const targetManager = initializeTargetManagerIfNecessary();
   return targetManager.createTarget(
-      id, name, type, parentTarget ? parentTarget : null, /* sessionId=*/ parentTarget ? id : undefined,
+      id, name ?? id, type, parentTarget ? parentTarget : null, /* sessionId=*/ parentTarget ? id : undefined,
       /* suspended=*/ false,
       /* connection=*/ undefined, {subtype} as Protocol.Target.TargetInfo);
 }
@@ -94,6 +94,11 @@ const REGISTERED_EXPERIMENTS = [
   'ignoreListJSFramesOnTimeline',
   'instrumentationBreakpoints',
   'cssTypeComponentLength',
+  'timelineDoNotSkipSystemNodesOfCpuProfile',
+  'recordCoverageWithPerformanceTracing',
+  'timelineEventInitiators',
+  'inputEventsOnTimelineOverview',
+  'timelineAsConsoleProfileResultPanel',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {
@@ -221,6 +226,9 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(
         Common.Settings.SettingCategory.PERFORMANCE, 'showNativeFunctionsInJSProfile', false,
         Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.PERFORMANCE, 'flamechartMouseWheelAction', false,
+        Common.Settings.SettingType.ENUM),
   ];
 
   Common.Settings.registerSettingsForTest(settings, reset);
@@ -266,6 +274,7 @@ export async function deinitializeGlobalVars() {
   Root.Runtime.Runtime.removeInstance();
   Common.Settings.Settings.removeInstance();
   Workspace.Workspace.WorkspaceImpl.removeInstance();
+  Bindings.IgnoreListManager.IgnoreListManager.removeInstance();
   Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
   Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
   IssuesManager.IssuesManager.IssuesManager.removeInstance();
@@ -286,10 +295,10 @@ export async function deinitializeGlobalVars() {
 export function describeWithEnvironment(title: string, fn: (this: Mocha.Suite) => void, opts: {reset: boolean} = {
   reset: true,
 }) {
-  return describe(`env-${title}`, () => {
+  return describe(title, function() {
     before(async () => await initializeGlobalVars(opts));
+    fn.call(this);
     after(async () => await deinitializeGlobalVars());
-    describe(title, fn);
   });
 }
 
@@ -297,10 +306,10 @@ describeWithEnvironment.only = function(title: string, fn: (this: Mocha.Suite) =
   reset: true,
 }) {
   // eslint-disable-next-line rulesdir/no_only
-  return describe.only(`env-${title}`, () => {
+  return describe.only(title, function() {
     before(async () => await initializeGlobalVars(opts));
+    fn.call(this);
     after(async () => await deinitializeGlobalVars());
-    describe(title, fn);
   });
 };
 
@@ -331,18 +340,18 @@ export function deinitializeGlobalLocaleVars() {
 }
 
 export function describeWithLocale(title: string, fn: (this: Mocha.Suite) => void) {
-  return describe(`locale-${title}`, () => {
+  return describe(title, function() {
     before(async () => await initializeGlobalLocaleVars());
+    fn.call(this);
     after(deinitializeGlobalLocaleVars);
-    describe(title, fn);
   });
 }
 describeWithLocale.only = function(title: string, fn: (this: Mocha.Suite) => void) {
   // eslint-disable-next-line rulesdir/no_only
-  return describe.only(`locale-${title}`, () => {
+  return describe.only(title, function() {
     before(async () => await initializeGlobalLocaleVars());
+    fn.call(this);
     after(deinitializeGlobalLocaleVars);
-    describe(title, fn);
   });
 };
 

@@ -4,8 +4,8 @@
 
 #include <map>
 
-#include "base/bind.h"
-#include "base/callback_helpers.h"
+#include "base/functional/bind.h"
+#include "base/functional/callback_helpers.h"
 #include "base/run_loop.h"
 #include "base/synchronization/lock.h"
 #include "base/test/bind.h"
@@ -21,8 +21,8 @@
 #include "media/media_buildflags.h"
 #include "net/test/embedded_test_server/http_request.h"
 #include "ppapi/buildflags/buildflags.h"
-#include "third_party/blink/public/common/features.h"
 #include "third_party/blink/public/common/buildflags.h"
+#include "third_party/blink/public/common/features.h"
 #include "third_party/blink/public/mojom/manifest/manifest.mojom.h"
 
 #if BUILDFLAG(ENABLE_PPAPI)
