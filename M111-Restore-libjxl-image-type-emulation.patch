@@ -1,7 +1,7 @@
-From 4be0ad5b59df3d7fb9af878e7a173d22e5d1f659 Mon Sep 17 00:00:00 2001
+From 3d56809f1589d8151198f7bf4b27cfd6beecfa52 Mon Sep 17 00:00:00 2001
 From: Ho Cheung <uioptt24@gmail.com>
-Date: Mon, 27 Feb 2023 06:10:44 +0100
-Subject: [PATCH] Restore libjxl image type emulation in Thorium
+Date: Fri, 17 Mar 2023 16:23:55 +0100
+Subject: [PATCH] [M111] Restore-libjxl-image-type-emulation
 
 ---
  front_end/core/sdk/EmulationModel.ts          |  7 ++++-
