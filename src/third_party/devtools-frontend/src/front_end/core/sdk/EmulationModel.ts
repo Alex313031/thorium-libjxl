@@ -170,8 +170,8 @@ export class EmulationModel extends SDKModel<void> {
     };
 
     avifFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
-    jpegXlFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
     webpFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
+    jpegXlFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
 
     if (avifFormatDisabledSetting.get() || jpegXlFormatDisabledSetting.get() || webpFormatDisabledSetting.get()) {
       updateDisabledImageFormats();
