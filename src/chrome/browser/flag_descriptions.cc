@@ -6403,7 +6403,7 @@ const char kDcheckIsFatalDescription[] =
 #endif  // BUILDFLAG(DCHECK_IS_CONFIGURABLE)
 
 #if BUILDFLAG(ENABLE_JXL_DECODER)
-const char kEnableJXLName[] = "Disable JXL image format";
+const char kEnableJXLName[] = "Enable/Disable JXL image format";
 const char kEnableJXLDescription[] =
     "Enable/Disable image decoding support for the JPEG XL image format. (Default: Enabled) Thorium Flag.";
 #endif  // BUILDFLAG(ENABLE_JXL_DECODER)
