@@ -969,6 +969,24 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
+  settingName: 'jpegXlFormatDisabled',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  storageType: Common.Settings.SettingStorageType.Session,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.disableJpegXlFormat),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.enableJpegXlFormat),
+    },
+  ],
+  defaultValue: false,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'webpFormatDisabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
