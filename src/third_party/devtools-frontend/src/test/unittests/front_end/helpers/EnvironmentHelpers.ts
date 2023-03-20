@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors, gz83, and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -155,6 +155,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showScrollBottleneckRects', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showWebVitals', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'webpFormatDisabled', false),
+    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'jpegXlFormatDisabled', false),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'allowScrollPastEof', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'cssSourceMapsEnabled', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'inlineVariableValues', true),

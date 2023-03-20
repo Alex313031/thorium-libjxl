@@ -1,4 +1,4 @@
-// Copyright (c) 2020 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors, gz83, and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -5322,6 +5322,7 @@ export namespace Emulation {
    */
   export const enum DisabledImageType {
     Avif = 'avif',
+    Jxl = "Jxl",
     Webp = 'webp',
   }
 

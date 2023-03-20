@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors, gz83, and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -273,6 +273,14 @@ const UIStrings = {
    *@description Title of a setting that enables AVIF format
    */
   enableAvifFormat: 'Enable `AVIF` format',
+  /**
+   *@description Title of a setting that disables JPEG XL format
+   */
+  disableJpegXlFormat: 'Disable `JPEG XL` format',
+  /**
+   *@description Title of a setting that enables JPEG XL format
+   */
+  enableJpegXlFormat: 'Enable `JPEG XL` format',
   /**
    *@description Title of a setting that disables WebP format
    */
@@ -954,6 +962,24 @@ Common.Settings.registerSettingExtension({
     {
       value: false,
       title: i18nLazyString(UIStrings.enableAvifFormat),
+    },
+  ],
+  defaultValue: false,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.RENDERING,
+  settingName: 'jpegXlFormatDisabled',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  storageType: Common.Settings.SettingStorageType.Session,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.disableJpegXlFormat),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.enableJpegXlFormat),
     },
   ],
   defaultValue: false,
