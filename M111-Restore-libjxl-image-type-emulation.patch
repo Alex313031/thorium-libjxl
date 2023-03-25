@@ -1,6 +1,6 @@
-From 3d56809f1589d8151198f7bf4b27cfd6beecfa52 Mon Sep 17 00:00:00 2001
+From 1b9bab809c95cf45f2a7cad790a67170a61e72dd Mon Sep 17 00:00:00 2001
 From: Ho Cheung <uioptt24@gmail.com>
-Date: Fri, 17 Mar 2023 16:23:55 +0100
+Date: Thu, 23 Mar 2023 10:37:26 +0100
 Subject: [PATCH] [M111] Restore-libjxl-image-type-emulation
 
 ---
@@ -45,24 +45,24 @@ index f0ab4f584..2fe180814 100644
      }
  
 diff --git a/front_end/core/sdk/sdk-meta.ts b/front_end/core/sdk/sdk-meta.ts
-index 10fd7ae97..171771f0d 100644
+index e2753f92a..31b836ada 100644
 --- a/front_end/core/sdk/sdk-meta.ts
 +++ b/front_end/core/sdk/sdk-meta.ts
-@@ -274,6 +274,14 @@ const UIStrings = {
-   */
+@@ -273,6 +273,14 @@ const UIStrings = {
+    *@description Title of a setting that enables AVIF format
+    */
    enableAvifFormat: 'Enable `AVIF` format',
-   /**
-+  *@description Title of a setting that disables JPEG XL format
-+  */
++  /**
++   *@description Title of a setting that disables JPEG XL format
++   */
 +  disableJpegXlFormat: 'Disable `JPEG XL` format',
 +  /**
-+  *@description Title of a setting that enables JPEG XL format
-+  */
++   *@description Title of a setting that enables JPEG XL format
++   */
 +  enableJpegXlFormat: 'Enable `JPEG XL` format',
-+  /**
-   *@description Title of a setting that disables WebP format
-   */
-   disableWebpFormat: 'Disable `WebP` format',
+   /**
+    *@description Title of a setting that disables WebP format
+    */
 @@ -959,6 +967,24 @@ Common.Settings.registerSettingExtension({
    defaultValue: false,
  });
@@ -89,21 +89,21 @@ index 10fd7ae97..171771f0d 100644
    category: Common.Settings.SettingCategory.RENDERING,
    settingName: 'webpFormatDisabled',
 diff --git a/front_end/entrypoints/inspector_main/RenderingOptions.ts b/front_end/entrypoints/inspector_main/RenderingOptions.ts
-index bc3da3d56..2a4cc7739 100644
+index c029230ca..95c97063c 100644
 --- a/front_end/entrypoints/inspector_main/RenderingOptions.ts
 +++ b/front_end/entrypoints/inspector_main/RenderingOptions.ts
-@@ -167,6 +167,11 @@ const UIStrings = {
-   */
+@@ -166,6 +166,11 @@ const UIStrings = {
+    * page from loading images with the AVIF format.
+    */
    disableAvifImageFormat: 'Disable `AVIF` image format',
-   /**
-+  * @description The name of a checkbox setting in the Rendering tool. This setting disables the
-+  * page from loading images with the JPEG XL format.
-+  */
-+  disableJpegXlImageFormat: 'Disable `JPEG XL` image format',
 +  /**
-   * @description Explanation text for both the 'Disable AVIF image format' and 'Disable WebP image
-   * format' settings in the Rendering tool.
-   */
++   * @description The name of a checkbox setting in the Rendering tool. This setting disables the
++   * page from loading images with the JPEG XL format.
++   */
++  disableJpegXlImageFormat: 'Disable `JPEG XL` image format',
+   /**
+    * @description Explanation text for both the 'Disable AVIF image format' and 'Disable WebP image
+    * format' settings in the Rendering tool.
 @@ -200,6 +205,17 @@ const supportsPrefersContrast = (): boolean => {
    return window.matchMedia(query).media === query;
  };
@@ -145,10 +145,10 @@ index bc3da3d56..2a4cc7739 100644
  
    static instance(opts: {
 diff --git a/front_end/generated/protocol.ts b/front_end/generated/protocol.ts
-index 5f2cdc8ac..618adb596 100644
+index 944ea7f1e..021aa62ac 100644
 --- a/front_end/generated/protocol.ts
 +++ b/front_end/generated/protocol.ts
-@@ -5310,6 +5310,7 @@ export namespace Emulation {
+@@ -5323,6 +5323,7 @@ export namespace Emulation {
    export const enum DisabledImageType {
      Avif = 'avif',
      Webp = 'webp',
@@ -157,10 +157,10 @@ index 5f2cdc8ac..618adb596 100644
  
    export interface CanEmulateResponse extends ProtocolResponseWithError {
 diff --git a/test/unittests/front_end/helpers/EnvironmentHelpers.ts b/test/unittests/front_end/helpers/EnvironmentHelpers.ts
-index fde49b378..af51fdbd2 100644
+index 1c4c9f837..1df6f431a 100644
 --- a/test/unittests/front_end/helpers/EnvironmentHelpers.ts
 +++ b/test/unittests/front_end/helpers/EnvironmentHelpers.ts
-@@ -150,6 +150,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
+@@ -155,6 +155,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showScrollBottleneckRects', false),
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showWebVitals', false),
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'webpFormatDisabled', false),
