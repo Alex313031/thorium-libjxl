@@ -1,10 +1,10 @@
-From 6240e9847b3b245df194850abb92446bd3a81dbd Mon Sep 17 00:00:00 2001
+From 6a8a319d0aa75301bf18c1a5cdefdcfcc81ed95e Mon Sep 17 00:00:00 2001
 From: Ho Cheung <uioptt24@gmail.com>
-Date: Fri, 17 Mar 2023 18:50:25 +0100
-Subject: [PATCH] [M111] Restore-libjxl
+Date: Wed, 19 Apr 2023 23:16:45 -0700
+Subject: [PATCH] [M112] Restore-libjxl
 
 ---
- DEPS                                          |   9 +-
+ DEPS                                          |   7 +
  build/linux/unbundle/libjxl.gn                |  34 +
  build/linux/unbundle/replace_gn_files.py      | 123 ++--
  cc/base/devtools_instrumentation.cc           |   6 +
@@ -25,7 +25,7 @@ Subject: [PATCH] [M111] Restore-libjxl
  .../blink/common/loader/network_utils.cc      |  16 +-
  .../blink/common/mime_util/mime_util.cc       |   8 +
  .../common/mime_util/mime_util_unittest.cc    |   6 +
- third_party/blink/public/common/BUILD.gn      |   5 +-
+ third_party/blink/public/common/BUILD.gn      |   1 +
  third_party/blink/public/common/features.h    |   2 +
  .../devtools_protocol/browser_protocol.pdl    |   1 +
  third_party/blink/public/public_features.gni  |   5 +
@@ -115,7 +115,7 @@ Subject: [PATCH] [M111] Restore-libjxl
  .../libjxl/gen_headers/jxl/jxl_export.h       |  11 +
  ...-virtual-conditional-to-unconditional.json |   4 +-
  tools/metrics/histograms/enums.xml            |   4 +-
- 111 files changed, 2089 insertions(+), 76 deletions(-)
+ 111 files changed, 2085 insertions(+), 74 deletions(-)
  create mode 100644 build/linux/unbundle/libjxl.gn
  create mode 100644 third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.cc
  create mode 100644 third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.h
@@ -190,23 +190,21 @@ Subject: [PATCH] [M111] Restore-libjxl
  create mode 100644 third_party/libjxl/gen_headers/jxl/jxl_export.h
 
 diff --git a/DEPS b/DEPS
-index 296847db60911..537bb457109ec 100644
+index 9977dd1a5f299..a76ebed5dc543 100644
 --- a/DEPS
 +++ b/DEPS
-@@ -475,7 +475,11 @@ vars = {
+@@ -482,6 +482,10 @@ vars = {
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling feed
    # and whatever else without interference from each other.
--  'highway_revision': '8ae5b88670fb918f815b717c7c13d38a9b0eb4bb',
 +  'libjxl_revision': 'c27d499263435ac77007174e0f1cf54557cff23a',
 +  # Three lines of non-changing comments so that
 +  # the commit queue can handle CLs rolling feed
 +  # and whatever else without interference from each other.
-+  'highway_revision': '58746ca5b9f9444a2a3549704602ecc6239f8f41',
+   'highway_revision': '58746ca5b9f9444a2a3549704602ecc6239f8f41',
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling ffmpeg
-   # and whatever else without interference from each other.
-@@ -1100,6 +1104,9 @@ deps = {
+@@ -1098,6 +1102,9 @@ deps = {
    'src/third_party/dawn':
      Var('dawn_git') + '/dawn.git' + '@' +  Var('dawn_revision'),
  
@@ -464,10 +462,10 @@ index 82fdd5436cfa6..d04c6b9a9362f 100644
          return ScopedImageType::kAvif;
        case ImageType::kBMP:
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
-index 057c0d9ebc37d..4b0a59d77be6c 100644
+index fd95f0a22edc4..62c57d8bdda9e 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7480,6 +7480,12 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -7521,6 +7521,12 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(download::features::kSmartSuggestionForLargeDownloads)},
  #endif  // BUILDFLAG(IS_ANDROID)
  
@@ -481,10 +479,10 @@ index 057c0d9ebc37d..4b0a59d77be6c 100644
      {"messages-for-android-ads-blocked",
       flag_descriptions::kMessagesForAndroidAdsBlockedName,
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
-index 6f62fa30588ae..c695147a5a07e 100644
+index 74b98dc31084d..d6c0709b65509 100644
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -2614,6 +2614,11 @@
+@@ -2641,6 +2641,11 @@
      // This flag is used by web developers to test upcoming javascript features.
      "expiry_milestone": -1
    },
@@ -497,10 +495,10 @@ index 6f62fa30588ae..c695147a5a07e 100644
      "name": "enable-keyboard-backlight-toggle",
      "owners": [ "rtinkoff" ],
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
-index 5669823de8be0..4d6271b28c335 100644
+index c44d9224e9c6f..0f3a063ce6c9f 100644
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -6410,6 +6410,12 @@ extern const char kEnableCardboardDescription[] =
+@@ -6496,6 +6496,12 @@ extern const char kEnableCardboardDescription[] =
      "session.";
  #endif  // ENABLE_CARDBOARD
  
@@ -514,10 +512,10 @@ index 5669823de8be0..4d6271b28c335 100644
  const char kNaclName[] = "Native Client";
  const char kNaclDescription[] =
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
-index 26c9c28e53128..0ef89e0867e35 100644
+index 3e3902f7077bb..4ce9494dfcb53 100644
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -3708,6 +3708,11 @@ extern const char kEnableCardboardName[];
+@@ -3759,6 +3759,11 @@ extern const char kEnableCardboardName[];
  extern const char kEnableCardboardDescription[];
  #endif  // ENABLE_CARDBOARD
  
@@ -690,10 +688,10 @@ index ea8a8f4c5669e..14e7ce31ad14e 100644
        {"video/*", 6, "mp4"},
        {"video/*", 6, "mpeg"},
 diff --git a/third_party/.gitignore b/third_party/.gitignore
-index 24c302f31b755..9b65de7266d7f 100644
+index b49312b9434d6..9406aaf602c37 100644
 --- a/third_party/.gitignore
 +++ b/third_party/.gitignore
-@@ -158,6 +158,7 @@
+@@ -164,6 +164,7 @@
  /libipp/libipp
  /libjingle/source
  /libjpeg_turbo
@@ -702,12 +700,12 @@ index 24c302f31b755..9b65de7266d7f 100644
  /libphonenumber/dist
  /libprotobuf-mutator/src
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
-index 1cc64db3b24c6..bffd44613a3bf 100644
+index 4090846d18cee..c5726b531445c 100644
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -734,6 +734,9 @@ const base::FeatureParam<int> kCacheCodeOnIdleDelayParam{&kCacheCodeOnIdle,
- const base::FeatureParam<bool> kCacheCodeOnIdleDelayServiceWorkerOnlyParam{
-     &kCacheCodeOnIdle, "service-worker-only", false};
+@@ -763,6 +763,9 @@ const base::FeatureParam<int> kProduceCompileHintsOnIdleDelayParam{
+ const base::FeatureParam<double> kProduceCompileHintsNoiseLevel{
+     &kProduceCompileHints, "noise probability", 0.9};
  
 +// Enables the JPEG XL Image File Format (JXL).
 +BASE_FEATURE(kJXL, "JXL", base::FEATURE_ENABLED_BY_DEFAULT);
@@ -801,26 +799,22 @@ index e37166cc5f897..50541a5dd416b 100644
              BUILDFLAG(ENABLE_AV1_DECODER));
    EXPECT_FALSE(IsSupportedImageMimeType("image/lolcat"));
 diff --git a/third_party/blink/public/common/BUILD.gn b/third_party/blink/public/common/BUILD.gn
-index 773cee4df5421..c0af03ad02e88 100644
+index e76c91ec1dd5d..0fdbb02bcd8dc 100644
 --- a/third_party/blink/public/common/BUILD.gn
 +++ b/third_party/blink/public/common/BUILD.gn
-@@ -100,7 +100,10 @@ component("common") {
- 
- buildflag_header("buildflags") {
+@@ -103,6 +103,7 @@ buildflag_header("buildflags") {
    header = "buildflags.h"
--  flags = [ "RTC_USE_H264=$rtc_use_h264" ]
-+  flags = [
-+    "RTC_USE_H264=$rtc_use_h264",
+   flags = [
+     "RTC_USE_H264=$rtc_use_h264",
 +    "ENABLE_JXL_DECODER=$enable_jxl_decoder",
-+  ]
+     "BUILD_RUST_CRASH=$build_rust_crash",
+   ]
  }
- 
- source_set("common_export") {
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
-index 4505ffb0ada83..f5932b94934b7 100644
+index 03613dba5663c..8381c8e856421 100644
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -402,6 +402,8 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBackgroundTracingPerformanceMark);
+@@ -406,6 +406,8 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBackgroundTracingPerformanceMark);
  BLINK_COMMON_EXPORT extern const base::FeatureParam<std::string>
      kBackgroundTracingPerformanceMark_AllowList;
  
@@ -830,10 +824,10 @@ index 4505ffb0ada83..f5932b94934b7 100644
  //
  // Backend storage + kill switch for Interest Group API origin trials.
 diff --git a/third_party/blink/public/devtools_protocol/browser_protocol.pdl b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
-index 4536dd55b8a9e..8cbb0ec88e2d9 100644
+index 4e04ddd41588c..5b18567ab5aae 100644
 --- a/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 +++ b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
-@@ -3910,6 +3910,7 @@ domain Emulation
+@@ -3859,6 +3859,7 @@ domain Emulation
    experimental type DisabledImageType extends string
      enum
        avif
@@ -842,7 +836,7 @@ index 4536dd55b8a9e..8cbb0ec88e2d9 100644
  
    experimental command setDisabledImageTypes
 diff --git a/third_party/blink/public/public_features.gni b/third_party/blink/public/public_features.gni
-index 1d0dd0f395820..ef7537d70e9bf 100644
+index 6633b02073845..2576e24fad6a2 100644
 --- a/third_party/blink/public/public_features.gni
 +++ b/third_party/blink/public/public_features.gni
 @@ -4,6 +4,11 @@
@@ -858,10 +852,10 @@ index 1d0dd0f395820..ef7537d70e9bf 100644
  # TODO(donnd): remove all unhandled-tap handling after the Long-press experiment
  #              is fully launched.
 diff --git a/third_party/blink/renderer/core/inspector/inspector_emulation_agent.cc b/third_party/blink/renderer/core/inspector/inspector_emulation_agent.cc
-index 124dbe2228b3c..eadea30b1ba25 100644
+index 11217f399bc7b..8864d1f6c3935 100644
 --- a/third_party/blink/renderer/core/inspector/inspector_emulation_agent.cc
 +++ b/third_party/blink/renderer/core/inspector/inspector_emulation_agent.cc
-@@ -501,10 +501,10 @@ AtomicString InspectorEmulationAgent::OverrideAcceptImageHeader(
+@@ -497,10 +497,10 @@ AtomicString InspectorEmulationAgent::OverrideAcceptImageHeader(
    String header(network_utils::ImageAcceptHeader());
    for (String type : *disabled_image_types) {
      // The header string is expected to be like
@@ -875,7 +869,7 @@ index 124dbe2228b3c..eadea30b1ba25 100644
      header.Replace(String(type + ","), "");
    }
    return AtomicString(header);
-@@ -846,6 +846,7 @@ protocol::Response InspectorEmulationAgent::setDisabledImageTypes(
+@@ -838,6 +838,7 @@ protocol::Response InspectorEmulationAgent::setDisabledImageTypes(
    namespace DisabledImageTypeEnum = protocol::Emulation::DisabledImageTypeEnum;
    for (protocol::Emulation::DisabledImageType type : *disabled_types) {
      if (DisabledImageTypeEnum::Avif == type ||
@@ -992,10 +986,10 @@ index 87c6131c2fdbd..6428d45ec5201 100644
    // NOTE: GC objects that need to survive iterations of the loop below
    // must be Persistent<>!
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
-index f4559b5ee0940..27b5b7b7b1b92 100644
+index 57d5c2bd2910f..689f5d3eb3f60 100644
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -1815,6 +1815,15 @@ component("platform") {
+@@ -1820,6 +1820,15 @@ component("platform") {
      deps += [ "//third_party/libavif" ]
    }
  
@@ -1011,7 +1005,7 @@ index f4559b5ee0940..27b5b7b7b1b92 100644
    if (current_cpu == "x86" || current_cpu == "x64") {
      deps += [ ":blink_x86_avx" ]
      sources += [ "audio/cpu/x86/audio_delay_dsp_kernel_sse2.cc" ]
-@@ -2254,6 +2263,10 @@ source_set("blink_platform_unittests_sources") {
+@@ -2264,6 +2273,10 @@ source_set("blink_platform_unittests_sources") {
      sources += [ "image-decoders/avif/avif_image_decoder_test.cc" ]
    }
  
@@ -1022,7 +1016,7 @@ index f4559b5ee0940..27b5b7b7b1b92 100644
    sources += [ "testing/run_all_tests.cc" ]
  
    configs += [
-@@ -2295,6 +2308,7 @@ source_set("blink_platform_unittests_sources") {
+@@ -2305,6 +2318,7 @@ source_set("blink_platform_unittests_sources") {
      "//third_party/blink/renderer/platform/scheduler:unit_tests",
      "//third_party/blink/renderer/platform/wtf",
      "//third_party/libavif:libavif",
@@ -2608,10 +2602,10 @@ index 50bb03231ecf5..13ab1e91fd524 100644
  ./third_party/wuffs/src,wuffs
  ./third_party/catapult,catapult
 diff --git a/third_party/blink/web_tests/SmokeTests/Mac.txt b/third_party/blink/web_tests/SmokeTests/Mac.txt
-index 09bbd402489bb..a17285b513f33 100644
+index 24c7ad8900e50..fe770b359882d 100644
 --- a/third_party/blink/web_tests/SmokeTests/Mac.txt
 +++ b/third_party/blink/web_tests/SmokeTests/Mac.txt
-@@ -1450,6 +1450,7 @@ virtual/gpu-rasterization/images/yuv-decode-eligible/color-profile-filter.html
+@@ -1449,6 +1449,7 @@ virtual/gpu-rasterization/images/yuv-decode-eligible/color-profile-filter.html
  virtual/gpu-rasterization/images/yuv-decode-eligible/jpeg-missing-eoi.html
  virtual/gpu-rasterization/images/yuv-decode-eligible/webp-no-color-profile-lossy.html
  virtual/gpu/fast/canvas/canvas-textMetrics-width.html
@@ -2640,10 +2634,10 @@ index 2828fa02b517d..c62be95f17bb1 100644
  virtual/off-main-thread-css-paint/http/tests/csspaint/border-color.html
  virtual/off-main-thread-css-paint/http/tests/csspaint/entire-canvas-visible-zoom.html
 diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/web_tests/TestExpectations
-index 9486197242e55..a54dc132160d6 100644
+index 58222574a506c..bc85fc395f23e 100644
 --- a/third_party/blink/web_tests/TestExpectations
 +++ b/third_party/blink/web_tests/TestExpectations
-@@ -4959,6 +4959,12 @@ crbug.com/847356 external/wpt/css/css-transforms/transform-box/view-box-mutation
+@@ -4913,6 +4913,12 @@ crbug.com/847356 external/wpt/css/css-transforms/transform-box/view-box-mutation
  # Started failing after rolling new version of check-layout-th.js
  css3/flexbox/perpendicular-writing-modes-inside-flex-item.html [ Failure ]
  
@@ -2657,10 +2651,10 @@ index 9486197242e55..a54dc132160d6 100644
  crbug.com/1199701 http/tests/devtools/console/console-big-array.js [ Crash Failure Pass Timeout ]
  
 diff --git a/third_party/blink/web_tests/VirtualTestSuites b/third_party/blink/web_tests/VirtualTestSuites
-index 376c6293a1d9d..430bb09188cdb 100644
+index 7194fcf24498c..41dce96fb4039 100644
 --- a/third_party/blink/web_tests/VirtualTestSuites
 +++ b/third_party/blink/web_tests/VirtualTestSuites
-@@ -329,6 +329,15 @@
+@@ -355,6 +355,15 @@
      "args": ["--force-device-scale-factor=2"],
      "expires": "Jul 1, 2023"
    },
@@ -21061,10 +21055,10 @@ index c757576d3aeab..acefbb9badede 100644
 +}
 \ No newline at end of file
 diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums.xml
-index b9dc5462fc816..b3406e1d3bbb7 100644
+index 0c0eb5a51f252..e4fee283424e7 100644
 --- a/tools/metrics/histograms/enums.xml
 +++ b/tools/metrics/histograms/enums.xml
-@@ -25191,7 +25191,7 @@ Called by update_debug_scenarios.py.-->
+@@ -25434,7 +25434,7 @@ Called by update_debug_scenarios.py.-->
    <int value="5" label="kImageICO"/>
    <int value="6" label="kImageBMP"/>
    <int value="7" label="kImageAVIF"/>
@@ -21073,7 +21067,7 @@ index b9dc5462fc816..b3406e1d3bbb7 100644
  </enum>
  
  <enum name="DecodeSwapChainNotUsedReason">
-@@ -59745,6 +59745,7 @@ from previous Chrome versions.
+@@ -60348,6 +60348,7 @@ from previous Chrome versions.
    <int value="-892428689" label="ManualPasswordGenerationAndroid:enabled"/>
    <int value="-892297699" label="EditContext:enabled"/>
    <int value="-891856063" label="MidiManagerAndroid:enabled"/>
@@ -21081,7 +21075,7 @@ index b9dc5462fc816..b3406e1d3bbb7 100644
    <int value="-890224928" label="DownloadBubbleV2:enabled"/>
    <int value="-889670978" label="AssistantRoutines:disabled"/>
    <int value="-887101831" label="StoreHoursAndroid:disabled"/>
-@@ -61615,6 +61616,7 @@ from previous Chrome versions.
+@@ -62240,6 +62241,7 @@ from previous Chrome versions.
    <int value="188610022" label="NewMessageListView:enabled"/>
    <int value="189728101" label="FasterLocationReload:disabled"/>
    <int value="189777537" label="DisableInitialMostVisitedFadeIn:enabled"/>
@@ -21090,5 +21084,5 @@ index b9dc5462fc816..b3406e1d3bbb7 100644
    <int value="191737931" label="enable-mark-http-as"/>
    <int value="191891628" label="AutocompleteExtendedSuggestions:enabled"/>
 -- 
-2.34.1
+2.30.2
 

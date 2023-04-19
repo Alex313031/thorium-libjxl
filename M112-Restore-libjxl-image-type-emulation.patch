@@ -1,7 +1,7 @@
 From 1b9bab809c95cf45f2a7cad790a67170a61e72dd Mon Sep 17 00:00:00 2001
 From: Ho Cheung <uioptt24@gmail.com>
 Date: Thu, 23 Mar 2023 10:37:26 +0100
-Subject: [PATCH] [M111] Restore-libjxl-image-type-emulation
+Subject: [PATCH] [M112] Restore-libjxl-image-type-emulation
 
 ---
  front_end/core/sdk/EmulationModel.ts          |  7 ++++-
