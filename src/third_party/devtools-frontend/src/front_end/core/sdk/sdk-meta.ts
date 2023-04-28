@@ -218,41 +218,49 @@ const UIStrings = {
    */
   emulateBlurredVision: 'Emulate blurred vision',
   /**
+   *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
+   */
+  emulateReducedContrast: 'Emulate reduced contrast',
+  /**
    *@description Name of a vision deficiency that can be emulated via the Rendering drawer
    */
   blurredVision: 'Blurred vision',
   /**
-   *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
+   *@description Name of a vision deficiency that can be emulated via the Rendering drawer
    */
-  emulateProtanopia: 'Emulate protanopia',
-  /**
-   *@description Name of a color vision deficiency that can be emulated via the Rendering drawer
-   */
-  protanopia: 'Protanopia',
+  reducedContrast: 'Reduced contrast',
   /**
    *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
    */
-  emulateDeuteranopia: 'Emulate deuteranopia',
+  emulateProtanopia: 'Emulate protanopia (no red)',
   /**
    *@description Name of a color vision deficiency that can be emulated via the Rendering drawer
    */
-  deuteranopia: 'Deuteranopia',
+  protanopia: 'Protanopia (no red)',
   /**
    *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
    */
-  emulateTritanopia: 'Emulate tritanopia',
+  emulateDeuteranopia: 'Emulate deuteranopia (no green)',
   /**
    *@description Name of a color vision deficiency that can be emulated via the Rendering drawer
    */
-  tritanopia: 'Tritanopia',
+  deuteranopia: 'Deuteranopia (no green)',
   /**
    *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
    */
-  emulateAchromatopsia: 'Emulate achromatopsia',
+  emulateTritanopia: 'Emulate tritanopia (no blue)',
   /**
    *@description Name of a color vision deficiency that can be emulated via the Rendering drawer
    */
-  achromatopsia: 'Achromatopsia',
+  tritanopia: 'Tritanopia (no blue)',
+  /**
+   *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
+   */
+  emulateAchromatopsia: 'Emulate achromatopsia (no color)',
+  /**
+   *@description Name of a color vision deficiency that can be emulated via the Rendering drawer
+   */
+  achromatopsia: 'Achromatopsia (no color)',
   /**
    *@description Title of a setting under the Rendering drawer
    */
@@ -903,6 +911,11 @@ Common.Settings.registerSettingExtension({
       title: i18nLazyString(UIStrings.emulateBlurredVision),
       text: i18nLazyString(UIStrings.blurredVision),
       value: 'blurredVision',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateReducedContrast),
+      text: i18nLazyString(UIStrings.reducedContrast),
+      value: 'reducedContrast',
     },
     {
       title: i18nLazyString(UIStrings.emulateProtanopia),
