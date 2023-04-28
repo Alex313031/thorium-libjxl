@@ -69,7 +69,7 @@ IN_PROC_BROWSER_TEST_F(ChromeAcceptHeaderTest, Check) {
       GetOptionalImageCodecs() +
       "image/webp,image/apng,*/*;q=0.8,"
       "application/signed-exchange;v=b3;q=0.7";
-#endif
+#endif // BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
   ASSERT_EQ(expected_plugin_accept_header, plugin_accept_header);
 
   std::string expected_favicon_accept_header =
@@ -78,7 +78,7 @@ IN_PROC_BROWSER_TEST_F(ChromeAcceptHeaderTest, Check) {
   expected_favicon_accept_header =
       GetOptionalImageCodecs() +
       "image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8";
-#endif
+#endif // BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
   ASSERT_EQ(expected_favicon_accept_header, favicon_accept_header);
 
   // Since the server uses local variables.
