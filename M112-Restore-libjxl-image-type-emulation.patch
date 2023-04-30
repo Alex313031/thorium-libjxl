@@ -1,7 +1,7 @@
-From 1b9bab809c95cf45f2a7cad790a67170a61e72dd Mon Sep 17 00:00:00 2001
+From b34ca1d8283e51ce9d2d9f87b067fb272976010a Mon Sep 17 00:00:00 2001
 From: Ho Cheung <uioptt24@gmail.com>
-Date: Thu, 23 Mar 2023 10:37:26 +0100
-Subject: [PATCH] [M112] Restore-libjxl-image-type-emulation
+Date: Sat, 29 Apr 2023 19:32:10 +0800
+Subject: [PATCH] Restore-libjxl-image-type-emulation
 
 ---
  front_end/core/sdk/EmulationModel.ts          |  7 ++++-
@@ -45,10 +45,10 @@ index f0ab4f584..2fe180814 100644
      }
  
 diff --git a/front_end/core/sdk/sdk-meta.ts b/front_end/core/sdk/sdk-meta.ts
-index e2753f92a..31b836ada 100644
+index 66c9fa895..d4e8484d0 100644
 --- a/front_end/core/sdk/sdk-meta.ts
 +++ b/front_end/core/sdk/sdk-meta.ts
-@@ -273,6 +273,14 @@ const UIStrings = {
+@@ -281,6 +281,14 @@ const UIStrings = {
     *@description Title of a setting that enables AVIF format
     */
    enableAvifFormat: 'Enable `AVIF` format',
@@ -63,7 +63,7 @@ index e2753f92a..31b836ada 100644
    /**
     *@description Title of a setting that disables WebP format
     */
-@@ -959,6 +967,24 @@ Common.Settings.registerSettingExtension({
+@@ -972,6 +980,24 @@ Common.Settings.registerSettingExtension({
    defaultValue: false,
  });
  
@@ -145,10 +145,10 @@ index c029230ca..95c97063c 100644
  
    static instance(opts: {
 diff --git a/front_end/generated/protocol.ts b/front_end/generated/protocol.ts
-index 944ea7f1e..021aa62ac 100644
+index 5ddd2b19d..a03c1b941 100644
 --- a/front_end/generated/protocol.ts
 +++ b/front_end/generated/protocol.ts
-@@ -5323,6 +5323,7 @@ export namespace Emulation {
+@@ -5272,6 +5272,7 @@ export namespace Emulation {
    export const enum DisabledImageType {
      Avif = 'avif',
      Webp = 'webp',
@@ -157,10 +157,10 @@ index 944ea7f1e..021aa62ac 100644
  
    export interface CanEmulateResponse extends ProtocolResponseWithError {
 diff --git a/test/unittests/front_end/helpers/EnvironmentHelpers.ts b/test/unittests/front_end/helpers/EnvironmentHelpers.ts
-index 1c4c9f837..1df6f431a 100644
+index 29d76d20d..e382f4633 100644
 --- a/test/unittests/front_end/helpers/EnvironmentHelpers.ts
 +++ b/test/unittests/front_end/helpers/EnvironmentHelpers.ts
-@@ -155,6 +155,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
+@@ -157,6 +157,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showScrollBottleneckRects', false),
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showWebVitals', false),
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'webpFormatDisabled', false),
@@ -169,5 +169,5 @@ index 1c4c9f837..1df6f431a 100644
      createSettingValue(Common.Settings.SettingCategory.SOURCES, 'cssSourceMapsEnabled', true),
      createSettingValue(Common.Settings.SettingCategory.SOURCES, 'inlineVariableValues', true),
 -- 
-2.34.1
+2.39.1.windows.1
 

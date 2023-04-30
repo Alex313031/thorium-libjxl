@@ -1,8 +1,9 @@
-From 6a8a319d0aa75301bf18c1a5cdefdcfcc81ed95e Mon Sep 17 00:00:00 2001
+From 061ee2925864b9f3ef3cc9bb7e757f942414f1d8 Mon Sep 17 00:00:00 2001
 From: Ho Cheung <uioptt24@gmail.com>
-Date: Wed, 19 Apr 2023 23:16:45 -0700
-Subject: [PATCH] [M112] Restore-libjxl
+Date: Sat, 29 Apr 2023 19:35:20 +0800
+Subject: [PATCH] Restore-libjxl
 
+Change-Id: I7b39ae372c45bad7feed84da1cefa06d95ad4662
 ---
  DEPS                                          |   7 +
  build/linux/unbundle/libjxl.gn                |  34 +
@@ -190,7 +191,7 @@ Subject: [PATCH] [M112] Restore-libjxl
  create mode 100644 third_party/libjxl/gen_headers/jxl/jxl_export.h
 
 diff --git a/DEPS b/DEPS
-index 9977dd1a5f299..a76ebed5dc543 100644
+index 71d1173be601a..a759aea1558cd 100644
 --- a/DEPS
 +++ b/DEPS
 @@ -482,6 +482,10 @@ vars = {
@@ -21084,5 +21085,5 @@ index 0c0eb5a51f252..e4fee283424e7 100644
    <int value="191737931" label="enable-mark-http-as"/>
    <int value="191891628" label="AutocompleteExtendedSuggestions:enabled"/>
 -- 
-2.30.2
+2.39.1.windows.1
 
