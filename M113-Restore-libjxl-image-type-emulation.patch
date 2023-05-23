@@ -1,6 +1,6 @@
-From b34ca1d8283e51ce9d2d9f87b067fb272976010a Mon Sep 17 00:00:00 2001
+From 18b02bbec1789595eb4cc0a8f7bb12403cea20d6 Mon Sep 17 00:00:00 2001
 From: Ho Cheung <uioptt24@gmail.com>
-Date: Sat, 29 Apr 2023 19:32:10 +0800
+Date: Tue, 23 May 2023 16:50:18 +0800
 Subject: [PATCH] Restore-libjxl-image-type-emulation
 
 ---
@@ -145,10 +145,10 @@ index c029230ca..95c97063c 100644
  
    static instance(opts: {
 diff --git a/front_end/generated/protocol.ts b/front_end/generated/protocol.ts
-index 5ddd2b19d..a03c1b941 100644
+index 92dd6fede..d23961e34 100644
 --- a/front_end/generated/protocol.ts
 +++ b/front_end/generated/protocol.ts
-@@ -5272,6 +5272,7 @@ export namespace Emulation {
+@@ -5280,6 +5280,7 @@ export namespace Emulation {
    export const enum DisabledImageType {
      Avif = 'avif',
      Webp = 'webp',
@@ -157,10 +157,10 @@ index 5ddd2b19d..a03c1b941 100644
  
    export interface CanEmulateResponse extends ProtocolResponseWithError {
 diff --git a/test/unittests/front_end/helpers/EnvironmentHelpers.ts b/test/unittests/front_end/helpers/EnvironmentHelpers.ts
-index 29d76d20d..e382f4633 100644
+index 2a38a70ed..c38b067ba 100644
 --- a/test/unittests/front_end/helpers/EnvironmentHelpers.ts
 +++ b/test/unittests/front_end/helpers/EnvironmentHelpers.ts
-@@ -157,6 +157,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
+@@ -159,6 +159,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showScrollBottleneckRects', false),
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showWebVitals', false),
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'webpFormatDisabled', false),

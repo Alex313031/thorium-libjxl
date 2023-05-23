@@ -1,6 +1,6 @@
-From 061ee2925864b9f3ef3cc9bb7e757f942414f1d8 Mon Sep 17 00:00:00 2001
+From f1fe938f2c3a23cc05917127c7d2c465eae66cd2 Mon Sep 17 00:00:00 2001
 From: Ho Cheung <uioptt24@gmail.com>
-Date: Sat, 29 Apr 2023 19:35:20 +0800
+Date: Tue, 23 May 2023 17:02:00 +0800
 Subject: [PATCH] Restore-libjxl
 
 Change-Id: I7b39ae372c45bad7feed84da1cefa06d95ad4662
@@ -191,10 +191,10 @@ Change-Id: I7b39ae372c45bad7feed84da1cefa06d95ad4662
  create mode 100644 third_party/libjxl/gen_headers/jxl/jxl_export.h
 
 diff --git a/DEPS b/DEPS
-index 71d1173be601a..a759aea1558cd 100644
+index dc1755853d28e..ae848c557b75d 100644
 --- a/DEPS
 +++ b/DEPS
-@@ -482,6 +482,10 @@ vars = {
+@@ -487,6 +487,10 @@ vars = {
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling feed
    # and whatever else without interference from each other.
@@ -202,10 +202,10 @@ index 71d1173be601a..a759aea1558cd 100644
 +  # Three lines of non-changing comments so that
 +  # the commit queue can handle CLs rolling feed
 +  # and whatever else without interference from each other.
-   'highway_revision': '58746ca5b9f9444a2a3549704602ecc6239f8f41',
+   'highway_revision': '8f20644eca693cfb74aa795b0006b6779c370e7a',
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling ffmpeg
-@@ -1098,6 +1102,9 @@ deps = {
+@@ -1124,6 +1128,9 @@ deps = {
    'src/third_party/dawn':
      Var('dawn_git') + '/dawn.git' + '@' +  Var('dawn_revision'),
  
@@ -463,10 +463,10 @@ index 82fdd5436cfa6..d04c6b9a9362f 100644
          return ScopedImageType::kAvif;
        case ImageType::kBMP:
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
-index fd95f0a22edc4..62c57d8bdda9e 100644
+index d158893700f36..531a0bc071be0 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7521,6 +7521,12 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -7836,6 +7836,12 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(download::features::kSmartSuggestionForLargeDownloads)},
  #endif  // BUILDFLAG(IS_ANDROID)
  
@@ -480,10 +480,10 @@ index fd95f0a22edc4..62c57d8bdda9e 100644
      {"messages-for-android-ads-blocked",
       flag_descriptions::kMessagesForAndroidAdsBlockedName,
 diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
-index 74b98dc31084d..d6c0709b65509 100644
+index 126c8f23ea107..5bb06a5f30926 100644
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -2641,6 +2641,11 @@
+@@ -2670,6 +2670,11 @@
      // This flag is used by web developers to test upcoming javascript features.
      "expiry_milestone": -1
    },
@@ -496,10 +496,10 @@ index 74b98dc31084d..d6c0709b65509 100644
      "name": "enable-keyboard-backlight-toggle",
      "owners": [ "rtinkoff" ],
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
-index c44d9224e9c6f..0f3a063ce6c9f 100644
+index 3cc0dd97bb637..5af3e6d74f514 100644
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -6496,6 +6496,12 @@ extern const char kEnableCardboardDescription[] =
+@@ -6653,6 +6653,12 @@ extern const char kEnableCardboardDescription[] =
      "session.";
  #endif  // ENABLE_CARDBOARD
  
@@ -513,10 +513,10 @@ index c44d9224e9c6f..0f3a063ce6c9f 100644
  const char kNaclName[] = "Native Client";
  const char kNaclDescription[] =
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
-index 3e3902f7077bb..4ce9494dfcb53 100644
+index 0b63a4fc3358e..185d83b0e0fb4 100644
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -3759,6 +3759,11 @@ extern const char kEnableCardboardName[];
+@@ -3856,6 +3856,11 @@ extern const char kEnableCardboardName[];
  extern const char kEnableCardboardDescription[];
  #endif  // ENABLE_CARDBOARD
  
@@ -641,7 +641,7 @@ index 341a585720048..efda969d6f0b0 100644
        content::signed_exchange_utils::IsSignedExchangeHandlingEnabled(
            browser_context)) {
 diff --git a/net/base/mime_util.cc b/net/base/mime_util.cc
-index fbf739f1bfcaf..24305ef49ffee 100644
+index d4ac4b84f8f03..e09478a3da197 100644
 --- a/net/base/mime_util.cc
 +++ b/net/base/mime_util.cc
 @@ -163,6 +163,7 @@ static const MimeInfo kPrimaryMappings[] = {
@@ -661,7 +661,7 @@ index fbf739f1bfcaf..24305ef49ffee 100644
                                                    "image/pict",
                                                    "image/pipeg",
 diff --git a/net/base/mime_util_unittest.cc b/net/base/mime_util_unittest.cc
-index ea8a8f4c5669e..14e7ce31ad14e 100644
+index 7a83352d17b9c..de460d2034927 100644
 --- a/net/base/mime_util_unittest.cc
 +++ b/net/base/mime_util_unittest.cc
 @@ -39,6 +39,7 @@ TEST(MimeUtilTest, GetWellKnownMimeTypeFromExtension) {
@@ -680,7 +680,7 @@ index ea8a8f4c5669e..14e7ce31ad14e 100644
  #if BUILDFLAG(IS_CHROMEOS_ASH)
      // These are test cases for testing platform mime types on ChromeOS.
      {FILE_PATH_LITERAL("epub"), {"application/epub+zip"}},
-@@ -438,6 +440,7 @@ TEST(MimeUtilTest, TestGetExtensionsForMimeType) {
+@@ -497,6 +499,7 @@ TEST(MimeUtilTest, TestGetExtensionsForMimeType) {
        {"MeSsAge/*", 1, "eml"},
        {"message/", 0, nullptr, true},
        {"image/avif", 1, "avif"},
@@ -689,10 +689,10 @@ index ea8a8f4c5669e..14e7ce31ad14e 100644
        {"video/*", 6, "mp4"},
        {"video/*", 6, "mpeg"},
 diff --git a/third_party/.gitignore b/third_party/.gitignore
-index b49312b9434d6..9406aaf602c37 100644
+index 99375ca00842d..aff59b300e6cf 100644
 --- a/third_party/.gitignore
 +++ b/third_party/.gitignore
-@@ -164,6 +164,7 @@
+@@ -166,6 +166,7 @@
  /libipp/libipp
  /libjingle/source
  /libjpeg_turbo
@@ -701,10 +701,10 @@ index b49312b9434d6..9406aaf602c37 100644
  /libphonenumber/dist
  /libprotobuf-mutator/src
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
-index 4090846d18cee..c5726b531445c 100644
+index 1c63938228e2c..19e376206689b 100644
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -763,6 +763,9 @@ const base::FeatureParam<int> kProduceCompileHintsOnIdleDelayParam{
+@@ -776,6 +776,9 @@ const base::FeatureParam<int> kProduceCompileHintsOnIdleDelayParam{
  const base::FeatureParam<double> kProduceCompileHintsNoiseLevel{
      &kProduceCompileHints, "noise probability", 0.9};
  
@@ -800,7 +800,7 @@ index e37166cc5f897..50541a5dd416b 100644
              BUILDFLAG(ENABLE_AV1_DECODER));
    EXPECT_FALSE(IsSupportedImageMimeType("image/lolcat"));
 diff --git a/third_party/blink/public/common/BUILD.gn b/third_party/blink/public/common/BUILD.gn
-index e76c91ec1dd5d..0fdbb02bcd8dc 100644
+index 9f8d774933962..e4d14aec127ac 100644
 --- a/third_party/blink/public/common/BUILD.gn
 +++ b/third_party/blink/public/common/BUILD.gn
 @@ -103,6 +103,7 @@ buildflag_header("buildflags") {
@@ -812,10 +812,10 @@ index e76c91ec1dd5d..0fdbb02bcd8dc 100644
    ]
  }
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
-index 03613dba5663c..8381c8e856421 100644
+index 47b45da350375..dd9192332295f 100644
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -406,6 +406,8 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBackgroundTracingPerformanceMark);
+@@ -424,6 +424,8 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBackgroundTracingPerformanceMark);
  BLINK_COMMON_EXPORT extern const base::FeatureParam<std::string>
      kBackgroundTracingPerformanceMark_AllowList;
  
@@ -825,10 +825,10 @@ index 03613dba5663c..8381c8e856421 100644
  //
  // Backend storage + kill switch for Interest Group API origin trials.
 diff --git a/third_party/blink/public/devtools_protocol/browser_protocol.pdl b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
-index 4e04ddd41588c..5b18567ab5aae 100644
+index c8d0e1dd90c90..b35cda0f82f3c 100644
 --- a/third_party/blink/public/devtools_protocol/browser_protocol.pdl
 +++ b/third_party/blink/public/devtools_protocol/browser_protocol.pdl
-@@ -3859,6 +3859,7 @@ domain Emulation
+@@ -3865,6 +3865,7 @@ domain Emulation
    experimental type DisabledImageType extends string
      enum
        avif
@@ -987,10 +987,10 @@ index 87c6131c2fdbd..6428d45ec5201 100644
    // NOTE: GC objects that need to survive iterations of the loop below
    // must be Persistent<>!
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
-index 57d5c2bd2910f..689f5d3eb3f60 100644
+index 699abf036aab9..ec9515455e66c 100644
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -1820,6 +1820,15 @@ component("platform") {
+@@ -1818,6 +1818,15 @@ component("platform") {
      deps += [ "//third_party/libavif" ]
    }
  
@@ -2603,10 +2603,10 @@ index 50bb03231ecf5..13ab1e91fd524 100644
  ./third_party/wuffs/src,wuffs
  ./third_party/catapult,catapult
 diff --git a/third_party/blink/web_tests/SmokeTests/Mac.txt b/third_party/blink/web_tests/SmokeTests/Mac.txt
-index 24c7ad8900e50..fe770b359882d 100644
+index 01a9d6969fa1d..fd7a63655e03f 100644
 --- a/third_party/blink/web_tests/SmokeTests/Mac.txt
 +++ b/third_party/blink/web_tests/SmokeTests/Mac.txt
-@@ -1449,6 +1449,7 @@ virtual/gpu-rasterization/images/yuv-decode-eligible/color-profile-filter.html
+@@ -1447,6 +1447,7 @@ virtual/gpu-rasterization/images/yuv-decode-eligible/color-profile-filter.html
  virtual/gpu-rasterization/images/yuv-decode-eligible/jpeg-missing-eoi.html
  virtual/gpu-rasterization/images/yuv-decode-eligible/webp-no-color-profile-lossy.html
  virtual/gpu/fast/canvas/canvas-textMetrics-width.html
@@ -2635,10 +2635,10 @@ index 2828fa02b517d..c62be95f17bb1 100644
  virtual/off-main-thread-css-paint/http/tests/csspaint/border-color.html
  virtual/off-main-thread-css-paint/http/tests/csspaint/entire-canvas-visible-zoom.html
 diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/web_tests/TestExpectations
-index 58222574a506c..bc85fc395f23e 100644
+index 5a2ff617d326c..2f7a8002a9f4b 100644
 --- a/third_party/blink/web_tests/TestExpectations
 +++ b/third_party/blink/web_tests/TestExpectations
-@@ -4913,6 +4913,12 @@ crbug.com/847356 external/wpt/css/css-transforms/transform-box/view-box-mutation
+@@ -4863,6 +4863,12 @@ crbug.com/847356 external/wpt/css/css-transforms/transform-box/view-box-mutation
  # Started failing after rolling new version of check-layout-th.js
  css3/flexbox/perpendicular-writing-modes-inside-flex-item.html [ Failure ]
  
@@ -2652,10 +2652,10 @@ index 58222574a506c..bc85fc395f23e 100644
  crbug.com/1199701 http/tests/devtools/console/console-big-array.js [ Crash Failure Pass Timeout ]
  
 diff --git a/third_party/blink/web_tests/VirtualTestSuites b/third_party/blink/web_tests/VirtualTestSuites
-index 7194fcf24498c..41dce96fb4039 100644
+index 66da64ed4e72d..205eafe9a9c48 100644
 --- a/third_party/blink/web_tests/VirtualTestSuites
 +++ b/third_party/blink/web_tests/VirtualTestSuites
-@@ -355,6 +355,15 @@
+@@ -369,6 +369,15 @@
      "args": ["--force-device-scale-factor=2"],
      "expires": "Jul 1, 2023"
    },
@@ -21056,10 +21056,10 @@ index c757576d3aeab..acefbb9badede 100644
 +}
 \ No newline at end of file
 diff --git a/tools/metrics/histograms/enums.xml b/tools/metrics/histograms/enums.xml
-index 0c0eb5a51f252..e4fee283424e7 100644
+index ce333da3a46be..5ab70335a8e75 100644
 --- a/tools/metrics/histograms/enums.xml
 +++ b/tools/metrics/histograms/enums.xml
-@@ -25434,7 +25434,7 @@ Called by update_debug_scenarios.py.-->
+@@ -25648,7 +25648,7 @@ Called by update_debug_scenarios.py.-->
    <int value="5" label="kImageICO"/>
    <int value="6" label="kImageBMP"/>
    <int value="7" label="kImageAVIF"/>
@@ -21068,15 +21068,15 @@ index 0c0eb5a51f252..e4fee283424e7 100644
  </enum>
  
  <enum name="DecodeSwapChainNotUsedReason">
-@@ -60348,6 +60348,7 @@ from previous Chrome versions.
+@@ -60844,6 +60844,7 @@ from previous Chrome versions.
    <int value="-892428689" label="ManualPasswordGenerationAndroid:enabled"/>
    <int value="-892297699" label="EditContext:enabled"/>
    <int value="-891856063" label="MidiManagerAndroid:enabled"/>
 +  <int value="-890517779" label="JXL:enabled"/>
    <int value="-890224928" label="DownloadBubbleV2:enabled"/>
    <int value="-889670978" label="AssistantRoutines:disabled"/>
-   <int value="-887101831" label="StoreHoursAndroid:disabled"/>
-@@ -62240,6 +62241,7 @@ from previous Chrome versions.
+   <int value="-888336510" label="NtpSingleRowShortcuts:enabled"/>
+@@ -62787,6 +62788,7 @@ from previous Chrome versions.
    <int value="188610022" label="NewMessageListView:enabled"/>
    <int value="189728101" label="FasterLocationReload:disabled"/>
    <int value="189777537" label="DisableInitialMostVisitedFadeIn:enabled"/>
