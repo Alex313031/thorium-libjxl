@@ -1,0 +1,20 @@
+# Notes for me when rebasing
+
+# chrome/browser/flag_descriptions.cc
+
+
+#if BUILDFLAG(ENABLE_JXL_DECODER)
+const char kEnableJXLName[] = "Enable/Disable JXL image format";
+const char kEnableJXLDescription[] =
+    "Enable/Disable image decoding support for the JPEG XL image format. (Default: Enabled) Thorium Flag.";
+#endif  // BUILDFLAG(ENABLE_JXL_DECODER)
+
+
+# chrome/browser/flag-metadata.json
+
+
+  {
+    "name": "enable-jxl",
+    "owners": [ "firsching@google.com", "uioptt24@gmail.com", "alex313031@gmail.com" ],
+    "expiry_milestone": -1
+  },

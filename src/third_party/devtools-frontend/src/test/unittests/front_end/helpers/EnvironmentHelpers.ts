@@ -30,13 +30,15 @@ function initializeTargetManagerIfNecessary(): SDK.TargetManager.TargetManager {
 
 let uniqueTargetId = 0;
 
-export function createTarget({id, name, type = SDK.Target.Type.Frame, parentTarget, subtype}: {
-  id?: Protocol.Target.TargetID,
-  name?: string,
-  type?: SDK.Target.Type,
-  parentTarget?: SDK.Target.Target,
-  subtype?: string,
-} = {}) {
+export function createTarget(
+    {id, name, type = SDK.Target.Type.Frame, parentTarget, subtype, url = 'http://example.com'}: {
+      id?: Protocol.Target.TargetID,
+      name?: string,
+      type?: SDK.Target.Type,
+      parentTarget?: SDK.Target.Target,
+      subtype?: string,
+      url?: string,
+    } = {}) {
   if (!id) {
     if (!uniqueTargetId++) {
       id = 'test' as Protocol.Target.TargetID;
@@ -48,7 +50,7 @@ export function createTarget({id, name, type = SDK.Target.Type.Frame, parentTarg
   return targetManager.createTarget(
       id, name ?? id, type, parentTarget ? parentTarget : null, /* sessionId=*/ parentTarget ? id : undefined,
       /* suspended=*/ false,
-      /* connection=*/ undefined, {subtype} as Protocol.Target.TargetInfo);
+      /* connection=*/ undefined, {targetId: id, url, subtype} as Protocol.Target.TargetInfo);
 }
 
 function createSettingValue(
@@ -68,6 +70,7 @@ export function stubNoopSettings() {
       setTitle: () => {},
       title: () => {},
       asRegExp: () => {},
+      type: () => Common.Settings.SettingType.BOOLEAN,
     }),
     moduleSetting: () => ({
       get: () => [],
@@ -78,6 +81,7 @@ export function stubNoopSettings() {
       setTitle: () => {},
       title: () => {},
       asRegExp: () => {},
+      type: () => Common.Settings.SettingType.BOOLEAN,
     }),
   } as unknown as Common.Settings.Settings);
 }
@@ -96,11 +100,9 @@ const REGISTERED_EXPERIMENTS = [
   'ignoreListJSFramesOnTimeline',
   'instrumentationBreakpoints',
   'cssTypeComponentLength',
-  'timelineDoNotSkipSystemNodesOfCpuProfile',
-  'recordCoverageWithPerformanceTracing',
   'timelineEventInitiators',
-  'inputEventsOnTimelineOverview',
   'timelineAsConsoleProfileResultPanel',
+  'headerOverrides',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {
@@ -217,6 +219,9 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingCategory.CONSOLE, 'consoleHistoryAutocomplete', false,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'consoleAutocompleteOnEnter', false,
+        Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
         Common.Settings.SettingCategory.CONSOLE, 'preserveConsoleLog', false, Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
         Common.Settings.SettingCategory.CONSOLE, 'consoleEagerEval', false, Common.Settings.SettingType.BOOLEAN),
@@ -271,7 +276,6 @@ export async function deinitializeGlobalVars() {
   // Remove instances.
   await deinitializeGlobalLocaleVars();
   SDK.TargetManager.TargetManager.removeInstance();
-  SDK.ConsoleModel.ConsoleModel.removeInstance();
   targetManager = null;
   Root.Runtime.Runtime.removeInstance();
   Common.Settings.Settings.removeInstance();
