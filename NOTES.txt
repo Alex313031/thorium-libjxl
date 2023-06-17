@@ -16,5 +16,18 @@ const char kEnableJXLDescription[] =
   {
     "name": "enable-jxl",
     "owners": [ "firsching@google.com", "uioptt24@gmail.com", "alex313031@gmail.com" ],
+    // Keep JPEG XL support forever!.
     "expiry_milestone": -1
   },
+
+
+# DEPS
+
+
+  'libjxl_revision': 'c27d499263435ac77007174e0f1cf54557cff23a',
+  # Three lines of non-changing comments so that
+  # the commit queue can handle CLs rolling feed
+  # and whatever else without interference from each other.
+
+  'src/third_party/libjxl/src':
+    Var('chromium_git') + '/external/github.com/libjxl/libjxl.git' + '@' + Var('libjxl_revision'),
