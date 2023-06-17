@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors, gz83, and Alex313031. All rights reserved.
+// Copyright (c) 2023 The Chromium Authors, gz83, and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -971,7 +971,6 @@ export namespace Audits {
     InvalidHeader = 'InvalidHeader',
     InvalidRegisterTriggerHeader = 'InvalidRegisterTriggerHeader',
     InvalidEligibleHeader = 'InvalidEligibleHeader',
-    TooManyConcurrentRequests = 'TooManyConcurrentRequests',
     SourceAndTriggerHeaders = 'SourceAndTriggerHeaders',
     SourceIgnored = 'SourceIgnored',
     TriggerIgnored = 'TriggerIgnored',
@@ -1025,6 +1024,7 @@ export namespace Audits {
     FormInputAssignedAutocompleteValueToIdOrNameAttributeError = 'FormInputAssignedAutocompleteValueToIdOrNameAttributeError',
     FormLabelHasNeitherForNorNestedInput = 'FormLabelHasNeitherForNorNestedInput',
     FormLabelForMatchesNonExistingIdError = 'FormLabelForMatchesNonExistingIdError',
+    FormInputHasWrongButWellIntendedAutocompleteValueError = 'FormInputHasWrongButWellIntendedAutocompleteValueError',
   }
 
   /**
@@ -1037,6 +1037,7 @@ export namespace Audits {
     errorType: GenericIssueErrorType;
     frameId?: Page.FrameId;
     violatingNodeId?: DOM.BackendNodeId;
+    violatingNodeAttribute?: string;
   }
 
   /**
@@ -1050,6 +1051,17 @@ export namespace Audits {
      * One of the deprecation names from third_party/blink/renderer/core/frame/deprecation/deprecation.json5
      */
     type: string;
+  }
+
+  /**
+   * This issue warns about sites in the redirect chain of a finished navigation
+   * that may be flagged as trackers and have their state cleared if they don't
+   * receive a user interaction. Note that in this context 'site' means eTLD+1.
+   * For example, if the URL `https://example.test:80/bounce` was in the
+   * redirect chain, the site reported would be `example.test`.
+   */
+  export interface BounceTrackingIssueDetails {
+    trackingSites: string[];
   }
 
   export const enum ClientHintIssueReason {
@@ -1129,6 +1141,7 @@ export namespace Audits {
     DeprecationIssue = 'DeprecationIssue',
     ClientHintIssue = 'ClientHintIssue',
     FederatedAuthRequestIssue = 'FederatedAuthRequestIssue',
+    BounceTrackingIssue = 'BounceTrackingIssue',
   }
 
   /**
@@ -1153,6 +1166,7 @@ export namespace Audits {
     deprecationIssueDetails?: DeprecationIssueDetails;
     clientHintIssueDetails?: ClientHintIssueDetails;
     federatedAuthRequestIssueDetails?: FederatedAuthRequestIssueDetails;
+    bounceTrackingIssueDetails?: BounceTrackingIssueDetails;
   }
 
   /**
@@ -1922,6 +1936,10 @@ export namespace CSS {
      * Column offset of the end of the stylesheet within the resource (zero based).
      */
     endColumn: number;
+    /**
+     * If the style sheet was loaded from a network resource, this indicates when the resource failed to load
+     */
+    loadingFailed?: boolean;
   }
 
   /**
@@ -2401,6 +2419,36 @@ export namespace CSS {
   }
 
   /**
+   * CSS try rule representation.
+   */
+  export interface CSSTryRule {
+    /**
+     * The css style sheet identifier (absent for user agent stylesheet and user-specified
+     * stylesheet rules) this rule came from.
+     */
+    styleSheetId?: StyleSheetId;
+    /**
+     * Parent stylesheet's origin.
+     */
+    origin: StyleSheetOrigin;
+    /**
+     * Associated style declaration.
+     */
+    style: CSSStyle;
+  }
+
+  /**
+   * CSS position-fallback rule representation.
+   */
+  export interface CSSPositionFallbackRule {
+    name: Value;
+    /**
+     * List of keyframes.
+     */
+    tryRules: CSSTryRule[];
+  }
+
+  /**
    * CSS keyframes rule representation.
    */
   export interface CSSKeyframesRule {
@@ -2599,6 +2647,10 @@ export namespace CSS {
      * A list of CSS keyframed animations matching this node.
      */
     cssKeyframesRules?: CSSKeyframesRule[];
+    /**
+     * A list of CSS position fallbacks matching this node.
+     */
+    cssPositionFallbackRules?: CSSPositionFallbackRule[];
     /**
      * Id of the first parent element that does not have display: contents.
      */
@@ -5279,8 +5331,8 @@ export namespace Emulation {
    */
   export const enum DisabledImageType {
     Avif = 'avif',
-    Webp = 'webp',
     Jxl = "jxl",
+    Webp = 'webp',
   }
 
   export interface CanEmulateResponse extends ProtocolResponseWithError {
@@ -12890,6 +12942,7 @@ export namespace Storage {
     Cache_storage = 'cache_storage',
     Interest_groups = 'interest_groups',
     Shared_storage = 'shared_storage',
+    Storage_buckets = 'storage_buckets',
     All = 'all',
     Other = 'other',
   }
@@ -13068,6 +13121,25 @@ export namespace Storage {
      * SharedStorageAccessType.workletSet.
      */
     ignoreIfPresent?: boolean;
+  }
+
+  export const enum StorageBucketsDurability {
+    Relaxed = 'relaxed',
+    Strict = 'strict',
+  }
+
+  export interface StorageBucketInfo {
+    storageKey: SerializedStorageKey;
+    id: string;
+    name: string;
+    isDefault: boolean;
+    expiration: Network.TimeSinceEpoch;
+    /**
+     * Storage quota (bytes).
+     */
+    quota: number;
+    persistent: boolean;
+    durability: StorageBucketsDurability;
   }
 
   export interface GetStorageKeyForFrameRequest {
@@ -13303,6 +13375,16 @@ export namespace Storage {
     enable: boolean;
   }
 
+  export interface SetStorageBucketTrackingRequest {
+    storageKey: string;
+    enable: boolean;
+  }
+
+  export interface DeleteStorageBucketRequest {
+    storageKey: string;
+    bucketName: string;
+  }
+
   /**
    * A cache's contents have been modified.
    */
@@ -13407,6 +13489,14 @@ export namespace Storage {
      * presence/absence depends on `type`.
      */
     params: SharedStorageAccessParams;
+  }
+
+  export interface StorageBucketCreatedOrUpdatedEvent {
+    bucket: StorageBucketInfo;
+  }
+
+  export interface StorageBucketDeletedEvent {
+    bucketId: string;
   }
 }
 
@@ -15288,6 +15378,20 @@ export namespace Preload {
      * - https://github.com/WICG/nav-speculation/blob/main/triggers.md
      */
     sourceText: string;
+    /**
+     * Error information
+     * `errorMessage` is null iff `errorType` is null.
+     */
+    errorType?: RuleSetErrorType;
+    /**
+     * TODO(https://crbug.com/1425354): Replace this property with structured error.
+     */
+    errorMessage?: string;
+  }
+
+  export const enum RuleSetErrorType {
+    SourceIsNotJsonObject = 'SourceIsNotJsonObject',
+    InvalidRulesSkipped = 'InvalidRulesSkipped',
   }
 
   /**
@@ -15378,11 +15482,10 @@ export namespace Preload {
     InactivePageRestriction = 'InactivePageRestriction',
     StartFailed = 'StartFailed',
     TimeoutBackgrounded = 'TimeoutBackgrounded',
-    CrossSiteRedirect = 'CrossSiteRedirect',
-    CrossSiteNavigation = 'CrossSiteNavigation',
-    SameSiteCrossOriginRedirect = 'SameSiteCrossOriginRedirect',
-    SameSiteCrossOriginRedirectNotOptIn = 'SameSiteCrossOriginRedirectNotOptIn',
-    SameSiteCrossOriginNavigationNotOptIn = 'SameSiteCrossOriginNavigationNotOptIn',
+    CrossSiteRedirectInInitialNavigation = 'CrossSiteRedirectInInitialNavigation',
+    CrossSiteNavigationInInitialNavigation = 'CrossSiteNavigationInInitialNavigation',
+    SameSiteCrossOriginRedirectNotOptInInInitialNavigation = 'SameSiteCrossOriginRedirectNotOptInInInitialNavigation',
+    SameSiteCrossOriginNavigationNotOptInInInitialNavigation = 'SameSiteCrossOriginNavigationNotOptInInInitialNavigation',
     ActivationNavigationParameterMismatch = 'ActivationNavigationParameterMismatch',
     ActivatedInBackground = 'ActivatedInBackground',
     EmbedderHostDisallowed = 'EmbedderHostDisallowed',
@@ -15396,6 +15499,10 @@ export namespace Preload {
     BatterySaverEnabled = 'BatterySaverEnabled',
     ActivatedDuringMainFrameNavigation = 'ActivatedDuringMainFrameNavigation',
     PreloadingUnsupportedByWebContents = 'PreloadingUnsupportedByWebContents',
+    CrossSiteRedirectInMainFrameNavigation = 'CrossSiteRedirectInMainFrameNavigation',
+    CrossSiteNavigationInMainFrameNavigation = 'CrossSiteNavigationInMainFrameNavigation',
+    SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation = 'SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation',
+    SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation = 'SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation',
   }
 
   /**
@@ -15426,6 +15533,7 @@ export namespace Preload {
    * Fired when a prerender attempt is completed.
    */
   export interface PrerenderAttemptCompletedEvent {
+    key: PreloadingAttemptKey;
     /**
      * The frame id of the frame initiating prerendering.
      */
@@ -15443,6 +15551,7 @@ export namespace Preload {
    * Fired when a prefetch attempt is updated.
    */
   export interface PrefetchStatusUpdatedEvent {
+    key: PreloadingAttemptKey;
     /**
      * The frame id of the frame initiating prefetch.
      */
@@ -15455,6 +15564,7 @@ export namespace Preload {
    * Fired when a prerender attempt is updated.
    */
   export interface PrerenderStatusUpdatedEvent {
+    key: PreloadingAttemptKey;
     /**
      * The frame id of the frame initiating prerender.
      */
@@ -15464,9 +15574,10 @@ export namespace Preload {
   }
 
   /**
-   * Send a list of sources for all preloading attempts.
+   * Send a list of sources for all preloading attempts in a document.
    */
   export interface PreloadingAttemptSourcesUpdatedEvent {
+    loaderId: Network.LoaderId;
     preloadingAttemptSources: PreloadingAttemptSource[];
   }
 }
@@ -15504,6 +15615,15 @@ export namespace FedCm {
     privacyPolicyUrl?: string;
   }
 
+  export interface EnableRequest {
+    /**
+     * Allows callers to disable the promise rejection delay that would
+     * normally happen, if this is unimportant to what's being tested.
+     * (step 4 of https://fedidcg.github.io/FedCM/#browser-api-rp-sign-in)
+     */
+    disableRejectionDelay?: boolean;
+  }
+
   export interface SelectAccountRequest {
     dialogId: string;
     accountIndex: integer;
@@ -15511,11 +15631,18 @@ export namespace FedCm {
 
   export interface DismissDialogRequest {
     dialogId: string;
+    triggerCooldown?: boolean;
   }
 
   export interface DialogShownEvent {
     dialogId: string;
     accounts: Account[];
+    /**
+     * These exist primarily so that the caller can verify the
+     * RP context was used appropriately.
+     */
+    title: string;
+    subtitle?: string;
   }
 }
 
@@ -16276,6 +16403,7 @@ export namespace Debugger {
     Other = 'other',
     PromiseRejection = 'promiseRejection',
     XHR = 'XHR',
+    Step = 'step',
   }
 
   /**
