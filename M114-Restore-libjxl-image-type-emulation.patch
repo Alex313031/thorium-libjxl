@@ -1,20 +1,26 @@
-From 18b02bbec1789595eb4cc0a8f7bb12403cea20d6 Mon Sep 17 00:00:00 2001
+From 8e09d9a689e399f972643e3db53a80f9cdabd1b7 Mon Sep 17 00:00:00 2001
 From: Ho Cheung <uioptt24@gmail.com>
-Date: Tue, 23 May 2023 16:50:18 +0800
-Subject: [PATCH] Restore-libjxl-image-type-emulation
+Date: Thu, 22 Jun 2023 01:30:15 +0800
+Subject: [PATCH] [M114] Restore-libjxl-image-type-emulation
 
 ---
- front_end/core/sdk/EmulationModel.ts          |  7 ++++-
- front_end/core/sdk/sdk-meta.ts                | 26 ++++++++++++++++++
- .../inspector_main/RenderingOptions.ts        | 27 ++++++++++++++++++-
- front_end/generated/protocol.ts               |  1 +
- .../front_end/helpers/EnvironmentHelpers.ts   |  1 +
- 5 files changed, 60 insertions(+), 2 deletions(-)
+ front_end/core/sdk/EmulationModel.ts          |  9 ++++--
+ front_end/core/sdk/sdk-meta.ts                | 28 +++++++++++++++++-
+ .../inspector_main/RenderingOptions.ts        | 29 +++++++++++++++++--
+ front_end/generated/protocol.ts               |  3 +-
+ .../front_end/helpers/EnvironmentHelpers.ts   |  3 +-
+ 5 files changed, 65 insertions(+), 7 deletions(-)
 
 diff --git a/front_end/core/sdk/EmulationModel.ts b/front_end/core/sdk/EmulationModel.ts
-index f0ab4f584..2fe180814 100644
+index f0ab4f584..9f1d0f3c5 100644
 --- a/front_end/core/sdk/EmulationModel.ts
 +++ b/front_end/core/sdk/EmulationModel.ts
+@@ -1,4 +1,4 @@
+-// Copyright 2017 The Chromium Authors. All rights reserved.
++// Copyright 2023 The Chromium Authors, gz83, and Alex313031. All rights reserved.
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
 @@ -152,6 +152,7 @@ export class EmulationModel extends SDKModel<void> {
      }
  
@@ -33,11 +39,12 @@ index f0ab4f584..2fe180814 100644
        if (webpFormatDisabledSetting.get()) {
          types.push(Protocol.Emulation.DisabledImageType.Webp);
        }
-@@ -167,8 +171,9 @@ export class EmulationModel extends SDKModel<void> {
+@@ -166,9 +170,10 @@ export class EmulationModel extends SDKModel<void> {
+     };
  
      avifFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
-     webpFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
 +    jpegXlFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
+     webpFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
  
 -    if (avifFormatDisabledSetting.get() || webpFormatDisabledSetting.get()) {
 +    if (avifFormatDisabledSetting.get() || jpegXlFormatDisabledSetting.get() || webpFormatDisabledSetting.get()) {
@@ -45,9 +52,15 @@ index f0ab4f584..2fe180814 100644
      }
  
 diff --git a/front_end/core/sdk/sdk-meta.ts b/front_end/core/sdk/sdk-meta.ts
-index 66c9fa895..d4e8484d0 100644
+index 66c9fa895..f23463592 100644
 --- a/front_end/core/sdk/sdk-meta.ts
 +++ b/front_end/core/sdk/sdk-meta.ts
+@@ -1,4 +1,4 @@
+-// Copyright 2020 The Chromium Authors. All rights reserved.
++// Copyright 2023 The Chromium Authors, gz83, and Alex313031. All rights reserved.
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
 @@ -281,6 +281,14 @@ const UIStrings = {
     *@description Title of a setting that enables AVIF format
     */
@@ -89,9 +102,16 @@ index 66c9fa895..d4e8484d0 100644
    category: Common.Settings.SettingCategory.RENDERING,
    settingName: 'webpFormatDisabled',
 diff --git a/front_end/entrypoints/inspector_main/RenderingOptions.ts b/front_end/entrypoints/inspector_main/RenderingOptions.ts
-index c029230ca..95c97063c 100644
+index 1df171722..5fa283651 100644
 --- a/front_end/entrypoints/inspector_main/RenderingOptions.ts
 +++ b/front_end/entrypoints/inspector_main/RenderingOptions.ts
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2013 Google Inc. All rights reserved.
++ * Copyright (C) 2023 Google Inc, gz83, and Alex313031. All rights reserved.
+  *
+  * Redistribution and use in source and binary forms, with or without
+  * modification, are permitted provided that the following conditions are
 @@ -166,6 +166,11 @@ const UIStrings = {
     * page from loading images with the AVIF format.
     */
@@ -145,22 +165,34 @@ index c029230ca..95c97063c 100644
  
    static instance(opts: {
 diff --git a/front_end/generated/protocol.ts b/front_end/generated/protocol.ts
-index 92dd6fede..d23961e34 100644
+index a40e7e808..4c66065e1 100644
 --- a/front_end/generated/protocol.ts
 +++ b/front_end/generated/protocol.ts
-@@ -5280,6 +5280,7 @@ export namespace Emulation {
+@@ -1,4 +1,4 @@
+-// Copyright (c) 2020 The Chromium Authors. All rights reserved.
++// Copyright (c) 2023 The Chromium Authors, gz83, and Alex313031. All rights reserved.
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -5331,6 +5331,7 @@ export namespace Emulation {
+    */
    export const enum DisabledImageType {
      Avif = 'avif',
++    Jxl = "jxl",
      Webp = 'webp',
-+    Jxl = "Jxl",
    }
  
-   export interface CanEmulateResponse extends ProtocolResponseWithError {
 diff --git a/test/unittests/front_end/helpers/EnvironmentHelpers.ts b/test/unittests/front_end/helpers/EnvironmentHelpers.ts
-index 2a38a70ed..c38b067ba 100644
+index 0e72e6f89..203e16ac2 100644
 --- a/test/unittests/front_end/helpers/EnvironmentHelpers.ts
 +++ b/test/unittests/front_end/helpers/EnvironmentHelpers.ts
-@@ -159,6 +159,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
+@@ -1,4 +1,4 @@
+-// Copyright 2020 The Chromium Authors. All rights reserved.
++// Copyright 2023 The Chromium Authors, gz83, and Alex313031. All rights reserved.
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -162,6 +162,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showScrollBottleneckRects', false),
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showWebVitals', false),
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'webpFormatDisabled', false),
