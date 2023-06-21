@@ -18,10 +18,10 @@ config("libjxl_external_config") {
 
 source_set("libjxl") {
   sources = rebase_path(libjxl_dec_sources, ".", "src/lib")
-  sources += rebase_path(libjxl_base_sources, ".", "src/lib")
-  sources += rebase_path(libjxl_threads_public_headers, ".", "src/lib")
-  sources += rebase_path(libjxl_threads_sources, ".", "src/lib")
-  sources += rebase_path(libjxl_dec_box_sources, ".", "src/lib")
+  # sources += rebase_path(libjxl_base_sources, ".", "src/lib")
+  # sources += rebase_path(libjxl_threads_public_headers, ".", "src/lib")
+  # sources += rebase_path(libjxl_threads_sources, ".", "src/lib")
+  # sources += rebase_path(libjxl_dec_box_sources, ".", "src/lib")
 
   cflags_cc = [
     "-Wno-shadow",
