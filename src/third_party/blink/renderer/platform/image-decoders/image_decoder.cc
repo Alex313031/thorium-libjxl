@@ -29,6 +29,7 @@
 #include "media/media_buildflags.h"
 #include "skia/ext/cicp.h"
 #include "third_party/blink/public/common/buildflags.h"
+#include "third_party/blink/public/common/features.h"
 #include "third_party/blink/public/platform/platform.h"
 #include "third_party/blink/renderer/platform/image-decoders/bmp/bmp_image_decoder.h"
 #include "third_party/blink/renderer/platform/image-decoders/exif_reader.h"
