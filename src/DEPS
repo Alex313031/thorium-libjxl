@@ -472,11 +472,11 @@ vars = {
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling feed
   # and whatever else without interference from each other.
-  'libjxl_revision': 'c27d499263435ac77007174e0f1cf54557cff23a',
+  'libjxl_revision': '954b460768c08a147abf47689ad69b0e7beff65e',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling feed
   # and whatever else without interference from each other.
-  'highway_revision': '8f20644eca693cfb74aa795b0006b6779c370e7a',
+  'highway_revision': '46e365d6770f5d7a4240d8ac9d8e928a520478ea',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling ffmpeg
   # and whatever else without interference from each other.

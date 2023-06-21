@@ -2,13 +2,13 @@
 ## Chromium Revision: 114.0.5735.134 (M114-stable)
  - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/114.0.5735.134
 
-## libjxl Revision: c27d499263435ac77007174e0f1cf54557cff23a (v0.8.1)
+## libjxl Revision: 954b460768c08a147abf47689ad69b0e7beff65e (v0.8.2)
 
- - https://github.com/libjxl/libjxl/commit/c27d499263435ac77007174e0f1cf54557cff23a
+ - https://github.com/libjxl/libjxl/commit/954b460768c08a147abf47689ad69b0e7beff65e
 
-## libhighway Revision: 8f20644eca693cfb74aa795b0006b6779c370e7a (1.0.3)
+## libhighway Revision: 46e365d6770f5d7a4240d8ac9d8e928a520478ea (1.0.4)
 
- - https://github.com/google/highway/commit/8f20644eca693cfb74aa795b0006b6779c370e7a
+ - https://github.com/google/highway/commit/46e365d6770f5d7a4240d8ac9d8e928a520478ea
 
 ## V8 Revision 3625de48d1fa66ab800ec28bc6f42dd0b38f0ea4 (11.4.183.23)
 
