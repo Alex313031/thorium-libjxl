@@ -292,20 +292,17 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         i18nString(UIStrings.disableAvifImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('avifFormatDisabled'));
 
-    const webpCheckbox = this.#appendCheckbox(
+    this.#appendCheckbox(
         i18nString(UIStrings.disableWebpImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled'));
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    void supportsJpegXl().then(hasSupport => {
-      if (!hasSupport) {
-        return;
-      }
-      webpCheckbox.before(this.#createCheckbox(
-          i18nString(UIStrings.disableJpegXlImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
-          Common.Settings.Settings.instance().moduleSetting('jpegXlFormatDisabled')));
-    });
+    this.#createCheckbox(
+        i18nString(UIStrings.disableJpegXlImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
+        Common.Settings.Settings.instance().moduleSetting('jpegXlFormatDisabled'));
+
+    this.contentElement.createChild('div').classList.add('panel-section-separator');
   }
 
   static instance(opts: {
