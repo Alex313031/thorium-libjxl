@@ -113,6 +113,10 @@ vars = {
   # custom_vars.
   'checkout_src_internal': False,
 
+  # Checkout legacy src_internal. This variable is ignored if
+  # checkout_src_internal is set as false.
+  'checkout_legacy_src_internal': True,
+
   # Fetch the additional packages and files needed to run all of the
   # telemetry tests. This is false by default as some stuff is only
   # privately accessible.
@@ -285,7 +289,7 @@ vars = {
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling V8
   # and whatever else without interference from each other.
-  'src_internal_revision': '68185ed3ce10ef57cbb669a17a1c7147a30de243',
+  'src_internal_revision': '5b34fff6f60b5b6e98bc16281b91a2df981bdba3',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling Skia
   # and whatever else without interference from each other.
@@ -293,7 +297,7 @@ vars = {
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling V8
   # and whatever else without interference from each other.
-  'v8_revision': '58516cf1b23f2e557e3972ec5f9ad6aaf7883da1',
+  'v8_revision': '8df6322f5a68e30f390feb420b50446b7a95d0f3',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling ANGLE
   # and whatever else without interference from each other.
@@ -1223,7 +1227,7 @@ deps = {
     Var('chromium_git') + '/devtools/devtools-frontend' + '@' + Var('devtools_frontend_revision'),
 
   'src/third_party/devtools-frontend-internal': {
-      'url': Var('chrome_git') + '/devtools/devtools-internal.git' + '@' + 'd4bc09cfa6fc892ed49b461f88090a288209726d',
+      'url': Var('chrome_git') + '/devtools/devtools-internal.git' + '@' + '43f16c43f9b6e0cbb590188be6a4808a21baeccd',
     'condition': 'checkout_src_internal',
   },
 
@@ -1974,7 +1978,7 @@ deps = {
 
   'src-internal': {
     'url': Var('chrome_git') + '/chrome/src-internal.git' + '@' + Var('src_internal_revision'),
-    'condition': 'checkout_src_internal',
+    'condition': 'checkout_src_internal and checkout_legacy_src_internal',
   },
   'src/internal': {
     'url': Var('chrome_git') + '/chrome/src-internal.git' + '@' + Var('src_internal_revision'),
@@ -5178,8 +5182,8 @@ recursedeps = [
   'src/third_party/devtools-frontend-internal',
   'src/third_party/openscreen/src',
   'src/third_party/vulkan-deps',
-  # src-internal has its own DEPS file to pull additional internal repos
-  'src-internal',
+  # src/internal has its own DEPS file to pull additional internal repos
+  'src/internal',
   # clank has its own DEPS file, does not need to be in trybot_analyze_config
   # since the roller does not run tests.
   'src/clank',
