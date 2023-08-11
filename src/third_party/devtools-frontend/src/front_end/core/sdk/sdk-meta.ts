@@ -342,7 +342,7 @@ Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.Synced,
   settingName: 'skipContentScripts',
   settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
+  defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({

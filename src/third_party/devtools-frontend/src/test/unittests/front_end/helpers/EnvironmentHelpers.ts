@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors, gz83, and Alex313031. All rights reserved.
+// Copyright 2020 The Chromium Authors, gz83, and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -72,6 +72,7 @@ export function stubNoopSettings() {
       title: () => {},
       asRegExp: () => {},
       type: () => Common.Settings.SettingType.BOOLEAN,
+      getAsArray: () => [],
     }),
     moduleSetting: () => ({
       get: () => [],
@@ -83,6 +84,7 @@ export function stubNoopSettings() {
       title: () => {},
       asRegExp: () => {},
       type: () => Common.Settings.SettingType.BOOLEAN,
+      getAsArray: () => [],
     }),
   } as unknown as Common.Settings.Settings);
 }
@@ -106,6 +108,7 @@ const REGISTERED_EXPERIMENTS = [
   'timelineAsConsoleProfileResultPanel',
   'headerOverrides',
   'highlightErrorsElementsPanel',
+  'setAllBreakpointsEagerly',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {
@@ -121,7 +124,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'disableAsyncStackTraces', false),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'breakpointsActive', true),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'javaScriptDisabled', false),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'skipContentScripts', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'skipContentScripts', true),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'automaticallyIgnoreListKnownThirdPartyScripts', true),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'enableIgnoreListing', true),
     createSettingValue(
@@ -248,6 +251,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
   Common.Settings.Settings.instance(
       {forceNew: reset, syncedStorage: storage, globalStorage: storage, localStorage: storage});
 
+  Root.Runtime.experiments.clearForTest();
   for (const experimentName of REGISTERED_EXPERIMENTS) {
     Root.Runtime.experiments.register(experimentName, '');
   }
@@ -373,4 +377,20 @@ export function createFakeSetting<T>(name: string, defaultValue: T): Common.Sett
 
 export function enableFeatureForTest(feature: string): void {
   Root.Runtime.experiments.enableForTest(feature);
+}
+
+export function setupActionRegistry() {
+  before(function() {
+    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
+    UI.ShortcutRegistry.ShortcutRegistry.instance({
+      forceNew: true,
+      actionRegistry,
+    });
+  });
+  after(function() {
+    if (UI) {
+      UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
+      UI.ActionRegistry.ActionRegistry.removeInstance();
+    }
+  });
 }

@@ -298,7 +298,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    this.#createCheckbox(
+    this.#appendCheckbox(
         i18nString(UIStrings.disableJpegXlImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('jpegXlFormatDisabled'));
 

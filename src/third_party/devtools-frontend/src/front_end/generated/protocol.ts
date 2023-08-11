@@ -1,4 +1,4 @@
-// Copyright (c) 2023 The Chromium Authors, gz83, and Alex313031. All rights reserved.
+// Copyright (c) 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -915,31 +915,6 @@ export namespace Audits {
     type: SharedArrayBufferIssueType;
   }
 
-  export const enum TwaQualityEnforcementViolationType {
-    KHttpError = 'kHttpError',
-    KUnavailableOffline = 'kUnavailableOffline',
-    KDigitalAssetLinks = 'kDigitalAssetLinks',
-  }
-
-  export interface TrustedWebActivityIssueDetails {
-    /**
-     * The url that triggers the violation.
-     */
-    url: string;
-    violationType: TwaQualityEnforcementViolationType;
-    httpStatusCode?: integer;
-    /**
-     * The package name of the Trusted Web Activity client app. This field is
-     * only used when violation type is kDigitalAssetLinks.
-     */
-    packageName?: string;
-    /**
-     * The signature of the Trusted Web Activity client app. This field is only
-     * used when violation type is kDigitalAssetLinks.
-     */
-    signature?: string;
-  }
-
   export interface LowTextContrastIssueDetails {
     violatingNodeId: DOM.BackendNodeId;
     violatingNodeSelector: string;
@@ -970,7 +945,6 @@ export namespace Audits {
     InsecureContext = 'InsecureContext',
     InvalidHeader = 'InvalidHeader',
     InvalidRegisterTriggerHeader = 'InvalidRegisterTriggerHeader',
-    InvalidEligibleHeader = 'InvalidEligibleHeader',
     SourceAndTriggerHeaders = 'SourceAndTriggerHeaders',
     SourceIgnored = 'SourceIgnored',
     TriggerIgnored = 'TriggerIgnored',
@@ -979,6 +953,7 @@ export namespace Audits {
     InvalidRegisterOsSourceHeader = 'InvalidRegisterOsSourceHeader',
     InvalidRegisterOsTriggerHeader = 'InvalidRegisterOsTriggerHeader',
     WebAndOsHeaders = 'WebAndOsHeaders',
+    NoWebOrOsSupport = 'NoWebOrOsSupport',
   }
 
   /**
@@ -1086,14 +1061,17 @@ export namespace Audits {
     WellKnownNoResponse = 'WellKnownNoResponse',
     WellKnownInvalidResponse = 'WellKnownInvalidResponse',
     WellKnownListEmpty = 'WellKnownListEmpty',
+    WellKnownInvalidContentType = 'WellKnownInvalidContentType',
     ConfigNotInWellKnown = 'ConfigNotInWellKnown',
     WellKnownTooBig = 'WellKnownTooBig',
     ConfigHttpNotFound = 'ConfigHttpNotFound',
     ConfigNoResponse = 'ConfigNoResponse',
     ConfigInvalidResponse = 'ConfigInvalidResponse',
+    ConfigInvalidContentType = 'ConfigInvalidContentType',
     ClientMetadataHttpNotFound = 'ClientMetadataHttpNotFound',
     ClientMetadataNoResponse = 'ClientMetadataNoResponse',
     ClientMetadataInvalidResponse = 'ClientMetadataInvalidResponse',
+    ClientMetadataInvalidContentType = 'ClientMetadataInvalidContentType',
     DisabledInSettings = 'DisabledInSettings',
     ErrorFetchingSignin = 'ErrorFetchingSignin',
     InvalidSigninResponse = 'InvalidSigninResponse',
@@ -1101,10 +1079,12 @@ export namespace Audits {
     AccountsNoResponse = 'AccountsNoResponse',
     AccountsInvalidResponse = 'AccountsInvalidResponse',
     AccountsListEmpty = 'AccountsListEmpty',
+    AccountsInvalidContentType = 'AccountsInvalidContentType',
     IdTokenHttpNotFound = 'IdTokenHttpNotFound',
     IdTokenNoResponse = 'IdTokenNoResponse',
     IdTokenInvalidResponse = 'IdTokenInvalidResponse',
     IdTokenInvalidRequest = 'IdTokenInvalidRequest',
+    IdTokenInvalidContentType = 'IdTokenInvalidContentType',
     ErrorIdToken = 'ErrorIdToken',
     Canceled = 'Canceled',
     RpPageNotVisible = 'RpPageNotVisible',
@@ -1131,7 +1111,6 @@ export namespace Audits {
     HeavyAdIssue = 'HeavyAdIssue',
     ContentSecurityPolicyIssue = 'ContentSecurityPolicyIssue',
     SharedArrayBufferIssue = 'SharedArrayBufferIssue',
-    TrustedWebActivityIssue = 'TrustedWebActivityIssue',
     LowTextContrastIssue = 'LowTextContrastIssue',
     CorsIssue = 'CorsIssue',
     AttributionReportingIssue = 'AttributionReportingIssue',
@@ -1156,7 +1135,6 @@ export namespace Audits {
     heavyAdIssueDetails?: HeavyAdIssueDetails;
     contentSecurityPolicyIssueDetails?: ContentSecurityPolicyIssueDetails;
     sharedArrayBufferIssueDetails?: SharedArrayBufferIssueDetails;
-    twaQualityEnforcementDetails?: TrustedWebActivityIssueDetails;
     lowTextContrastIssueDetails?: LowTextContrastIssueDetails;
     corsIssueDetails?: CorsIssueDetails;
     attributionReportingIssueDetails?: AttributionReportingIssueDetails;
@@ -1235,8 +1213,56 @@ export namespace Audits {
     reportAAA?: boolean;
   }
 
+  export interface CheckFormsIssuesResponse extends ProtocolResponseWithError {
+    formIssues: GenericIssueDetails[];
+  }
+
   export interface IssueAddedEvent {
     issue: InspectorIssue;
+  }
+}
+
+/**
+ * Defines commands and events for Autofill.
+ */
+export namespace Autofill {
+
+  export interface CreditCard {
+    /**
+     * 16-digit credit card number.
+     */
+    number: string;
+    /**
+     * Name of the credit card owner.
+     */
+    name: string;
+    /**
+     * 2-digit expiry month.
+     */
+    expiryMonth: string;
+    /**
+     * 4-digit expiry year.
+     */
+    expiryYear: string;
+    /**
+     * 3-digit card verification code.
+     */
+    cvc: string;
+  }
+
+  export interface TriggerRequest {
+    /**
+     * Identifies a field that serves as an anchor for autofill.
+     */
+    fieldId: DOM.BackendNodeId;
+    /**
+     * Identifies the frame that field belongs to.
+     */
+    frameId?: Page.FrameId;
+    /**
+     * Credit card information to fill out the form. Credit card data is not saved.
+     */
+    card: CreditCard;
   }
 }
 
@@ -1841,6 +1867,30 @@ export namespace CSS {
      * Value range in the underlying resource (if available).
      */
     range?: SourceRange;
+    /**
+     * Specificity of the selector.
+     */
+    specificity?: Specificity;
+  }
+
+  /**
+   * Specificity:
+   * https://drafts.csswg.org/selectors/#specificity-rules
+   */
+  export interface Specificity {
+    /**
+     * The a component, which represents the number of ID selectors.
+     */
+    a: integer;
+    /**
+     * The b component, which represents the number of class selectors, attributes selectors, and
+     * pseudo-classes.
+     */
+    b: integer;
+    /**
+     * The c component, which represents the number of type selectors and pseudo-elements.
+     */
+    c: integer;
   }
 
   /**
@@ -5331,7 +5381,7 @@ export namespace Emulation {
    */
   export const enum DisabledImageType {
     Avif = 'avif',
-    Jxl = "jxl",
+    Jxl = 'jxl',
     Webp = 'webp',
   }
 
@@ -5935,7 +5985,7 @@ export namespace IndexedDB {
 
   export interface ClearObjectStoreRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -5943,6 +5993,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
     /**
      * Database name.
      */
@@ -5955,7 +6009,7 @@ export namespace IndexedDB {
 
   export interface DeleteDatabaseRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -5963,6 +6017,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
     /**
      * Database name.
      */
@@ -5971,7 +6029,7 @@ export namespace IndexedDB {
 
   export interface DeleteObjectStoreEntriesRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -5979,6 +6037,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
     databaseName: string;
     objectStoreName: string;
     /**
@@ -5989,7 +6051,7 @@ export namespace IndexedDB {
 
   export interface RequestDataRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -5997,6 +6059,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
     /**
      * Database name.
      */
@@ -6036,7 +6102,7 @@ export namespace IndexedDB {
 
   export interface GetMetadataRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -6044,6 +6110,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
     /**
      * Database name.
      */
@@ -6069,7 +6139,7 @@ export namespace IndexedDB {
 
   export interface RequestDatabaseRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -6077,6 +6147,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
     /**
      * Database name.
      */
@@ -6092,7 +6166,7 @@ export namespace IndexedDB {
 
   export interface RequestDatabaseNamesRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -6100,6 +6174,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
   }
 
   export interface RequestDatabaseNamesResponse extends ProtocolResponseWithError {
@@ -10475,6 +10553,8 @@ export namespace Page {
     Payment = 'payment',
     PictureInPicture = 'picture-in-picture',
     PrivateAggregation = 'private-aggregation',
+    PrivateStateTokenIssuance = 'private-state-token-issuance',
+    PrivateStateTokenRedemption = 'private-state-token-redemption',
     PublickeyCredentialsGet = 'publickey-credentials-get',
     RunAdAuction = 'run-ad-auction',
     ScreenWakeLock = 'screen-wake-lock',
@@ -10485,7 +10565,6 @@ export namespace Page {
     SmartCard = 'smart-card',
     StorageAccess = 'storage-access',
     SyncXhr = 'sync-xhr',
-    TrustTokenRedemption = 'trust-token-redemption',
     Unload = 'unload',
     Usb = 'usb',
     VerticalScroll = 'vertical-scroll',
@@ -13128,11 +13207,17 @@ export namespace Storage {
     Strict = 'strict',
   }
 
-  export interface StorageBucketInfo {
+  export interface StorageBucket {
     storageKey: SerializedStorageKey;
+    /**
+     * If not specified, it is the default bucket of the storageKey.
+     */
+    name?: string;
+  }
+
+  export interface StorageBucketInfo {
+    bucket: StorageBucket;
     id: string;
-    name: string;
-    isDefault: boolean;
     expiration: Network.TimeSinceEpoch;
     /**
      * Storage quota (bytes).
@@ -13381,8 +13466,11 @@ export namespace Storage {
   }
 
   export interface DeleteStorageBucketRequest {
-    storageKey: string;
-    bucketName: string;
+    bucket: StorageBucket;
+  }
+
+  export interface RunBounceTrackingMitigationsResponse extends ProtocolResponseWithError {
+    deletedSites: string[];
   }
 
   /**
@@ -13430,6 +13518,10 @@ export namespace Storage {
      */
     storageKey: string;
     /**
+     * Storage bucket to update.
+     */
+    bucketId: string;
+    /**
      * Database to update.
      */
     databaseName: string;
@@ -13451,6 +13543,10 @@ export namespace Storage {
      * Storage key to update.
      */
     storageKey: string;
+    /**
+     * Storage bucket to update.
+     */
+    bucketId: string;
   }
 
   /**
@@ -13492,7 +13588,7 @@ export namespace Storage {
   }
 
   export interface StorageBucketCreatedOrUpdatedEvent {
-    bucket: StorageBucketInfo;
+    bucketInfo: StorageBucketInfo;
   }
 
   export interface StorageBucketDeletedEvent {
@@ -15379,6 +15475,21 @@ export namespace Preload {
      */
     sourceText: string;
     /**
+     * A speculation rule set is either added through an inline
+     * <script> tag or through an external resource via the
+     * 'Speculation-Rules' HTTP header. For the first case, we include
+     * the BackendNodeId of the relevant <script> tag. For the second
+     * case, we include the external URL where the rule set was loaded
+     * from, and also RequestId if Network domain is enabled.
+     *
+     * See also:
+     * - https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-script
+     * - https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-header
+     */
+    backendNodeId?: DOM.BackendNodeId;
+    url?: string;
+    requestId?: Network.RequestId;
+    /**
      * Error information
      * `errorMessage` is null iff `errorType` is null.
      */
@@ -15503,6 +15614,11 @@ export namespace Preload {
     CrossSiteNavigationInMainFrameNavigation = 'CrossSiteNavigationInMainFrameNavigation',
     SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation = 'SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation',
     SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation = 'SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation',
+    MemoryPressureOnTrigger = 'MemoryPressureOnTrigger',
+    MemoryPressureAfterTriggered = 'MemoryPressureAfterTriggered',
+    SpeculationRuleRemoved = 'SpeculationRuleRemoved',
+    TriggerPageNavigated = 'TriggerPageNavigated',
+    OtherPrerenderedPageActivated = 'OtherPrerenderedPageActivated',
   }
 
   /**
@@ -15516,6 +15632,40 @@ export namespace Preload {
     Success = 'Success',
     Failure = 'Failure',
     NotSupported = 'NotSupported',
+  }
+
+  /**
+   * TODO(https://crbug.com/1384419): revisit the list of PrefetchStatus and
+   * filter out the ones that aren't necessary to the developers.
+   */
+  export const enum PrefetchStatus {
+    PrefetchAllowed = 'PrefetchAllowed',
+    PrefetchFailedIneligibleRedirect = 'PrefetchFailedIneligibleRedirect',
+    PrefetchFailedInvalidRedirect = 'PrefetchFailedInvalidRedirect',
+    PrefetchFailedMIMENotSupported = 'PrefetchFailedMIMENotSupported',
+    PrefetchFailedNetError = 'PrefetchFailedNetError',
+    PrefetchFailedNon2XX = 'PrefetchFailedNon2XX',
+    PrefetchFailedPerPageLimitExceeded = 'PrefetchFailedPerPageLimitExceeded',
+    PrefetchHeldback = 'PrefetchHeldback',
+    PrefetchIneligibleRetryAfter = 'PrefetchIneligibleRetryAfter',
+    PrefetchIsPrivacyDecoy = 'PrefetchIsPrivacyDecoy',
+    PrefetchIsStale = 'PrefetchIsStale',
+    PrefetchNotEligibleBrowserContextOffTheRecord = 'PrefetchNotEligibleBrowserContextOffTheRecord',
+    PrefetchNotEligibleDataSaverEnabled = 'PrefetchNotEligibleDataSaverEnabled',
+    PrefetchNotEligibleExistingProxy = 'PrefetchNotEligibleExistingProxy',
+    PrefetchNotEligibleHostIsNonUnique = 'PrefetchNotEligibleHostIsNonUnique',
+    PrefetchNotEligibleNonDefaultStoragePartition = 'PrefetchNotEligibleNonDefaultStoragePartition',
+    PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy = 'PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy',
+    PrefetchNotEligibleSchemeIsNotHttps = 'PrefetchNotEligibleSchemeIsNotHttps',
+    PrefetchNotEligibleUserHasCookies = 'PrefetchNotEligibleUserHasCookies',
+    PrefetchNotEligibleUserHasServiceWorker = 'PrefetchNotEligibleUserHasServiceWorker',
+    PrefetchNotFinishedInTime = 'PrefetchNotFinishedInTime',
+    PrefetchNotStarted = 'PrefetchNotStarted',
+    PrefetchNotUsedCookiesChanged = 'PrefetchNotUsedCookiesChanged',
+    PrefetchProxyNotAvailable = 'PrefetchProxyNotAvailable',
+    PrefetchResponseUsed = 'PrefetchResponseUsed',
+    PrefetchSuccessfulButNotUsed = 'PrefetchSuccessfulButNotUsed',
+    PrefetchNotUsedProbeFailed = 'PrefetchNotUsedProbeFailed',
   }
 
   /**
@@ -15548,6 +15698,15 @@ export namespace Preload {
   }
 
   /**
+   * Fired when a preload enabled state is updated.
+   */
+  export interface PreloadEnabledStateUpdatedEvent {
+    disabledByPreference: boolean;
+    disabledByDataSaver: boolean;
+    disabledByBatterySaver: boolean;
+  }
+
+  /**
    * Fired when a prefetch attempt is updated.
    */
   export interface PrefetchStatusUpdatedEvent {
@@ -15558,6 +15717,7 @@ export namespace Preload {
     initiatingFrameId: Page.FrameId;
     prefetchUrl: string;
     status: PreloadingStatus;
+    prefetchStatus: PrefetchStatus;
   }
 
   /**
@@ -15571,6 +15731,7 @@ export namespace Preload {
     initiatingFrameId: Page.FrameId;
     prerenderingUrl: string;
     status: PreloadingStatus;
+    prerenderStatus?: PrerenderFinalStatus;
   }
 
   /**
@@ -15594,6 +15755,14 @@ export namespace FedCm {
   export const enum LoginState {
     SignIn = 'SignIn',
     SignUp = 'SignUp',
+  }
+
+  /**
+   * Whether the dialog shown is an account chooser or an auto re-authentication dialog.
+   */
+  export const enum DialogType {
+    AccountChooser = 'AccountChooser',
+    AutoReauthn = 'AutoReauthn',
   }
 
   /**
@@ -15636,6 +15805,7 @@ export namespace FedCm {
 
   export interface DialogShownEvent {
     dialogId: string;
+    dialogType: DialogType;
     accounts: Account[];
     /**
      * These exist primarily so that the caller can verify the
@@ -16477,7 +16647,7 @@ export namespace Debugger {
      */
     hash: string;
     /**
-     * Embedder-specific auxiliary data.
+     * Embedder-specific auxiliary data likely matching {isDefault: boolean, type: 'default'|'isolated'|'worker', frameId: string}
      */
     executionContextAuxData?: any;
     /**
@@ -16552,7 +16722,7 @@ export namespace Debugger {
      */
     hash: string;
     /**
-     * Embedder-specific auxiliary data.
+     * Embedder-specific auxiliary data likely matching {isDefault: boolean, type: 'default'|'isolated'|'worker', frameId: string}
      */
     executionContextAuxData?: any;
     /**
@@ -17055,7 +17225,25 @@ export namespace Runtime {
    */
   export type ScriptId = OpaqueIdentifier<string, 'Protocol.Runtime.ScriptId'>;
 
-  export const enum WebDriverValueType {
+  export const enum SerializationOptionsSerialization {
+    Deep = 'deep',
+    Json = 'json',
+    IdOnly = 'idOnly',
+  }
+
+  /**
+   * Represents options for serialization. Overrides `generatePreview`, `returnByValue` and
+   * `generateWebDriverValue`.
+   */
+  export interface SerializationOptions {
+    serialization: SerializationOptionsSerialization;
+    /**
+     * Deep serialization depth. Default is full depth. Respected only in `deep` serialization mode.
+     */
+    maxDepth?: integer;
+  }
+
+  export const enum DeepSerializedValueType {
     Undefined = 'undefined',
     Null = 'null',
     String = 'string',
@@ -17082,13 +17270,18 @@ export namespace Runtime {
   }
 
   /**
-   * Represents the value serialiazed by the WebDriver BiDi specification
-   * https://w3c.github.io/webdriver-bidi.
+   * Represents deep serialized value.
    */
-  export interface WebDriverValue {
-    type: WebDriverValueType;
+  export interface DeepSerializedValue {
+    type: DeepSerializedValueType;
     value?: any;
     objectId?: string;
+    /**
+     * Set if value reference met more then once during serialization. In such
+     * case, value is provided only to one of the serialized values. Unique
+     * per value in the scope of one CDP call.
+     */
+    weakLocalObjectReference?: integer;
   }
 
   /**
@@ -17167,9 +17360,13 @@ export namespace Runtime {
      */
     description?: string;
     /**
-     * WebDriver BiDi representation of the value.
+     * Deprecated. Use `deepSerializedValue` instead. WebDriver BiDi representation of the value.
      */
-    webDriverValue?: WebDriverValue;
+    webDriverValue?: DeepSerializedValue;
+    /**
+     * Deep serialized value.
+     */
+    deepSerializedValue?: DeepSerializedValue;
     /**
      * Unique object identifier (for non-primitive values).
      */
@@ -17462,7 +17659,7 @@ export namespace Runtime {
      */
     uniqueId: string;
     /**
-     * Embedder-specific auxiliary data.
+     * Embedder-specific auxiliary data likely matching {isDefault: boolean, type: 'default'|'isolated'|'worker', frameId: string}
      */
     auxData?: any;
   }
@@ -17637,6 +17834,7 @@ export namespace Runtime {
     silent?: boolean;
     /**
      * Whether the result is expected to be a JSON object which should be sent by value.
+     * Can be overriden by `serializationOptions`.
      */
     returnByValue?: boolean;
     /**
@@ -17676,11 +17874,17 @@ export namespace Runtime {
      */
     uniqueContextId?: string;
     /**
+     * Deprecated. Use `serializationOptions: {serialization:"deep"}` instead.
      * Whether the result should contain `webDriverValue`, serialized according to
      * https://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but
      * resulting `objectId` is still provided.
      */
     generateWebDriverValue?: boolean;
+    /**
+     * Specifies the result serialization. If provided, overrides
+     * `returnByValue` and `generateWebDriverValue`.
+     */
+    serializationOptions?: SerializationOptions;
   }
 
   export interface CallFunctionOnResponse extends ProtocolResponseWithError {
@@ -17804,9 +18008,18 @@ export namespace Runtime {
      */
     uniqueContextId?: string;
     /**
-     * Whether the result should be serialized according to https://w3c.github.io/webdriver-bidi.
+     * Deprecated. Use `serializationOptions: {serialization:"deep"}` instead.
+     * Whether the result should contain `webDriverValue`, serialized
+     * according to
+     * https://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but
+     * resulting `objectId` is still provided.
      */
     generateWebDriverValue?: boolean;
+    /**
+     * Specifies the result serialization. If provided, overrides
+     * `returnByValue` and `generateWebDriverValue`.
+     */
+    serializationOptions?: SerializationOptions;
   }
 
   export interface EvaluateResponse extends ProtocolResponseWithError {

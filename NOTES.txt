@@ -24,7 +24,7 @@ const char kEnableJXLDescription[] =
 # DEPS
 
 
-  'libjxl_revision': 'c27d499263435ac77007174e0f1cf54557cff23a',
+  'libjxl_revision': '954b460768c08a147abf47689ad69b0e7beff65e',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling feed
   # and whatever else without interference from each other.

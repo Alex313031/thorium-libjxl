@@ -7,6 +7,9 @@ import("//build/config/ui.gni")
 declare_args() {
   # If true, adds support for JPEG XL image decoding.
   enable_jxl_decoder = !is_ios
+
+  # Thorium internal flag
+  is_thorium_build = false
 }
 
 # Unhandled Tap enable means Contextual Search aka Touch to Search.
