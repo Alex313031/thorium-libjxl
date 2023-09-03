@@ -1,6 +1,6 @@
 
-## Chromium Revision: 115.0.5790.172 (M115-stable)
- - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/115.0.5790.172
+## Chromium Revision: 116.0.5845.169 (M116-stable)
+ - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/116.0.5845.169
 
 ## libjxl Revision: 954b460768c08a147abf47689ad69b0e7beff65e (v0.8.2)
 
@@ -10,10 +10,10 @@
 
  - https://github.com/google/highway/commit/46e365d6770f5d7a4240d8ac9d8e928a520478ea
 
-## V8 Revision e6cc87a5f83b0779c4d5834d6b9a527632fedb13 (11.5.150.22)
+## V8 Revision 5edaa0f442c68ddf05663a6de235a51ed041f41d (11.6.189.19)
 
- - https://chromium.googlesource.com/v8/v8.git/+/e6cc87a5f83b0779c4d5834d6b9a527632fedb13
+ - https://chromium.googlesource.com/v8/v8.git/+/5edaa0f442c68ddf05663a6de235a51ed041f41d
 
-## devtools_frontend Revision: 96e54da7d3b5724087d1e63590cf7ed16d92a1a7
+## devtools_frontend Revision: f7c236f0555abbe40cebfdc2d4148ea8dfdf0f10
 
-## ffmpeg Revision: 8d21d41d8bec5c0b266ee305d1a708dc5c23b594
+## ffmpeg Revision: 881c5c3f6412020c37e97e178e0f5da9ddd2ae90
