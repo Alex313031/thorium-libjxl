@@ -9,7 +9,7 @@ declare_args() {
   enable_jxl_decoder = !is_ios
 
   # Thorium internal flag
-  is_thorium_build = false
+  is_thorium_build = true
 }
 
 # Unhandled Tap enable means Contextual Search aka Touch to Search.

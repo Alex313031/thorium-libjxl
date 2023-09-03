@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors, gz83, and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors, gz83, and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -182,7 +182,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingCategory.EMULATION, 'emulation.touch', '', Common.Settings.SettingType.ENUM),
     createSettingValue(
         Common.Settings.SettingCategory.EMULATION, 'emulation.idleDetection', '', Common.Settings.SettingType.ENUM),
-    createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridLineLabels', true),
+    createSettingValue(
+        Common.Settings.SettingCategory.GRID, 'showGridLineLabels', 'none', Common.Settings.SettingType.ENUM),
     createSettingValue(Common.Settings.SettingCategory.GRID, 'extendGridLines', true),
     createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridAreas', true),
     createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridTrackSizes', true),
@@ -304,6 +305,7 @@ export async function deinitializeGlobalVars() {
     UI.ViewManager.resetViewRegistration();
     UI.Context.Context.removeInstance();
     UI.InspectorView.InspectorView.removeInstance();
+    UI.ActionRegistry.ActionRegistry.reset();
   }
 }
 

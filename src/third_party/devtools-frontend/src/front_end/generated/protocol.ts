@@ -1,4 +1,4 @@
-// Copyright (c) 2020 The Chromium Authors. All rights reserved.
+// Copyright (c) 2023 The Chromium Authors, gz83, and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -1088,6 +1088,29 @@ export namespace Audits {
     ErrorIdToken = 'ErrorIdToken',
     Canceled = 'Canceled',
     RpPageNotVisible = 'RpPageNotVisible',
+    SilentMediationFailure = 'SilentMediationFailure',
+    ThirdPartyCookiesBlocked = 'ThirdPartyCookiesBlocked',
+  }
+
+  export interface FederatedAuthUserInfoRequestIssueDetails {
+    federatedAuthUserInfoRequestIssueReason: FederatedAuthUserInfoRequestIssueReason;
+  }
+
+  /**
+   * Represents the failure reason when a getUserInfo() call fails.
+   * Should be updated alongside FederatedAuthUserInfoRequestResult in
+   * third_party/blink/public/mojom/devtools/inspector_issue.mojom.
+   */
+  export const enum FederatedAuthUserInfoRequestIssueReason {
+    NotSameOrigin = 'NotSameOrigin',
+    NotIframe = 'NotIframe',
+    NotPotentiallyTrustworthy = 'NotPotentiallyTrustworthy',
+    NoAPIPermission = 'NoApiPermission',
+    NotSignedInWithIdp = 'NotSignedInWithIdp',
+    NoAccountSharingPermission = 'NoAccountSharingPermission',
+    InvalidConfigOrWellKnown = 'InvalidConfigOrWellKnown',
+    InvalidAccountsResponse = 'InvalidAccountsResponse',
+    NoReturningUserFromFetchedAccounts = 'NoReturningUserFromFetchedAccounts',
   }
 
   /**
@@ -1097,6 +1120,41 @@ export namespace Audits {
   export interface ClientHintIssueDetails {
     sourceCodeLocation: SourceCodeLocation;
     clientHintIssueReason: ClientHintIssueReason;
+  }
+
+  export interface FailedRequestInfo {
+    /**
+     * The URL that failed to load.
+     */
+    url: string;
+    /**
+     * The failure message for the failed request.
+     */
+    failureMessage: string;
+    requestId?: Network.RequestId;
+  }
+
+  export const enum StyleSheetLoadingIssueReason {
+    LateImportRule = 'LateImportRule',
+    RequestFailed = 'RequestFailed',
+  }
+
+  /**
+   * This issue warns when a referenced stylesheet couldn't be loaded.
+   */
+  export interface StylesheetLoadingIssueDetails {
+    /**
+     * Source code position that referenced the failing stylesheet.
+     */
+    sourceCodeLocation: SourceCodeLocation;
+    /**
+     * Reason why the stylesheet couldn't be loaded.
+     */
+    styleSheetLoadingIssueReason: StyleSheetLoadingIssueReason;
+    /**
+     * Contains additional info when the failure was due to a request.
+     */
+    failedRequestInfo?: FailedRequestInfo;
   }
 
   /**
@@ -1121,6 +1179,8 @@ export namespace Audits {
     ClientHintIssue = 'ClientHintIssue',
     FederatedAuthRequestIssue = 'FederatedAuthRequestIssue',
     BounceTrackingIssue = 'BounceTrackingIssue',
+    StylesheetLoadingIssue = 'StylesheetLoadingIssue',
+    FederatedAuthUserInfoRequestIssue = 'FederatedAuthUserInfoRequestIssue',
   }
 
   /**
@@ -1145,6 +1205,8 @@ export namespace Audits {
     clientHintIssueDetails?: ClientHintIssueDetails;
     federatedAuthRequestIssueDetails?: FederatedAuthRequestIssueDetails;
     bounceTrackingIssueDetails?: BounceTrackingIssueDetails;
+    stylesheetLoadingIssueDetails?: StylesheetLoadingIssueDetails;
+    federatedAuthUserInfoRequestIssueDetails?: FederatedAuthUserInfoRequestIssueDetails;
   }
 
   /**
@@ -1250,6 +1312,24 @@ export namespace Autofill {
     cvc: string;
   }
 
+  export interface AddressField {
+    /**
+     * address field name, for example GIVEN_NAME.
+     */
+    name: string;
+    /**
+     * address field name, for example Jon Doe.
+     */
+    value: string;
+  }
+
+  export interface Address {
+    /**
+     * fields and values defining a test address.
+     */
+    fields: AddressField[];
+  }
+
   export interface TriggerRequest {
     /**
      * Identifies a field that serves as an anchor for autofill.
@@ -1263,6 +1343,10 @@ export namespace Autofill {
      * Credit card information to fill out the form. Credit card data is not saved.
      */
     card: CreditCard;
+  }
+
+  export interface SetAddressesRequest {
+    addresses: Address[];
   }
 }
 
@@ -1722,6 +1806,10 @@ export namespace Browser {
 
   export interface ExecuteBrowserCommandRequest {
     commandId: BrowserCommandId;
+  }
+
+  export interface AddPrivacySandboxEnrollmentOverrideRequest {
+    url: string;
   }
 
   /**
@@ -2994,6 +3082,10 @@ export namespace CacheStorage {
      */
     storageKey: string;
     /**
+     * Storage bucket of the cache.
+     */
+    storageBucket?: Storage.StorageBucket;
+    /**
      * The name of the cache.
      */
     cacheName: string;
@@ -3034,7 +3126,7 @@ export namespace CacheStorage {
 
   export interface RequestCacheNamesRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -3042,6 +3134,10 @@ export namespace CacheStorage {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
   }
 
   export interface RequestCacheNamesResponse extends ProtocolResponseWithError {
@@ -5381,7 +5477,7 @@ export namespace Emulation {
    */
   export const enum DisabledImageType {
     Avif = 'avif',
-    Jxl = 'jxl',
+    Jxl = "jxl",
     Webp = 'webp',
   }
 
@@ -5710,7 +5806,7 @@ export namespace HeadlessExperimental {
      */
     format?: ScreenshotParamsFormat;
     /**
-     * Compression quality from range [0..100] (jpeg only).
+     * Compression quality from range [0..100] (jpeg and webp only).
      */
     quality?: integer;
     /**
@@ -7433,6 +7529,10 @@ export namespace Network {
      */
     pushEnd: number;
     /**
+     * Started receiving response headers.
+     */
+    receiveHeadersStart: number;
+    /**
      * Finished receiving response headers.
      */
     receiveHeadersEnd: number;
@@ -8475,9 +8575,21 @@ export namespace Network {
     reportOnlyReportingEndpoint?: string;
   }
 
+  export const enum ContentSecurityPolicySource {
+    HTTP = 'HTTP',
+    Meta = 'Meta',
+  }
+
+  export interface ContentSecurityPolicyStatus {
+    effectiveDirectives: string;
+    isEnforced: boolean;
+    source: ContentSecurityPolicySource;
+  }
+
   export interface SecurityIsolationStatus {
     coop?: CrossOriginOpenerPolicyStatus;
     coep?: CrossOriginEmbedderPolicyStatus;
+    csp?: ContentSecurityPolicyStatus[];
   }
 
   /**
@@ -9552,6 +9664,7 @@ export namespace Network {
   export const enum TrustTokenOperationDoneEventStatus {
     Ok = 'Ok',
     InvalidArgument = 'InvalidArgument',
+    MissingIssuerKeys = 'MissingIssuerKeys',
     FailedPrecondition = 'FailedPrecondition',
     ResourceExhausted = 'ResourceExhausted',
     AlreadyExists = 'AlreadyExists',
@@ -10514,11 +10627,9 @@ export namespace Page {
     ChUaPlatform = 'ch-ua-platform',
     ChUaModel = 'ch-ua-model',
     ChUaMobile = 'ch-ua-mobile',
-    ChUaFull = 'ch-ua-full',
     ChUaFullVersion = 'ch-ua-full-version',
     ChUaFullVersionList = 'ch-ua-full-version-list',
     ChUaPlatformVersion = 'ch-ua-platform-version',
-    ChUaReduced = 'ch-ua-reduced',
     ChUaWow64 = 'ch-ua-wow64',
     ChViewportHeight = 'ch-viewport-height',
     ChViewportWidth = 'ch-viewport-width',
@@ -11206,6 +11317,7 @@ export namespace Page {
     ActivationNavigationsDisallowedForBug1234857 = 'ActivationNavigationsDisallowedForBug1234857',
     ErrorDocument = 'ErrorDocument',
     FencedFramesEmbedder = 'FencedFramesEmbedder',
+    CookieDisabled = 'CookieDisabled',
     WebSocket = 'WebSocket',
     WebTransport = 'WebTransport',
     WebRTC = 'WebRTC',
@@ -11251,7 +11363,10 @@ export namespace Page {
     KeepaliveRequest = 'KeepaliveRequest',
     IndexedDBEvent = 'IndexedDBEvent',
     Dummy = 'Dummy',
-    AuthorizationHeader = 'AuthorizationHeader',
+    JsNetworkRequestReceivedCacheControlNoStoreResource = 'JsNetworkRequestReceivedCacheControlNoStoreResource',
+    WebRTCSticky = 'WebRTCSticky',
+    WebTransportSticky = 'WebTransportSticky',
+    WebSocketSticky = 'WebSocketSticky',
     ContentSecurityHandler = 'ContentSecurityHandler',
     ContentWebAuthenticationAPI = 'ContentWebAuthenticationAPI',
     ContentFileChooser = 'ContentFileChooser',
@@ -12038,6 +12153,10 @@ export namespace Page {
 
   export interface SetInterceptFileChooserDialogRequest {
     enabled: boolean;
+  }
+
+  export interface SetPrerenderingAllowedRequest {
+    isAllowed: boolean;
   }
 
   export interface DomContentEventFiredEvent {
@@ -13486,6 +13605,10 @@ export namespace Storage {
      */
     storageKey: string;
     /**
+     * Storage bucket to update.
+     */
+    bucketId: string;
+    /**
      * Name of cache in origin.
      */
     cacheName: string;
@@ -13503,6 +13626,10 @@ export namespace Storage {
      * Storage key to update.
      */
     storageKey: string;
+    /**
+     * Storage bucket to update.
+     */
+    bucketId: string;
   }
 
   /**
@@ -15616,9 +15743,8 @@ export namespace Preload {
     SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation = 'SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation',
     MemoryPressureOnTrigger = 'MemoryPressureOnTrigger',
     MemoryPressureAfterTriggered = 'MemoryPressureAfterTriggered',
-    SpeculationRuleRemoved = 'SpeculationRuleRemoved',
-    TriggerPageNavigated = 'TriggerPageNavigated',
-    OtherPrerenderedPageActivated = 'OtherPrerenderedPageActivated',
+    PrerenderingDisabledByDevTools = 'PrerenderingDisabledByDevTools',
+    ResourceLoadBlockedByClient = 'ResourceLoadBlockedByClient',
   }
 
   /**
@@ -15646,6 +15772,7 @@ export namespace Preload {
     PrefetchFailedNetError = 'PrefetchFailedNetError',
     PrefetchFailedNon2XX = 'PrefetchFailedNon2XX',
     PrefetchFailedPerPageLimitExceeded = 'PrefetchFailedPerPageLimitExceeded',
+    PrefetchEvicted = 'PrefetchEvicted',
     PrefetchHeldback = 'PrefetchHeldback',
     PrefetchIneligibleRetryAfter = 'PrefetchIneligibleRetryAfter',
     PrefetchIsPrivacyDecoy = 'PrefetchIsPrivacyDecoy',
@@ -15659,6 +15786,8 @@ export namespace Preload {
     PrefetchNotEligibleSchemeIsNotHttps = 'PrefetchNotEligibleSchemeIsNotHttps',
     PrefetchNotEligibleUserHasCookies = 'PrefetchNotEligibleUserHasCookies',
     PrefetchNotEligibleUserHasServiceWorker = 'PrefetchNotEligibleUserHasServiceWorker',
+    PrefetchNotEligibleBatterySaverEnabled = 'PrefetchNotEligibleBatterySaverEnabled',
+    PrefetchNotEligiblePreloadingDisabled = 'PrefetchNotEligiblePreloadingDisabled',
     PrefetchNotFinishedInTime = 'PrefetchNotFinishedInTime',
     PrefetchNotStarted = 'PrefetchNotStarted',
     PrefetchNotUsedCookiesChanged = 'PrefetchNotUsedCookiesChanged',
@@ -15725,11 +15854,6 @@ export namespace Preload {
    */
   export interface PrerenderStatusUpdatedEvent {
     key: PreloadingAttemptKey;
-    /**
-     * The frame id of the frame initiating prerender.
-     */
-    initiatingFrameId: Page.FrameId;
-    prerenderingUrl: string;
     status: PreloadingStatus;
     prerenderStatus?: PrerenderFinalStatus;
   }
@@ -17882,7 +18006,7 @@ export namespace Runtime {
     generateWebDriverValue?: boolean;
     /**
      * Specifies the result serialization. If provided, overrides
-     * `returnByValue` and `generateWebDriverValue`.
+     * `generatePreview`, `returnByValue` and `generateWebDriverValue`.
      */
     serializationOptions?: SerializationOptions;
   }
@@ -18017,7 +18141,7 @@ export namespace Runtime {
     generateWebDriverValue?: boolean;
     /**
      * Specifies the result serialization. If provided, overrides
-     * `returnByValue` and `generateWebDriverValue`.
+     * `generatePreview`, `returnByValue` and `generateWebDriverValue`.
      */
     serializationOptions?: SerializationOptions;
   }
