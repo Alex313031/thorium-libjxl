@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../front_end/core/platform/platform.js';
 import * as Common from '../../../../front_end/core/common/common.js';
 import * as Host from '../../../../front_end/core/host/host.js';
 import * as i18n from '../../../../front_end/core/i18n/i18n.js';
@@ -9,11 +10,10 @@ import * as Root from '../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../front_end/models/bindings/bindings.js';
+import * as IssuesManager from '../../../../front_end/models/issues_manager/issues_manager.js';
 import * as Logs from '../../../../front_end/models/logs/logs.js';
 import * as Persistence from '../../../../front_end/models/persistence/persistence.js';
 import * as Workspace from '../../../../front_end/models/workspace/workspace.js';
-import * as IssuesManager from '../../../../front_end/models/issues_manager/issues_manager.js';
-
 import type * as UIModule from '../../../../front_end/ui/legacy/legacy.js';
 
 // Don't import UI at this stage because it will fail without
@@ -89,6 +89,19 @@ export function stubNoopSettings() {
   } as unknown as Common.Settings.Settings);
 }
 
+export function registerNoopActions(actionIds: string[]): void {
+  for (const actionId of actionIds) {
+    UI.ActionRegistration.maybeRemoveActionExtension(actionId);
+    UI.ActionRegistration.registerActionExtension({
+      actionId,
+      category: UI.ActionRegistration.ActionCategory.NONE,
+      title: (): Platform.UIString.LocalizedString => 'mock' as Platform.UIString.LocalizedString,
+    });
+  }
+  const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+  UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+}
+
 const REGISTERED_EXPERIMENTS = [
   'bfcacheDisplayTree',
   'captureNodeCreationStacks',
@@ -109,6 +122,9 @@ const REGISTERED_EXPERIMENTS = [
   'headerOverrides',
   'highlightErrorsElementsPanel',
   'setAllBreakpointsEagerly',
+  'selfXssWarning',
+  'evaluateExpressionsWithSourceMaps',
+  'useSourceMapScopes',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {
@@ -129,6 +145,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'enableIgnoreListing', true),
     createSettingValue(
         Common.Settings.SettingCategory.DEBUGGER, 'skipStackFramesPattern', '', Common.Settings.SettingType.REGEX),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'navigatorGroupByFolder', true),
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'showDetailedInspectTooltip', true),
     createSettingValue(Common.Settings.SettingCategory.NETWORK, 'cacheDisabled', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'avifFormatDisabled', false),
@@ -148,6 +165,9 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingType.ENUM),
     createSettingValue(
         Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedData', '',
+        Common.Settings.SettingType.ENUM),
+    createSettingValue(
+        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedTransparency', '',
         Common.Settings.SettingType.ENUM),
     createSettingValue(
         Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeatureColorGamut', '',
@@ -393,6 +413,46 @@ export function setupActionRegistry() {
     if (UI) {
       UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
       UI.ActionRegistry.ActionRegistry.removeInstance();
+    }
+  });
+}
+
+export function expectConsoleLogs(expectedLogs: {warn?: string[], log?: string[], error?: string[]}) {
+  const {error, warn, log} = console;
+  before(() => {
+    if (expectedLogs.log) {
+      // eslint-disable-next-line no-console
+      console.log = (...data: unknown[]) => {
+        if (!expectedLogs.log?.includes(data.join(' '))) {
+          log(...data);
+        }
+      };
+    }
+    if (expectedLogs.warn) {
+      console.warn = (...data: unknown[]) => {
+        if (!expectedLogs.warn?.includes(data.join(' '))) {
+          warn(...data);
+        }
+      };
+    }
+    if (expectedLogs.error) {
+      console.error = (...data: unknown[]) => {
+        if (!expectedLogs.error?.includes(data.join(' '))) {
+          error(...data);
+        }
+      };
+    }
+  });
+  after(() => {
+    if (expectedLogs.log) {
+      // eslint-disable-next-line no-console
+      console.log = log;
+    }
+    if (expectedLogs.warn) {
+      console.warn = warn;
+    }
+    if (expectedLogs.error) {
+      console.error = error;
     }
   });
 }

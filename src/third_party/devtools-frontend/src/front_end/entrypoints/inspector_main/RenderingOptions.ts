@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Google Inc, gz83, and Alex313031. All rights reserved.
+ * Copyright (C) 2013 Google Inc, gz83, and Alex313031. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -154,6 +154,10 @@ const UIStrings = {
    */
   forcesCssPrefersreduceddataMedia: 'Forces CSS `prefers-reduced-data` media feature',
   /**
+   * @description Explanation text for the 'Forces CSS prefers-reduced-transparency media' setting in the Rendering tool.
+   */
+  forcesCssPrefersreducedtransparencyMedia: 'Forces CSS `prefers-reduced-transparency` media feature',
+  /**
    * @description Explanation text for the 'Forces CSS color-gamut media' setting in the Rendering tool.
    */
   forcesCssColorgamutMediaFeature: 'Forces CSS `color-gamut` media feature',
@@ -167,14 +171,14 @@ const UIStrings = {
    */
   disableAvifImageFormat: 'Disable `AVIF` image format',
   /**
-   * @description The name of a checkbox setting in the Rendering tool. This setting disables the
-   * page from loading images with the JPEG XL format.
-   */
+  * @description The name of a checkbox setting in the Rendering tool. This setting disables the
+  * page from loading images with the JPEG XL format.
+  */
   disableJpegXlImageFormat: 'Disable `JPEG XL` image format',
   /**
-   * @description Explanation text for both the 'Disable AVIF image format' and 'Disable WebP image
-   * format' settings in the Rendering tool.
-   */
+  * @description Explanation text for both the 'Disable AVIF image format' and 'Disable WebP image
+  * format' settings in the Rendering tool.
+  */
   requiresAPageReloadToApplyAnd: 'Requires a page reload to apply and disables caching for image requests.',
   /**
    * @description The name of a checkbox setting in the Rendering tool. This setting disables the
@@ -196,6 +200,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // Command Menu.
 const supportsPrefersReducedData = (): boolean => {
   const query = '(prefers-reduced-data)';
+  // Note: `media` serializes to `'not all'` for unsupported queries.
+  return window.matchMedia(query).media === query;
+};
+
+// TODO(1424879): remove this feature detection and expose the UI
+// unconditionally once prefers-reduced-transparency ships unflagged.
+const supportsPrefersReducedTransparency = (): boolean => {
+  const query = '(prefers-reduced-transparency)';
   // Note: `media` serializes to `'not all'` for unsupported queries.
   return window.matchMedia(query).media === query;
 };
@@ -277,6 +289,11 @@ export class RenderingOptionsView extends UI.Widget.VBox {
           i18nString(UIStrings.forcesCssPrefersreduceddataMedia),
           Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedData'));
     }
+    if (supportsPrefersReducedTransparency()) {
+      this.#appendSelect(
+          i18nString(UIStrings.forcesCssPrefersreducedtransparencyMedia),
+          Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedTransparency'));
+    }
     this.#appendSelect(
         i18nString(UIStrings.forcesCssColorgamutMediaFeature),
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeatureColorGamut'));
@@ -298,7 +315,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    this.#appendCheckbox(
+    this.#createCheckbox(
         i18nString(UIStrings.disableJpegXlImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('jpegXlFormatDisabled'));
 
