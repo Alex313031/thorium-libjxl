@@ -1,18 +1,5 @@
-From 23c02995316e7ee3ab0c5516b4d575d937b30447 Mon Sep 17 00:00:00 2001
-From: Ho Cheung <uioptt24@gmail.com>
-Date: Mon, 4 Sep 2023 11:57:22 +0800
-Subject: [PATCH] [devtools] Restore libjxl image type emulation in M116
-
----
- front_end/core/sdk/EmulationModel.ts          |  9 ++++--
- front_end/core/sdk/sdk-meta.ts                | 28 ++++++++++++++++++-
- .../inspector_main/RenderingOptions.ts        | 24 +++++++++++++++-
- front_end/generated/protocol.ts               |  3 +-
- .../front_end/helpers/EnvironmentHelpers.ts   |  3 +-
- 5 files changed, 61 insertions(+), 6 deletions(-)
-
 diff --git a/front_end/core/sdk/EmulationModel.ts b/front_end/core/sdk/EmulationModel.ts
-index f0ab4f5845..9f1d0f3c50 100644
+index 613461adb5..135d5390b5 100644
 --- a/front_end/core/sdk/EmulationModel.ts
 +++ b/front_end/core/sdk/EmulationModel.ts
 @@ -1,4 +1,4 @@
@@ -21,7 +8,7 @@ index f0ab4f5845..9f1d0f3c50 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -152,6 +152,7 @@ export class EmulationModel extends SDKModel<void> {
+@@ -159,6 +159,7 @@ export class EmulationModel extends SDKModel<void> {
      }
  
      const avifFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('avifFormatDisabled');
@@ -29,7 +16,7 @@ index f0ab4f5845..9f1d0f3c50 100644
      const webpFormatDisabledSetting = Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled');
  
      const updateDisabledImageFormats = (): void => {
-@@ -159,6 +160,9 @@ export class EmulationModel extends SDKModel<void> {
+@@ -166,6 +167,9 @@ export class EmulationModel extends SDKModel<void> {
        if (avifFormatDisabledSetting.get()) {
          types.push(Protocol.Emulation.DisabledImageType.Avif);
        }
@@ -39,7 +26,7 @@ index f0ab4f5845..9f1d0f3c50 100644
        if (webpFormatDisabledSetting.get()) {
          types.push(Protocol.Emulation.DisabledImageType.Webp);
        }
-@@ -166,9 +170,10 @@ export class EmulationModel extends SDKModel<void> {
+@@ -173,9 +177,10 @@ export class EmulationModel extends SDKModel<void> {
      };
  
      avifFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
@@ -52,7 +39,7 @@ index f0ab4f5845..9f1d0f3c50 100644
      }
  
 diff --git a/front_end/core/sdk/sdk-meta.ts b/front_end/core/sdk/sdk-meta.ts
-index 9ff5b99ba1..db6f1cb0f7 100644
+index 58fb2498c0..f585e30535 100644
 --- a/front_end/core/sdk/sdk-meta.ts
 +++ b/front_end/core/sdk/sdk-meta.ts
 @@ -1,4 +1,4 @@
@@ -76,7 +63,7 @@ index 9ff5b99ba1..db6f1cb0f7 100644
    /**
     *@description Title of a setting that disables WebP format
     */
-@@ -972,6 +980,24 @@ Common.Settings.registerSettingExtension({
+@@ -992,6 +1000,24 @@ Common.Settings.registerSettingExtension({
    defaultValue: false,
  });
  
@@ -102,7 +89,7 @@ index 9ff5b99ba1..db6f1cb0f7 100644
    category: Common.Settings.SettingCategory.RENDERING,
    settingName: 'webpFormatDisabled',
 diff --git a/front_end/entrypoints/inspector_main/RenderingOptions.ts b/front_end/entrypoints/inspector_main/RenderingOptions.ts
-index 1df1717221..0f78b0e506 100644
+index 18522a3494..ef68281f60 100644
 --- a/front_end/entrypoints/inspector_main/RenderingOptions.ts
 +++ b/front_end/entrypoints/inspector_main/RenderingOptions.ts
 @@ -1,5 +1,5 @@
@@ -112,7 +99,7 @@ index 1df1717221..0f78b0e506 100644
   *
   * Redistribution and use in source and binary forms, with or without
   * modification, are permitted provided that the following conditions are
-@@ -166,6 +166,11 @@ const UIStrings = {
+@@ -170,6 +170,11 @@ const UIStrings = {
     * page from loading images with the AVIF format.
     */
    disableAvifImageFormat: 'Disable `AVIF` image format',
@@ -124,7 +111,7 @@ index 1df1717221..0f78b0e506 100644
    /**
     * @description Explanation text for both the 'Disable AVIF image format' and 'Disable WebP image
     * format' settings in the Rendering tool.
-@@ -200,6 +205,17 @@ const supportsPrefersContrast = (): boolean => {
+@@ -212,6 +217,17 @@ const supportsPrefersContrast = (): boolean => {
    return window.matchMedia(query).media === query;
  };
  
@@ -142,7 +129,7 @@ index 1df1717221..0f78b0e506 100644
  let renderingOptionsViewInstance: RenderingOptionsView;
  
  export class RenderingOptionsView extends UI.Widget.VBox {
-@@ -281,6 +297,12 @@ export class RenderingOptionsView extends UI.Widget.VBox {
+@@ -298,6 +314,12 @@ export class RenderingOptionsView extends UI.Widget.VBox {
          Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled'));
  
      this.contentElement.createChild('div').classList.add('panel-section-separator');
@@ -156,7 +143,7 @@ index 1df1717221..0f78b0e506 100644
  
    static instance(opts: {
 diff --git a/front_end/generated/protocol.ts b/front_end/generated/protocol.ts
-index 208e61c394..639fae4694 100644
+index ec31f5e955..9ca0157d9e 100644
 --- a/front_end/generated/protocol.ts
 +++ b/front_end/generated/protocol.ts
 @@ -1,4 +1,4 @@
@@ -165,7 +152,7 @@ index 208e61c394..639fae4694 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -5477,6 +5477,7 @@ export namespace Emulation {
+@@ -5498,6 +5498,7 @@ export namespace Emulation {
     */
    export const enum DisabledImageType {
      Avif = 'avif',
@@ -174,7 +161,7 @@ index 208e61c394..639fae4694 100644
    }
  
 diff --git a/test/unittests/front_end/helpers/EnvironmentHelpers.ts b/test/unittests/front_end/helpers/EnvironmentHelpers.ts
-index d57b7c1a9e..3aac727ffe 100644
+index cfe4897496..65b6c8425a 100644
 --- a/test/unittests/front_end/helpers/EnvironmentHelpers.ts
 +++ b/test/unittests/front_end/helpers/EnvironmentHelpers.ts
 @@ -1,4 +1,4 @@
@@ -183,7 +170,7 @@ index d57b7c1a9e..3aac727ffe 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -165,6 +165,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
+@@ -185,6 +185,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showScrollBottleneckRects', false),
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showWebVitals', false),
      createSettingValue(Common.Settings.SettingCategory.RENDERING, 'webpFormatDisabled', false),
@@ -191,6 +178,3 @@ index d57b7c1a9e..3aac727ffe 100644
      createSettingValue(Common.Settings.SettingCategory.SOURCES, 'allowScrollPastEof', true),
      createSettingValue(Common.Settings.SettingCategory.SOURCES, 'cssSourceMapsEnabled', true),
      createSettingValue(Common.Settings.SettingCategory.SOURCES, 'inlineVariableValues', true),
--- 
-2.42.0.windows.1
-
