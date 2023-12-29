@@ -705,6 +705,7 @@ export namespace Audits {
     ExcludeSamePartyCrossPartyContext = 'ExcludeSamePartyCrossPartyContext',
     ExcludeDomainNonASCII = 'ExcludeDomainNonASCII',
     ExcludeThirdPartyCookieBlockedInFirstPartySet = 'ExcludeThirdPartyCookieBlockedInFirstPartySet',
+    ExcludeThirdPartyPhaseout = 'ExcludeThirdPartyPhaseout',
   }
 
   export const enum CookieWarningReason {
@@ -1161,6 +1162,32 @@ export namespace Audits {
     failedRequestInfo?: FailedRequestInfo;
   }
 
+  export const enum PropertyRuleIssueReason {
+    InvalidSyntax = 'InvalidSyntax',
+    InvalidInitialValue = 'InvalidInitialValue',
+    InvalidInherits = 'InvalidInherits',
+    InvalidName = 'InvalidName',
+  }
+
+  /**
+   * This issue warns about errors in property rules that lead to property
+   * registrations being ignored.
+   */
+  export interface PropertyRuleIssueDetails {
+    /**
+     * Source code position of the property rule.
+     */
+    sourceCodeLocation: SourceCodeLocation;
+    /**
+     * Reason why the property rule was discarded.
+     */
+    propertyRuleIssueReason: PropertyRuleIssueReason;
+    /**
+     * The value of the property rule property that failed to parse
+     */
+    propertyValue?: string;
+  }
+
   /**
    * A unique identifier for the type of issue. Each type may use one of the
    * optional fields in InspectorIssueDetails to convey more specific
@@ -1185,6 +1212,7 @@ export namespace Audits {
     BounceTrackingIssue = 'BounceTrackingIssue',
     StylesheetLoadingIssue = 'StylesheetLoadingIssue',
     FederatedAuthUserInfoRequestIssue = 'FederatedAuthUserInfoRequestIssue',
+    PropertyRuleIssue = 'PropertyRuleIssue',
   }
 
   /**
@@ -1210,6 +1238,7 @@ export namespace Audits {
     federatedAuthRequestIssueDetails?: FederatedAuthRequestIssueDetails;
     bounceTrackingIssueDetails?: BounceTrackingIssueDetails;
     stylesheetLoadingIssueDetails?: StylesheetLoadingIssueDetails;
+    propertyRuleIssueDetails?: PropertyRuleIssueDetails;
     federatedAuthUserInfoRequestIssueDetails?: FederatedAuthUserInfoRequestIssueDetails;
   }
 
@@ -1322,16 +1351,74 @@ export namespace Autofill {
      */
     name: string;
     /**
-     * address field name, for example Jon Doe.
+     * address field value, for example Jon Doe.
      */
     value: string;
   }
 
+  /**
+   * A list of address fields.
+   */
+  export interface AddressFields {
+    fields: AddressField[];
+  }
+
   export interface Address {
     /**
-     * fields and values defining a test address.
+     * fields and values defining an address.
      */
     fields: AddressField[];
+  }
+
+  /**
+   * Defines how an address can be displayed like in chrome://settings/addresses.
+   * Address UI is a two dimensional array, each inner array is an "address information line", and when rendered in a UI surface should be displayed as such.
+   * The following address UI for instance:
+   * [[{name: "GIVE_NAME", value: "Jon"}, {name: "FAMILY_NAME", value: "Doe"}], [{name: "CITY", value: "Munich"}, {name: "ZIP", value: "81456"}]]
+   * should allow the receiver to render:
+   * Jon Doe
+   * Munich 81456
+   */
+  export interface AddressUI {
+    /**
+     * A two dimension array containing the repesentation of values from an address profile.
+     */
+    addressFields: AddressFields[];
+  }
+
+  /**
+   * Specified whether a filled field was done so by using the html autocomplete attribute or autofill heuristics.
+   */
+  export const enum FillingStrategy {
+    AutocompleteAttribute = 'autocompleteAttribute',
+    AutofillInferred = 'autofillInferred',
+  }
+
+  export interface FilledField {
+    /**
+     * The type of the field, e.g text, password etc.
+     */
+    htmlType: string;
+    /**
+     * the html id
+     */
+    id: string;
+    /**
+     * the html name
+     */
+    name: string;
+    /**
+     * the field value
+     */
+    value: string;
+    /**
+     * The actual field type, e.g FAMILY_NAME
+     */
+    autofillType: string;
+    /**
+     * The filling strategy
+     */
+    fillingStrategy: FillingStrategy;
   }
 
   export interface TriggerRequest {
@@ -1351,6 +1438,21 @@ export namespace Autofill {
 
   export interface SetAddressesRequest {
     addresses: Address[];
+  }
+
+  /**
+   * Emitted when an address form is filled.
+   */
+  export interface AddressFormFilledEvent {
+    /**
+     * Information about the fields that were filled
+     */
+    filledFields: FilledField[];
+    /**
+     * An UI representation of the address used to fill the form.
+     * Consists of a 2D array where each child represents an address/profile line.
+     */
+    addressUi: AddressUI;
   }
 }
 
@@ -2622,6 +2724,39 @@ export namespace CSS {
   }
 
   /**
+   * Representation of a custom property registration through CSS.registerProperty
+   */
+  export interface CSSPropertyRegistration {
+    propertyName: string;
+    initialValue?: Value;
+    inherits: boolean;
+    syntax: string;
+  }
+
+  /**
+   * CSS property at-rule representation.
+   */
+  export interface CSSPropertyRule {
+    /**
+     * The css style sheet identifier (absent for user agent stylesheet and user-specified
+     * stylesheet rules) this rule came from.
+     */
+    styleSheetId?: StyleSheetId;
+    /**
+     * Parent stylesheet's origin.
+     */
+    origin: StyleSheetOrigin;
+    /**
+     * Associated property name.
+     */
+    propertyName: Value;
+    /**
+     * Associated style declaration.
+     */
+    style: CSSStyle;
+  }
+
+  /**
    * CSS keyframe rule representation.
    */
   export interface CSSKeyframeRule {
@@ -2811,6 +2946,14 @@ export namespace CSS {
      */
     cssPositionFallbackRules?: CSSPositionFallbackRule[];
     /**
+     * A list of CSS at-property rules matching this node.
+     */
+    cssPropertyRules?: CSSPropertyRule[];
+    /**
+     * A list of CSS property registrations matching this node.
+     */
+    cssPropertyRegistrations?: CSSPropertyRegistration[];
+    /**
      * Id of the first parent element that does not have display: contents.
      */
     parentLayoutNodeId?: DOM.NodeId;
@@ -2868,6 +3011,19 @@ export namespace CSS {
     nodeId: DOM.NodeId;
     propertyName: string;
     value: string;
+  }
+
+  export interface SetPropertyRulePropertyNameRequest {
+    styleSheetId: StyleSheetId;
+    range: SourceRange;
+    propertyName: string;
+  }
+
+  export interface SetPropertyRulePropertyNameResponse extends ProtocolResponseWithError {
+    /**
+     * The resulting key text after modification.
+     */
+    propertyName: Value;
   }
 
   export interface SetKeyframeKeyRequest {
@@ -8189,6 +8345,7 @@ export namespace Network {
     SameSiteUnspecifiedTreatedAsLax = 'SameSiteUnspecifiedTreatedAsLax',
     SameSiteNoneInsecure = 'SameSiteNoneInsecure',
     UserPreferences = 'UserPreferences',
+    ThirdPartyPhaseout = 'ThirdPartyPhaseout',
     ThirdPartyBlockedInFirstPartySet = 'ThirdPartyBlockedInFirstPartySet',
     SyntaxError = 'SyntaxError',
     SchemeNotSupported = 'SchemeNotSupported',
@@ -8203,6 +8360,7 @@ export namespace Network {
     SamePartyConflictsWithOtherAttributes = 'SamePartyConflictsWithOtherAttributes',
     NameValuePairExceedsMaxSize = 'NameValuePairExceedsMaxSize',
     DisallowedCharacter = 'DisallowedCharacter',
+    NoCookieContent = 'NoCookieContent',
   }
 
   /**
@@ -8217,6 +8375,7 @@ export namespace Network {
     SameSiteUnspecifiedTreatedAsLax = 'SameSiteUnspecifiedTreatedAsLax',
     SameSiteNoneInsecure = 'SameSiteNoneInsecure',
     UserPreferences = 'UserPreferences',
+    ThirdPartyPhaseout = 'ThirdPartyPhaseout',
     ThirdPartyBlockedInFirstPartySet = 'ThirdPartyBlockedInFirstPartySet',
     UnknownError = 'UnknownError',
     SchemefulSameSiteStrict = 'SchemefulSameSiteStrict',
@@ -10641,6 +10800,7 @@ export namespace Page {
     ChEct = 'ch-ect',
     ChPrefersColorScheme = 'ch-prefers-color-scheme',
     ChPrefersReducedMotion = 'ch-prefers-reduced-motion',
+    ChPrefersReducedTransparency = 'ch-prefers-reduced-transparency',
     ChRtt = 'ch-rtt',
     ChSaveData = 'ch-save-data',
     ChUa = 'ch-ua',
@@ -13210,13 +13370,15 @@ export namespace Storage {
     Loaded = 'loaded',
     Bid = 'bid',
     Win = 'win',
+    AdditionalBid = 'additionalBid',
+    AdditionalBidWin = 'additionalBidWin',
   }
 
   /**
    * Ad advertising element inside an interest group.
    */
   export interface InterestGroupAd {
-    renderUrl: string;
+    renderURL: string;
     metadata?: string;
   }
 
@@ -13228,10 +13390,10 @@ export namespace Storage {
     name: string;
     expirationTime: Network.TimeSinceEpoch;
     joiningOrigin: string;
-    biddingUrl?: string;
-    biddingWasmHelperUrl?: string;
-    updateUrl?: string;
-    trustedBiddingSignalsUrl?: string;
+    biddingLogicURL?: string;
+    biddingWasmHelperURL?: string;
+    updateURL?: string;
+    trustedBiddingSignalsURL?: string;
     trustedBiddingSignalsKeys: string[];
     userBiddingSignals?: string;
     ads: InterestGroupAd[];
@@ -13399,6 +13561,17 @@ export namespace Storage {
     value: UnsignedInt128AsBase16;
   }
 
+  export interface AttributionReportingEventReportWindows {
+    /**
+     * duration in seconds
+     */
+    start: integer;
+    /**
+     * duration in seconds
+     */
+    ends: integer[];
+  }
+
   export interface AttributionReportingSourceRegistration {
     time: Network.TimeSinceEpoch;
     /**
@@ -13406,9 +13579,11 @@ export namespace Storage {
      */
     expiry?: integer;
     /**
+     * eventReportWindow and eventReportWindows are mutually exclusive
      * duration in seconds
      */
     eventReportWindow?: integer;
+    eventReportWindows?: AttributionReportingEventReportWindows;
     /**
      * duration in seconds
      */
@@ -15806,7 +15981,6 @@ export namespace Preload {
     LowEndDevice = 'LowEndDevice',
     InvalidSchemeRedirect = 'InvalidSchemeRedirect',
     InvalidSchemeNavigation = 'InvalidSchemeNavigation',
-    InProgressNavigation = 'InProgressNavigation',
     NavigationRequestBlockedByCsp = 'NavigationRequestBlockedByCsp',
     MainFrameNavigation = 'MainFrameNavigation',
     MojoBinderPolicy = 'MojoBinderPolicy',
@@ -15818,7 +15992,6 @@ export namespace Preload {
     NavigationBadHttpStatus = 'NavigationBadHttpStatus',
     ClientCertRequested = 'ClientCertRequested',
     NavigationRequestNetworkError = 'NavigationRequestNetworkError',
-    MaxNumOfRunningPrerendersExceeded = 'MaxNumOfRunningPrerendersExceeded',
     CancelAllHostsForTesting = 'CancelAllHostsForTesting',
     DidFailLoad = 'DidFailLoad',
     Stop = 'Stop',
@@ -15830,9 +16003,8 @@ export namespace Preload {
     MixedContent = 'MixedContent',
     TriggerBackgrounded = 'TriggerBackgrounded',
     MemoryLimitExceeded = 'MemoryLimitExceeded',
-    FailToGetMemoryUsage = 'FailToGetMemoryUsage',
     DataSaverEnabled = 'DataSaverEnabled',
-    HasEffectiveUrl = 'HasEffectiveUrl',
+    TriggerUrlHasEffectiveUrl = 'TriggerUrlHasEffectiveUrl',
     ActivatedBeforeStarted = 'ActivatedBeforeStarted',
     InactivePageRestriction = 'InactivePageRestriction',
     StartFailed = 'StartFailed',
@@ -15864,6 +16036,12 @@ export namespace Preload {
     ResourceLoadBlockedByClient = 'ResourceLoadBlockedByClient',
     SpeculationRuleRemoved = 'SpeculationRuleRemoved',
     ActivatedWithAuxiliaryBrowsingContexts = 'ActivatedWithAuxiliaryBrowsingContexts',
+    MaxNumOfRunningEagerPrerendersExceeded = 'MaxNumOfRunningEagerPrerendersExceeded',
+    MaxNumOfRunningNonEagerPrerendersExceeded = 'MaxNumOfRunningNonEagerPrerendersExceeded',
+    MaxNumOfRunningEmbedderPrerendersExceeded = 'MaxNumOfRunningEmbedderPrerendersExceeded',
+    PrerenderingUrlHasEffectiveUrl = 'PrerenderingUrlHasEffectiveUrl',
+    RedirectedPrerenderingUrlHasEffectiveUrl = 'RedirectedPrerenderingUrlHasEffectiveUrl',
+    ActivationUrlHasEffectiveUrl = 'ActivationUrlHasEffectiveUrl',
   }
 
   /**
@@ -15925,24 +16103,6 @@ export namespace Preload {
 
   export interface RuleSetRemovedEvent {
     id: RuleSetId;
-  }
-
-  /**
-   * Fired when a prerender attempt is completed.
-   */
-  export interface PrerenderAttemptCompletedEvent {
-    key: PreloadingAttemptKey;
-    /**
-     * The frame id of the frame initiating prerendering.
-     */
-    initiatingFrameId: Page.FrameId;
-    prerenderingUrl: string;
-    finalStatus: PrerenderFinalStatus;
-    /**
-     * This is used to give users more information about the name of the API call
-     * that is incompatible with prerender and has caused the cancellation of the attempt
-     */
-    disallowedApiMethod?: string;
   }
 
   /**
@@ -16014,6 +16174,7 @@ export namespace FedCm {
   export const enum DialogType {
     AccountChooser = 'AccountChooser',
     AutoReauthn = 'AutoReauthn',
+    ConfirmIdpSignin = 'ConfirmIdpSignin',
   }
 
   /**
@@ -16047,6 +16208,10 @@ export namespace FedCm {
   export interface SelectAccountRequest {
     dialogId: string;
     accountIndex: integer;
+  }
+
+  export interface ConfirmIdpSigninRequest {
+    dialogId: string;
   }
 
   export interface DismissDialogRequest {
@@ -17483,8 +17648,7 @@ export namespace Runtime {
   }
 
   /**
-   * Represents options for serialization. Overrides `generatePreview`, `returnByValue` and
-   * `generateWebDriverValue`.
+   * Represents options for serialization. Overrides `generatePreview` and `returnByValue`.
    */
   export interface SerializationOptions {
     serialization: SerializationOptionsSerialization;
@@ -17524,6 +17688,7 @@ export namespace Runtime {
     Arraybuffer = 'arraybuffer',
     Node = 'node',
     Window = 'window',
+    Generator = 'generator',
   }
 
   /**
@@ -17616,10 +17781,6 @@ export namespace Runtime {
      * String representation of the object.
      */
     description?: string;
-    /**
-     * Deprecated. Use `deepSerializedValue` instead. WebDriver BiDi representation of the value.
-     */
-    webDriverValue?: DeepSerializedValue;
     /**
      * Deep serialized value.
      */
@@ -18131,15 +18292,8 @@ export namespace Runtime {
      */
     uniqueContextId?: string;
     /**
-     * Deprecated. Use `serializationOptions: {serialization:"deep"}` instead.
-     * Whether the result should contain `webDriverValue`, serialized according to
-     * https://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but
-     * resulting `objectId` is still provided.
-     */
-    generateWebDriverValue?: boolean;
-    /**
      * Specifies the result serialization. If provided, overrides
-     * `generatePreview`, `returnByValue` and `generateWebDriverValue`.
+     * `generatePreview` and `returnByValue`.
      */
     serializationOptions?: SerializationOptions;
   }
@@ -18265,16 +18419,8 @@ export namespace Runtime {
      */
     uniqueContextId?: string;
     /**
-     * Deprecated. Use `serializationOptions: {serialization:"deep"}` instead.
-     * Whether the result should contain `webDriverValue`, serialized
-     * according to
-     * https://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but
-     * resulting `objectId` is still provided.
-     */
-    generateWebDriverValue?: boolean;
-    /**
      * Specifies the result serialization. If provided, overrides
-     * `generatePreview`, `returnByValue` and `generateWebDriverValue`.
+     * `generatePreview` and `returnByValue`.
      */
     serializationOptions?: SerializationOptions;
   }

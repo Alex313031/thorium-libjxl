@@ -217,6 +217,7 @@ String SniffMimeTypeInternal(scoped_refptr<SegmentReader> reader) {
 bool IsLossyImageMIMEType(const String& mime_type) {
   return EqualIgnoringASCIICase(mime_type, "image/jpeg") ||
          EqualIgnoringASCIICase(mime_type, "image/jpg") ||
+         EqualIgnoringASCIICase(mime_type, "image/jxl") ||
          EqualIgnoringASCIICase(mime_type, "image/pjpeg");
 }
 

@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../../front_end/core/platform/platform.js';
 import * as Common from '../../../../front_end/core/common/common.js';
 import * as Host from '../../../../front_end/core/host/host.js';
 import * as i18n from '../../../../front_end/core/i18n/i18n.js';
+import type * as Platform from '../../../../front_end/core/platform/platform.js';
 import * as Root from '../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../front_end/generated/protocol.js';
@@ -20,14 +20,6 @@ import type * as UIModule from '../../../../front_end/ui/legacy/legacy.js';
 // the environment. Instead we do the import at the end of the
 // initialization phase.
 let UI: typeof UIModule;
-
-let targetManager: SDK.TargetManager.TargetManager|null;
-
-function initializeTargetManagerIfNecessary(): SDK.TargetManager.TargetManager {
-  // Create the target manager.
-  targetManager = targetManager || SDK.TargetManager.TargetManager.instance({forceNew: true});
-  return targetManager;
-}
 
 let uniqueTargetId = 0;
 
@@ -47,7 +39,7 @@ export function createTarget(
       id = ('test' + uniqueTargetId) as Protocol.Target.TargetID;
     }
   }
-  const targetManager = initializeTargetManagerIfNecessary();
+  const targetManager = SDK.TargetManager.TargetManager.instance();
   return targetManager.createTarget(
       id, name ?? id, type, parentTarget ? parentTarget : null, /* sessionId=*/ parentTarget ? id : undefined,
       /* suspended=*/ false,
@@ -75,6 +67,18 @@ export function stubNoopSettings() {
       getAsArray: () => [],
     }),
     moduleSetting: () => ({
+      get: () => [],
+      set: () => {},
+      addChangeListener: () => {},
+      removeChangeListener: () => {},
+      setDisabled: () => {},
+      setTitle: () => {},
+      title: () => {},
+      asRegExp: () => {},
+      type: () => Common.Settings.SettingType.BOOLEAN,
+      getAsArray: () => [],
+    }),
+    createLocalSetting: () => ({
       get: () => [],
       set: () => {},
       addChangeListener: () => {},
@@ -125,6 +129,8 @@ const REGISTERED_EXPERIMENTS = [
   'selfXssWarning',
   'evaluateExpressionsWithSourceMaps',
   'useSourceMapScopes',
+  'fontEditor',
+  'networkPanelFilterBarRedesign',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {
@@ -258,9 +264,6 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(
         Common.Settings.SettingCategory.CONSOLE, 'consoleTraceExpand', false, Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.PERFORMANCE, 'showNativeFunctionsInJSProfile', false,
-        Common.Settings.SettingType.BOOLEAN),
-    createSettingValue(
         Common.Settings.SettingCategory.PERFORMANCE, 'flamechartMouseWheelAction', false,
         Common.Settings.SettingType.ENUM),
   ];
@@ -285,8 +288,6 @@ export async function initializeGlobalVars({reset = true} = {}) {
   // Initialize theme support and context menus.
   Common.Settings.Settings.instance().createSetting('uiTheme', 'systemPreferred');
   UI.UIUtils.initializeUIUtils(document);
-
-  initializeTargetManagerIfNecessary();
 }
 
 export async function deinitializeGlobalVars() {
@@ -296,16 +297,14 @@ export async function deinitializeGlobalVars() {
   delete globalObject.SDK;
   delete globalObject.ls;
 
-  Root.Runtime.experiments.clearForTest();
-
   for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
     target.dispose('deinitializeGlobalVars');
   }
+
   // Remove instances.
   await deinitializeGlobalLocaleVars();
   Logs.NetworkLog.NetworkLog.removeInstance();
   SDK.TargetManager.TargetManager.removeInstance();
-  targetManager = null;
   Root.Runtime.Runtime.removeInstance();
   Common.Settings.Settings.removeInstance();
   Common.Console.Console.removeInstance();
@@ -327,6 +326,8 @@ export async function deinitializeGlobalVars() {
     UI.InspectorView.InspectorView.removeInstance();
     UI.ActionRegistry.ActionRegistry.reset();
   }
+
+  Root.Runtime.experiments.clearForTest();
 }
 
 export function describeWithEnvironment(title: string, fn: (this: Mocha.Suite) => void, opts: {reset: boolean} = {
@@ -389,6 +390,12 @@ describeWithLocale.only = function(title: string, fn: (this: Mocha.Suite) => voi
     before(async () => await initializeGlobalLocaleVars());
     fn.call(this);
     after(deinitializeGlobalLocaleVars);
+  });
+};
+describeWithLocale.skip = function(title: string, fn: (this: Mocha.Suite) => void) {
+  // eslint-disable-next-line rulesdir/check_test_definitions
+  return describe.skip(title, function() {
+    fn.call(this);
   });
 };
 

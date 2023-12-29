@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Google Inc, gz83, and Alex313031. All rights reserved.
+ * Copyright (C) 2023 Google Inc, gz83, and Alex313031. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -199,33 +199,20 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // `front_end/sdk/module.json` to make this feature available in the
 // Command Menu.
 const supportsPrefersReducedData = (): boolean => {
-  const query = '(prefers-reduced-data)';
-  // Note: `media` serializes to `'not all'` for unsupported queries.
-  return window.matchMedia(query).media === query;
+  const query = 'not all and (prefers-reduced-data), (prefers-reduced-data)';
+  return window.matchMedia(query).matches;
 };
 
 // TODO(1424879): remove this feature detection and expose the UI
 // unconditionally once prefers-reduced-transparency ships unflagged.
 const supportsPrefersReducedTransparency = (): boolean => {
-  const query = '(prefers-reduced-transparency)';
-  // Note: `media` serializes to `'not all'` for unsupported queries.
-  return window.matchMedia(query).media === query;
+  const query = 'not all and (prefers-reduced-transparency), (prefers-reduced-transparency)';
+  return window.matchMedia(query).matches;
 };
 
 const supportsPrefersContrast = (): boolean => {
-  const query = '(prefers-contrast)';
-  return window.matchMedia(query).media === query;
-};
-
-const supportsJpegXl = async(): Promise<boolean> => {
-  const JPEG_XL_IMAGE_URL = 'data:image/jxl;base64,/wr/BwiDBAwASyAY';
-  const promise = new Promise<boolean>((resolve): void => {
-    const img = document.createElement('img');
-    img.onload = (): void => resolve(true);
-    img.onerror = (): void => resolve(false);
-    img.src = JPEG_XL_IMAGE_URL;
-  });
-  return promise;
+  const query = 'not all and (prefers-contrast), (prefers-contrast)';
+  return window.matchMedia(query).matches;
 };
 
 let renderingOptionsViewInstance: RenderingOptionsView;
@@ -313,9 +300,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         i18nString(UIStrings.disableWebpImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled'));
 
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
-
-    this.#createCheckbox(
+    this.#appendCheckbox(
         i18nString(UIStrings.disableJpegXlImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('jpegXlFormatDisabled'));
 
