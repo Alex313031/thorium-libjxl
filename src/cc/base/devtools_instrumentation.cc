@@ -107,7 +107,7 @@ ScopedImageDecodeTask::~ScopedImageDecodeTask() {
       break;
     case ImageType::kJpeg:
       histogram_name = "Renderer4.ImageDecodeTaskDurationUs.Jpeg";
-      break;const char* histogram_name = nullp
+      break;
     case ImageType::kPng:
       histogram_name = "Renderer4.ImageDecodeTaskDurationUs.Png";
       break;
