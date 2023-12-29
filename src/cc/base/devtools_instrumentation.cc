@@ -67,41 +67,6 @@ ScopedImageUploadTask::ScopedImageUploadTask(const void* image_ptr,
 ScopedImageUploadTask::~ScopedImageUploadTask() {
   TRACE_EVENT_END0(internal::CategoryName::kTimeline,
                    internal::kImageUploadTask);
-  if (suppress_metrics_)
-    return;
-
-  auto duration = base::TimeTicks::Now() - start_time_;
-  const char* histogram_name = nullptr;
-  switch (image_type_) {
-    case ImageType::kJxl:
-      histogram_name = "Renderer4.ImageUploadTaskDurationUs.Jxl";
-      break;
-    case ImageType::kAvif:
-      histogram_name = "Renderer4.ImageUploadTaskDurationUs.Avif";
-      break;
-    case ImageType::kBmp:
-      histogram_name = "Renderer4.ImageUploadTaskDurationUs.Bmp";
-      break;
-    case ImageType::kGif:
-      histogram_name = "Renderer4.ImageUploadTaskDurationUs.Gif";
-      break;
-    case ImageType::kIco:
-      histogram_name = "Renderer4.ImageUploadTaskDurationUs.Ico";
-      break;
-    case ImageType::kJpeg:
-      histogram_name = "Renderer4.ImageUploadTaskDurationUs.Jpeg";
-      break;
-    case ImageType::kPng:
-      histogram_name = "Renderer4.ImageUploadTaskDurationUs.Png";
-      break;
-    case ImageType::kWebP:
-      histogram_name = "Renderer4.ImageUploadTaskDurationUs.WebP";
-      break;
-    case ImageType::kOther:
-      histogram_name = "Renderer4.ImageUploadTaskDurationUs.Other";
-  }
-  UmaHistogramCustomMicrosecondsTimes(histogram_name, duration, hist_min_,
-                                      hist_max_, bucket_count_);
 }
 
 ScopedImageDecodeTask::ScopedImageDecodeTask(const void* image_ptr,
@@ -142,7 +107,7 @@ ScopedImageDecodeTask::~ScopedImageDecodeTask() {
       break;
     case ImageType::kJpeg:
       histogram_name = "Renderer4.ImageDecodeTaskDurationUs.Jpeg";
-      break;
+      break;const char* histogram_name = nullp
     case ImageType::kPng:
       histogram_name = "Renderer4.ImageDecodeTaskDurationUs.Png";
       break;

@@ -40,7 +40,7 @@ class PaintImageGenerator;
 class PaintWorkletInput;
 class TextureBacking;
 
-enum class ImageType { kPNG, kJPEG, kWEBP, kGIF, kICO, kBMP, kJXL, kAVIF, kInvalid };
+enum class ImageType { kPNG, kJPEG, kWEBP, kGIF, kICO, kBMP, kAVIF, kJXL, kInvalid };
 
 enum class AuxImage : size_t { kDefault = 0, kGainmap = 1 };
 static constexpr std::array<AuxImage, 2> kAllAuxImages = {AuxImage::kDefault,
@@ -184,8 +184,8 @@ class CC_PAINT_EXPORT PaintImage {
     }
   };
 
-  enum class AnimationType { ANIMATED, VIDEO, STATIC };
-  enum class CompletionState { DONE, PARTIALLY_DONE };
+  enum class AnimationType { kAnimated, kVideo, kStatic };
+  enum class CompletionState { kDone, kPartiallyDone };
   enum class DecodingMode {
     // No preference has been specified. The compositor may choose to use sync
     // or async decoding. See CheckerImageTracker for the default behaviour.
@@ -406,8 +406,8 @@ class CC_PAINT_EXPORT PaintImage {
   sk_sp<TextureBacking> texture_backing_;
 
   Id id_ = 0;
-  AnimationType animation_type_ = AnimationType::STATIC;
-  CompletionState completion_state_ = CompletionState::DONE;
+  AnimationType animation_type_ = AnimationType::kStatic;
+  CompletionState completion_state_ = CompletionState::kDone;
   int repetition_count_ = kAnimationNone;
 
   // Whether the data fetched for this image is a part of a multpart response.
