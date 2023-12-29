@@ -215,6 +215,17 @@ const supportsPrefersContrast = (): boolean => {
   return window.matchMedia(query).matches;
 };
 
+const supportsJpegXl = async(): Promise<boolean> => {
+  const JPEG_XL_IMAGE_URL = 'data:image/jxl;base64,/wr/BwiDBAwASyAY';
+  const promise = new Promise<boolean>((resolve): void => {
+    const img = document.createElement('img');
+    img.onload = (): void => resolve(true);
+    img.onerror = (): void => resolve(false);
+    img.src = JPEG_XL_IMAGE_URL;
+  });
+  return promise;
+};
+
 let renderingOptionsViewInstance: RenderingOptionsView;
 
 export class RenderingOptionsView extends UI.Widget.VBox {
