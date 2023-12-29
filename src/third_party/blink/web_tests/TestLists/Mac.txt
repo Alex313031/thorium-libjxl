@@ -27,9 +27,7 @@ css1/text_properties/line_height.html
 css2.1/t100801-c544-valgn-02-d-agi.html
 css2.1/t100801-c544-valgn-04-d-agi.html
 css2.1/t1202-counter-04-b.html
-css2.1/t1202-counter-09-b.html
 css2.1/t1202-counters-04-b.html
-css2.1/t1202-counters-09-b.html
 css2.1/t1503-c522-font-family-00-b.html
 css2.1/t1507-c526-font-sz-00-b.html
 css2.1/t1508-c527-font-00-b.html
@@ -399,7 +397,7 @@ external/wpt/html/semantics/embedded-content/media-elements/ready-states/autopla
 external/wpt/html/semantics/embedded-content/media-elements/track/track-element/track-cues-sorted-before-dispatch.html
 external/wpt/html/semantics/embedded-content/the-object-element/object-events.html
 external/wpt/html/semantics/forms/the-input-element/show-picker.tentative.html
-external/wpt/html/semantics/forms/the-selectmenu-element/selectmenu-parts-structure.tentative.html
+external/wpt/html/semantics/forms/the-selectlist-element/selectlist-parts-structure.tentative.html
 external/wpt/html/semantics/interactive-elements/the-dialog-element/dialog-focus-shadow.html
 external/wpt/html/semantics/scripting-1/the-script-element/moving-between-documents/before-prepare-iframe-fetch-error-external-module.html
 external/wpt/html/semantics/scripting-1/the-script-element/moving-between-documents/before-prepare-iframe-success-external-module.html
@@ -830,12 +828,12 @@ fast/peerconnection/RTCPeerConnection-lifetime.html
 fast/reflections/inline-crash.html
 fast/replaced/no-focus-ring-object.html
 fast/ruby/nested-ruby.html
+fast/ruby/ruby-column-break.html
+fast/ruby/ruby-columns-spans.html
+fast/ruby/ruby-columns.html
 fast/ruby/ruby-empty-rt.html
 fast/ruby/ruby-inline-table.html
 fast/ruby/ruby-length.html
-fast/ruby/ruby-run-break.html
-fast/ruby/ruby-runs-spans.html
-fast/ruby/ruby-runs.html
 fast/ruby/ruby-simple-rp.html
 fast/ruby/ruby-simple.html
 fast/ruby/ruby-text-before-after-content.html
@@ -913,8 +911,8 @@ fonts/sans-serif.html
 fragmentation/single-line-cells-paginated-with-text.html
 gamepad/multiple-event-listeners.html
 html/details_summary/details-marker-style.html
-html/selectmenu/selectmenu-slot-warning-button.html
-html/selectmenu/selectmenu-slot-warning-listbox.html
+html/selectlist/selectlist-slot-warning-button.html
+html/selectlist/selectlist-slot-warning-listbox.html
 http/tests/credentialmanagement/credentialscontainer-create-from-nested-frame.html
 http/tests/credentialmanagement/credentialscontainer-create-origins.html
 http/tests/credentialmanagement/register-then-sign.html
@@ -1140,9 +1138,6 @@ scrollbars/overlay-scrollbars-within-overflow-scroll.html
 scrollbars/resize-scales-with-dpi-150.html
 storage/indexeddb/empty-blob-file.html
 storage/indexeddb/intversion-revert-on-abort.html
-storage/websql/database-lock-after-reload.html
-storage/websql/open-database-set-empty-version.html
-storage/websql/sql-error-codes.html
 svg/W3C-SVG-1.1-SE/color-prop-05-t.svg
 svg/W3C-SVG-1.1-SE/coords-dom-01-f.svg
 svg/W3C-SVG-1.1-SE/coords-dom-02-f.svg
@@ -1419,7 +1414,6 @@ virtual/forced-high-contrast-colors/external/wpt/forced-colors-mode/forced-color
 virtual/fractional-scroll-offsets/external/wpt/css/css-position/sticky/position-sticky-nested-left.html
 virtual/fsa-incognito/external/wpt/file-system-access/local_FileSystemFileHandle-move-manual.https.html
 virtual/fsa-incognito/external/wpt/fs/FileSystemFileHandle-create-sync-access-handle.https.tentative.window.html
-virtual/gpu-rasterization-disable-yuv/images/yuv-decode-eligible/webp-color-profile-lossy.html
 virtual/gpu-rasterization/images/2-comp.html
 virtual/gpu-rasterization/images/color-profile-animate.html
 virtual/gpu-rasterization/images/color-profile-border-image.html
@@ -1509,9 +1503,6 @@ virtual/oopr-canvas2d/fast/canvas/canvas-text-baseline.html
 virtual/oopr-canvas2d/fast/canvas/image-object-in-canvas.html
 virtual/oopr-canvas2d/fast/canvas/quadraticCurveTo.xml
 virtual/overlay-scrollbar/plugin-overlay-scrollbar-mouse-capture.html
-virtual/partitioned-cookies/http/tests/inspector-protocol/network/blocked-cookie-same-site-strict-browser-navigate.js
-virtual/partitioned-cookies/http/tests/inspector-protocol/network/blocked-cookie-same-site-strict-js-navigate.js
-virtual/partitioned-cookies/http/tests/inspector-protocol/network/blocked-cookie-same-site-strict-js-subresource.js
 virtual/plz-dedicated-worker/external/wpt/content-security-policy/inside-worker/serviceworker-report-only.https.sub.html
 virtual/plz-dedicated-worker/external/wpt/fetch/api/basic/http-response-code.any.html
 virtual/plz-dedicated-worker/external/wpt/fetch/api/basic/request-upload.any.html
