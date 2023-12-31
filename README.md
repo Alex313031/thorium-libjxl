@@ -35,8 +35,7 @@ git clean -ffd # cleans stale or removed dirs
 gclient sync --with_branch_heads --with_tags -f -R -D # dont just use 'gclient sync'
 ```
 
- 2. Copy the __//src__ directory from here over the __//chromium/src__ directory.
- 3. Copy the __//external__ directory from here over the __//chromium/src__ directory.
- 4. [Build as normal](https://www.chromium.org/developers/how-tos/get-the-code/)
+ 2. Run the `./setup.sh` script from within the repo. It assumes the Chromium repo is in *$HOME*, but can be overridden with the __CR_DIR__ env variable.
+ 3. [Build as normal](https://www.chromium.org/developers/how-tos/get-the-code/)
 
-__NOTE:__ You could also use the *.patch* files.
+__NOTE:__ You could also use the *.patch* files with "git am" or "git apply --reject".
