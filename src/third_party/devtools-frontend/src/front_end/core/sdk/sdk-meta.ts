@@ -282,12 +282,12 @@ const UIStrings = {
    */
   enableAvifFormat: 'Enable `AVIF` format',
   /**
-  *@description Title of a setting that disables JPEG XL format
-  */
+   *@description Title of a setting that disables JPEG XL format
+   */
   disableJpegXlFormat: 'Disable `JPEG XL` format',
   /**
-  *@description Title of a setting that enables JPEG XL format
-  */
+   *@description Title of a setting that enables JPEG XL format
+   */
   enableJpegXlFormat: 'Enable `JPEG XL` format',
   /**
    *@description Title of a setting that disables WebP format

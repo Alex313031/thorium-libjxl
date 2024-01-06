@@ -171,14 +171,14 @@ const UIStrings = {
    */
   disableAvifImageFormat: 'Disable `AVIF` image format',
   /**
-  * @description The name of a checkbox setting in the Rendering tool. This setting disables the
-  * page from loading images with the JPEG XL format.
-  */
+   * @description The name of a checkbox setting in the Rendering tool. This setting disables the
+   * page from loading images with the JPEG XL format.
+   */
   disableJpegXlImageFormat: 'Disable `JPEG XL` image format',
   /**
-  * @description Explanation text for both the 'Disable AVIF image format' and 'Disable WebP image
-  * format' settings in the Rendering tool.
-  */
+   * @description Explanation text for the 'Disable AVIF image format', 'Disable JPEG XL image format',
+   * and 'Disable WebP image format' settings in the Rendering tool.
+   */
   requiresAPageReloadToApplyAnd: 'Requires a page reload to apply and disables caching for image requests.',
   /**
    * @description The name of a checkbox setting in the Rendering tool. This setting disables the
