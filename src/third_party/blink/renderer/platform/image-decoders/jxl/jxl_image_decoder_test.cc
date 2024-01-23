@@ -74,14 +74,17 @@ static float FromFloat16(uint16_t a) {
   bool subnormal = exp == 0;
   // Infinity and NaN are not supported here.
   exp -= 15;
-  if (subnormal)
+  if (subnormal) {
     exp++;
+  }
   frac /= 1024.0;
-  if (!subnormal)
+  if (!subnormal) {
     frac++;
+  }
   frac *= std::pow(2, exp);
-  if (sign)
+  if (sign) {
     frac = -frac;
+  }
   return frac;
 }
 
@@ -223,10 +226,12 @@ void TestSegmented(const char* jxl_file, gfx::Size expected_size) {
   ImageFrame* frame;
   for (;;) {
     frame = decoder->DecodeFrameBufferAtIndex(0);
-    if (decoder->Failed())
+    if (decoder->Failed()) {
       break;
-    if (frame)
+    }
+    if (frame) {
       break;
+    }
   }
 
   EXPECT_TRUE(decoder->IsSizeAvailable());

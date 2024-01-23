@@ -151,8 +151,9 @@ bool JXLImageDecoder::ReadBytes(size_t remaining,
 }
 
 void JXLImageDecoder::DecodeImpl(wtf_size_t index, bool only_size) {
-  if (Failed())
+  if (Failed()) {
     return;
+  }
 
   if (IsDecodedSizeAvailable() && only_size) {
     // Also SetEmbeddedProfile is done already if the size was set.
@@ -221,8 +222,9 @@ void JXLImageDecoder::DecodeImpl(wtf_size_t index, bool only_size) {
   // JXL_DEC_SUCCESS or JXL_DEC_NEED_MORE_INPUT, and we exit the loop below in
   // each case.
   for (;;) {
-    if (only_size && have_color_info_)
+    if (only_size && have_color_info_) {
       return;
+    }
     JxlDecoderStatus status = JxlDecoderProcessInput(dec_.get());
     switch (status) {
       case JXL_DEC_ERROR: {
@@ -544,23 +546,27 @@ void JXLImageDecoder::DecodeImpl(wtf_size_t index, bool only_size) {
 bool JXLImageDecoder::MatchesJXLSignature(
     const FastSharedBufferReader& fast_reader) {
   char buffer[12];
-  if (fast_reader.size() < sizeof(buffer))
+  if (fast_reader.size() < sizeof(buffer)) {
     return false;
+  }
   const char* contents = reinterpret_cast<const char*>(
       fast_reader.GetConsecutiveData(0, sizeof(buffer), buffer));
   // Direct codestream
-  if (!memcmp(contents, "\xFF\x0A", 2))
+  if (!memcmp(contents, "\xFF\x0A", 2)) {
     return true;
+  }
   // Box format container
-  if (!memcmp(contents, "\0\0\0\x0CJXL \x0D\x0A\x87\x0A", 12))
+  if (!memcmp(contents, "\0\0\0\x0CJXL \x0D\x0A\x87\x0A", 12)) {
     return true;
+  }
   return false;
 }
 
 void JXLImageDecoder::InitializeNewFrame(wtf_size_t index) {
   auto& buffer = frame_buffer_cache_[index];
-  if (decode_to_half_float_)
+  if (decode_to_half_float_) {
     buffer.SetPixelFormat(ImageFrame::PixelFormat::kRGBA_F16);
+  }
   buffer.SetHasAlpha(info_.alpha_bits != 0);
   buffer.SetPremultiplyAlpha(premultiply_alpha_);
 }
@@ -572,21 +578,25 @@ bool JXLImageDecoder::FrameIsReceivedAtIndex(wtf_size_t index) const {
 }
 
 int JXLImageDecoder::RepetitionCount() const {
-  if (!info_.have_animation)
+  if (!info_.have_animation) {
     return kAnimationNone;
+  }
 
-  if (info_.animation.num_loops == 0)
+  if (info_.animation.num_loops == 0) {
     return kAnimationLoopInfinite;
+  }
 
-  if (info_.animation.num_loops == 1)
+  if (info_.animation.num_loops == 1) {
     return kAnimationLoopOnce;
+  }
 
   return info_.animation.num_loops;
 }
 
 base::TimeDelta JXLImageDecoder::FrameDurationAtIndex(wtf_size_t index) const {
-  if (index < frame_durations_.size())
+  if (index < frame_durations_.size()) {
     return base::Seconds(frame_durations_[index]);
+  }
 
   return base::TimeDelta();
 }
