@@ -305,7 +305,7 @@ vars = {
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling V8
   # and whatever else without interference from each other.
-  'src_internal_revision': '364f1c4fb31acb72068be5310a4363f7316dca92',
+  'src_internal_revision': '79571debd47575ca12efaef585b23ea79b098fbd',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling Skia
   # and whatever else without interference from each other.
@@ -313,7 +313,7 @@ vars = {
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling V8
   # and whatever else without interference from each other.
-  'v8_revision': '6372efd0ead5d2da7296c9aa02c9bebce4ae7ff4',
+  'v8_revision': '71b6b5a68e0883c155e01368aace6eb6d71b85f3',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling ANGLE
   # and whatever else without interference from each other.
@@ -844,7 +844,7 @@ deps = {
 
   'src/clank': {
     'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-    'c5a1fb2117966d0f9927eceb7ee92b6239fc58f9',
+    '19ba5fd69e3deb8c6a6a860d3a6ab624f2223a44',
     'condition': 'checkout_android and checkout_src_internal',
   },
 
@@ -1909,7 +1909,7 @@ deps = {
     Var('chromium_git') + '/external/github.com/gpuweb/cts.git' + '@' + '3dbe4ce12983ccc1ad42e228057c7d8adc17cb78',
 
   'src/third_party/webrtc':
-    Var('webrtc_git') + '/src.git' + '@' + 'b0cc68e61205fd11a7256a6e85307ec17ad95790',
+    Var('webrtc_git') + '/src.git' + '@' + '5ab829e4ca8f63be6b4ed1d98eee382d7307d34e',
 
   # Wuffs' canonical repository is at github.com/google/wuffs, but we use
   # Skia's mirror of Wuffs, the same as in upstream Skia's DEPS file.
