@@ -1821,15 +1821,6 @@ component("platform") {
     sources += [ "text/hyphenation/hyphenation_null.cc" ]
   }
 
-  if (enable_jxl_decoder) {
-    sources += [
-      "image-decoders/jxl/jxl_image_decoder.cc",
-      "image-decoders/jxl/jxl_image_decoder.h",
-    ]
-
-    deps += [ "//third_party/libjxl:libjxl" ]
-  }
-
   if (current_cpu == "x86" || current_cpu == "x64") {
     deps += [ ":blink_x86_avx" ]
     sources += [ "audio/cpu/x86/delay_sse2.cc" ]
@@ -2259,10 +2250,6 @@ source_set("blink_platform_unittests_sources") {
     ]
   } else if (is_posix || is_fuchsia) {
     sources += [ "text/locale_icu_test.cc" ]
-  }
-
-  if (enable_jxl_decoder) {
-    sources += [ "image-decoders/jxl/jxl_image_decoder_test.cc" ]
   }
 
   sources += [ "testing/run_all_tests.cc" ]

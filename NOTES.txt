@@ -1,5 +1,7 @@
 # Notes for me when rebasing
 
+Move jxl stuff from platform BUILD.gn to image_decoders BUILD.gn to fix includes
+
 # chrome/browser/flag_descriptions.cc
 
 
