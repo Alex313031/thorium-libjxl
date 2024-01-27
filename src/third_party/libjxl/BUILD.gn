@@ -15,6 +15,7 @@ config("libjxl_external_config") {
     "gen_headers",
   ]
 }
+
 source_set("libjxl") {
   sources = rebase_path(libjxl_dec_sources, ".", "src/lib")
   sources += rebase_path(libjxl_base_sources, ".", "src/lib")
@@ -22,11 +23,11 @@ source_set("libjxl") {
   sources += rebase_path(libjxl_threads_sources, ".", "src/lib")
   sources += rebase_path(libjxl_dec_box_sources, ".", "src/lib")
 
-  cflags = [
-    "-O3",
-    "-mavx",
-    "-maes",
-  ]
+  if (is_win) {
+    cflags = [ "/O2", ]
+  } else {
+    cflags = [ "-O3", ]
+  }
 
   cflags_cc = [
     "-Wno-shadow",
