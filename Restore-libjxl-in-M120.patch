@@ -1,6 +1,6 @@
-From 5cfa233bacd7663578580a0133e12e81a75f52a0 Mon Sep 17 00:00:00 2001
+From 2505b5795eda4f0fb242f0a3267a63896ba20f38 Mon Sep 17 00:00:00 2001
 From: Ho Cheung
-Date: Thu, 25 Jan 2024 13:46:11 +0800
+Date: Sun, 28 Jan 2024 13:14:30 +0800
 Subject: [PATCH] Restore-libjxl-in-M120
 
 ---
@@ -33,11 +33,11 @@ Subject: [PATCH] Restore-libjxl-in-M120
  .../inspector_emulation_agent_test.cc         |  37 +
  .../generate_image_corpus.py                  |   1 +
  .../modules/webcodecs/image_decoder_fuzzer.cc |   5 +
- third_party/blink/renderer/platform/BUILD.gn  |  14 +
+ third_party/blink/renderer/platform/BUILD.gn  |   1 +
  ...nk_platform_unittests_bundle_data.filelist |  36 +
  .../platform/graphics/bitmap_image_metrics.cc |   5 +
  .../platform/graphics/bitmap_image_metrics.h  |   4 +-
- .../renderer/platform/image-decoders/BUILD.gn |  14 +
+ .../renderer/platform/image-decoders/BUILD.gn |  16 +-
  .../platform/image-decoders/image_decoder.cc  |  24 +
  .../image-decoders/jxl/jxl_image_decoder.cc   | 693 ++++++++++++++++++
  .../image-decoders/jxl/jxl_image_decoder.h    | 123 ++++
@@ -109,8 +109,7 @@ Subject: [PATCH] Restore-libjxl-in-M120
  .../images/jxl/jxl-images-expected.png        | Bin 0 -> 168618 bytes
  .../images/jxl/progressive-expected.png       | Bin 0 -> 2859 bytes
  third_party/highway/README.chromium           |   8 +-
- third_party/highway/src                       |   2 +-
- third_party/libjxl/BUILD.gn                   |  60 ++
+ third_party/libjxl/BUILD.gn                   |  65 ++
  third_party/libjxl/DIR_METADATA               |   3 +
  third_party/libjxl/LICENSE                    |  27 +
  third_party/libjxl/OWNERS                     |  14 +
@@ -120,9 +119,8 @@ Subject: [PATCH] Restore-libjxl-in-M120
  third_party/libjxl/gen_headers/jxl/version.h  |  42 ++
  ...-virtual-conditional-to-unconditional.json |   2 +-
  tools/metrics/histograms/enums.xml            |   4 +-
- 116 files changed, 2173 insertions(+), 20 deletions(-)
+ 115 files changed, 2165 insertions(+), 20 deletions(-)
  create mode 100644 build/linux/unbundle/libjxl.gn
- mode change 100755 => 100644 build/linux/unbundle/replace_gn_files.py
  create mode 100644 third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.cc
  create mode 100644 third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.h
  create mode 100644 third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder_test.cc
@@ -198,7 +196,7 @@ Subject: [PATCH] Restore-libjxl-in-M120
  create mode 100644 third_party/libjxl/gen_headers/jxl/version.h
 
 diff --git a/DEPS b/DEPS
-index acd91d1f83676..5b9514baa9431 100644
+index 52ec434439ff4..94b2e2914bfcf 100644
 --- a/DEPS
 +++ b/DEPS
 @@ -504,7 +504,11 @@ vars = {
@@ -265,9 +263,7 @@ index 0000000000000..227f20917e1c5
 +  public_configs = [ ":system_libjxl" ]
 +}
 diff --git a/build/linux/unbundle/replace_gn_files.py b/build/linux/unbundle/replace_gn_files.py
-old mode 100755
-new mode 100644
-index a015ea5f3fa6e..154d57a4ad78d
+index a015ea5f3fa6e..154d57a4ad78d 100755
 --- a/build/linux/unbundle/replace_gn_files.py
 +++ b/build/linux/unbundle/replace_gn_files.py
 @@ -55,6 +55,7 @@ REPLACEMENTS = {
@@ -869,37 +865,10 @@ index cde1f6877ef42..59a7fddc46ecd 100644
    // NOTE: GC objects that need to survive iterations of the loop below
    // must be Persistent<>!
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
-index 7aec5fce68483..836b39e5deb01 100644
+index 7aec5fce68483..e2750ebe73cc5 100644
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -1821,6 +1821,15 @@ component("platform") {
-     sources += [ "text/hyphenation/hyphenation_null.cc" ]
-   }
- 
-+  if (enable_jxl_decoder) {
-+    sources += [
-+      "image-decoders/jxl/jxl_image_decoder.cc",
-+      "image-decoders/jxl/jxl_image_decoder.h",
-+    ]
-+
-+    deps += [ "//third_party/libjxl:libjxl" ]
-+  }
-+
-   if (current_cpu == "x86" || current_cpu == "x64") {
-     deps += [ ":blink_x86_avx" ]
-     sources += [ "audio/cpu/x86/delay_sse2.cc" ]
-@@ -2252,6 +2261,10 @@ source_set("blink_platform_unittests_sources") {
-     sources += [ "text/locale_icu_test.cc" ]
-   }
- 
-+  if (enable_jxl_decoder) {
-+    sources += [ "image-decoders/jxl/jxl_image_decoder_test.cc" ]
-+  }
-+
-   sources += [ "testing/run_all_tests.cc" ]
- 
-   configs += [
-@@ -2295,6 +2308,7 @@ source_set("blink_platform_unittests_sources") {
+@@ -2295,6 +2295,7 @@ source_set("blink_platform_unittests_sources") {
      "//third_party/blink/renderer/platform/scheduler:unit_tests",
      "//third_party/blink/renderer/platform/wtf",
      "//third_party/libavif:libavif",
@@ -986,17 +955,20 @@ index 636ce56b9e9f7..ffbb58f559451 100644
  
    // Categories for the JPEG color space histogram. Synced with 'JpegColorSpace'
 diff --git a/third_party/blink/renderer/platform/image-decoders/BUILD.gn b/third_party/blink/renderer/platform/image-decoders/BUILD.gn
-index cc86352a4939e..35835d854d251 100644
+index cc86352a4939e..21b1283f4b265 100644
 --- a/third_party/blink/renderer/platform/image-decoders/BUILD.gn
 +++ b/third_party/blink/renderer/platform/image-decoders/BUILD.gn
-@@ -4,6 +4,7 @@
+@@ -1,8 +1,9 @@
+-# Copyright 2023 The Chromium Authors
++# Copyright 2024 The Chromium Authors and Alex313031
+ # Use of this source code is governed by a BSD-style license that can be
+ # found in the LICENSE file.
  
  import("//media/media_options.gni")
- import("//third_party/blink/renderer/platform/platform.gni")
 +import("//third_party/blink/public/public_features.gni")
+ import("//third_party/blink/renderer/platform/platform.gni")
  component("image_decoders") {
    visibility = [
-     "//third_party/blink/renderer/core/*",
 @@ -81,6 +82,15 @@ component("image_decoders") {
        "//third_party/libavifinfo",
      ]
@@ -20858,19 +20830,12 @@ index baf3c75debf3d..cabb2ccbd9e6c 100644
  CPEPrefix: unknown
  
  Description:
-diff --git a/third_party/highway/src b/third_party/highway/src
-index 8f20644eca693..46e365d6770f5 160000
---- a/third_party/highway/src
-+++ b/third_party/highway/src
-@@ -1 +1 @@
--Subproject commit 8f20644eca693cfb74aa795b0006b6779c370e7a
-+Subproject commit 46e365d6770f5d7a4240d8ac9d8e928a520478ea
 diff --git a/third_party/libjxl/BUILD.gn b/third_party/libjxl/BUILD.gn
 new file mode 100644
-index 0000000000000..9cedae55fd3e9
+index 0000000000000..ec1d2c10ccc47
 --- /dev/null
 +++ b/third_party/libjxl/BUILD.gn
-@@ -0,0 +1,60 @@
+@@ -0,0 +1,65 @@
 +# Copyright 2024 The Chromium Authors and Alex313031
 +# Use of this source code is governed by a BSD-style license that can be
 +# found in the LICENSE file.
@@ -20896,11 +20861,16 @@ index 0000000000000..9cedae55fd3e9
 +  sources += rebase_path(libjxl_threads_sources, ".", "src/lib")
 +  sources += rebase_path(libjxl_dec_box_sources, ".", "src/lib")
 +
++  if (is_win) {
++    cflags = [ "/O2", ]
++  } else {
++    cflags = [ "-O3", ]
++  }
++
 +  cflags_cc = [
 +    "-Wno-shadow",
 +    "-Wno-unused-function",
 +  ]
-+  if (is_linux || is_posix) { cflags_cc += [ "-O3", ] }
 +
 +  defines = [
 +    "JPEGXL_ENABLE_SKCMS=1",
@@ -21083,7 +21053,7 @@ index 0000000000000..751a6bbaffde7
 +#endif /* JXL_THREADS_EXPORT_H */
 diff --git a/third_party/libjxl/gen_headers/jxl/version.h b/third_party/libjxl/gen_headers/jxl/version.h
 new file mode 100644
-index 0000000000000..fa014ddd3dfb3
+index 0000000000000..a7e8eb7e6d46a
 --- /dev/null
 +++ b/third_party/libjxl/gen_headers/jxl/version.h
 @@ -0,0 +1,42 @@
@@ -21104,7 +21074,7 @@ index 0000000000000..fa014ddd3dfb3
 +
 +#define JPEGXL_MAJOR_VERSION 0  ///< JPEG XL Major version
 +#define JPEGXL_MINOR_VERSION 9  ///< JPEG XL Minor version
-+#define JPEGXL_PATCH_VERSION 1  ///< JPEG XL Patch version
++#define JPEGXL_PATCH_VERSION 0  ///< JPEG XL Patch version
 +
 +/** Can be used to conditionally compile code for a specific JXL version
 + * @param[maj] major version
@@ -21172,5 +21142,5 @@ index e819c2129aabb..76fd4b371b140 100644
    <int value="191737931" label="enable-mark-http-as"/>
    <int value="191891628" label="AutocompleteExtendedSuggestions:enabled"/>
 -- 
-2.43.0
+2.43.0.windows.1
 
