@@ -81,6 +81,7 @@ TEST_F(InspectorEmulationAgentTest, ModifiesAcceptHeader) {
   disabled_types.insert("image/jxl");
   EXPECT_EQ(InspectorEmulationAgent::OverrideAcceptImageHeader(&disabled_types),
             expected_no_jxl);
+  disabled_types.erase("image/jxl");
 }
 
 }  // namespace blink
