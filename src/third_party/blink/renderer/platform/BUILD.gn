@@ -1825,8 +1825,8 @@ component("platform") {
 
   if (enable_jxl_decoder) {
     sources += [
-      "jxl/jxl_image_decoder.cc",
-      "jxl/jxl_image_decoder.h",
+      "image-decoders/jxl/jxl_image_decoder.cc",
+      "image-decoders/jxl/jxl_image_decoder.h",
     ]
 
     deps += [ "//third_party/libjxl:libjxl" ]
