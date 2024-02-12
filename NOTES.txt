@@ -26,11 +26,11 @@ const char kEnableJXLDescription[] =
 # DEPS
 
 
-  'libjxl_revision': '5f3cc36bca9e43cf78aa5b819b74b387c638cac5',
+  'libjxl_revision': '41b8cdab7815c79a060938bfe0c24337e2eb9e54',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling feed
   # and whatever else without interference from each other.
-  'highway_revision': '46e365d6770f5d7a4240d8ac9d8e928a520478ea',
+  'highway_revision': 'ba0900a4957b929390ab73827235557959234fea',
 
   'src/third_party/dav1d/libdav1d':
     Var('chromium_git') + '/external/github.com/videolan/dav1d.git' + '@' + '47107e384bd1dc25674acf04d000a8cdc6195234',

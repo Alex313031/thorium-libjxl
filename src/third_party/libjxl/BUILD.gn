@@ -22,6 +22,7 @@ source_set("libjxl") {
   sources += rebase_path(libjxl_threads_public_headers, ".", "src/lib")
   sources += rebase_path(libjxl_threads_sources, ".", "src/lib")
   sources += rebase_path(libjxl_dec_box_sources, ".", "src/lib")
+  sources += rebase_path(libjxl_cms_sources, ".", "src/lib")
 
   if (is_win) {
     cflags = [ "/O2", ]
@@ -52,7 +53,7 @@ source_set("libjxl") {
 
   include_dirs = [
     "src",
-    "//third_party/skia/include/third_party/skcms",  # for "skcms.h"
+    "//third_party/skia/modules/skcms",  # for "skcms.h"
   ]
 
   deps = [
