@@ -300,7 +300,7 @@ void JXLImageDecoder::DecodeImpl(wtf_size_t index, bool only_size) {
         }
         JxlColorEncoding color_encoding;
         if (JXL_DEC_SUCCESS == JxlDecoderGetColorAsEncodedProfile(
-                                   dec_.get(), &format,
+                                   dec_.get(),
                                    JXL_COLOR_PROFILE_TARGET_ORIGINAL,
                                    &color_encoding)) {
           if (color_encoding.transfer_function == JXL_TRANSFER_FUNCTION_PQ ||
@@ -318,9 +318,8 @@ void JXLImageDecoder::DecodeImpl(wtf_size_t index, bool only_size) {
 
         bool have_data_profile = false;
         if (JXL_DEC_SUCCESS ==
-            JxlDecoderGetColorAsEncodedProfile(dec_.get(), &format,
-                                               JXL_COLOR_PROFILE_TARGET_DATA,
-                                               &color_encoding)) {
+            JxlDecoderGetColorAsEncodedProfile(
+                dec_.get(), JXL_COLOR_PROFILE_TARGET_DATA, &color_encoding)) {
           bool known_transfer_function = true;
           bool known_gamut = true;
           gfx::ColorSpace::PrimaryID gamut;
@@ -368,14 +367,13 @@ void JXLImageDecoder::DecodeImpl(wtf_size_t index, bool only_size) {
         if (!have_data_profile) {
           size_t icc_size;
           bool got_size =
-              JXL_DEC_SUCCESS == JxlDecoderGetICCProfileSize(
-                                     dec_.get(), &format,
-                                     JXL_COLOR_PROFILE_TARGET_DATA, &icc_size);
+              JXL_DEC_SUCCESS ==
+              JxlDecoderGetICCProfileSize(
+                  dec_.get(), JXL_COLOR_PROFILE_TARGET_DATA, &icc_size);
           std::vector<uint8_t> icc_profile(icc_size);
           if (got_size &&
               JXL_DEC_SUCCESS == JxlDecoderGetColorAsICCProfile(
-                                     dec_.get(), &format,
-                                     JXL_COLOR_PROFILE_TARGET_DATA,
+                                     dec_.get(), JXL_COLOR_PROFILE_TARGET_DATA,
                                      icc_profile.data(), icc_profile.size())) {
             profile =
                 ColorProfile::Create(icc_profile.data(), icc_profile.size());
