@@ -77,7 +77,10 @@ TEST_F(InspectorEmulationAgentTest, ModifiesAcceptHeader) {
   disabled_types.erase("image/webp");
   EXPECT_EQ(InspectorEmulationAgent::OverrideAcceptImageHeader(&disabled_types),
             expected_no_avif);
+  disabled_types.erase("image/avif");
   disabled_types.insert("image/jxl");
+  EXPECT_EQ(InspectorEmulationAgent::OverrideAcceptImageHeader(&disabled_types),
+            expected_no_jxl);
 }
 
 }  // namespace blink
