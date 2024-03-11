@@ -25,6 +25,7 @@ const char kEnableJXLDescription[] =
 
 # DEPS
 
+  'highway_revision': '8f20644eca693cfb74aa795b0006b6779c370e7a',
 
   'libjxl_revision': '41b8cdab7815c79a060938bfe0c24337e2eb9e54',
   # Three lines of non-changing comments so that
