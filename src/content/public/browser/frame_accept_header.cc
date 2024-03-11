@@ -17,7 +17,7 @@ std::string FrameAcceptHeaderValue(bool allow_sxg_responses,
   std::string header_value = kFrameAcceptHeaderValue;
 
 #if BUILDFLAG(ENABLE_JXL_DECODER)
-  // In case the buildflag and the runtime flag are enables, we insert
+  // In case the buildflag and the runtime flag are enabled, we insert
   // "image/jxl," into the header value at the correct place.
   if (base::FeatureList::IsEnabled(blink::features::kJXL)) {
     std::string header_value_prefix = header_value.substr(0, 54);
