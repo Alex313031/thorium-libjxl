@@ -1,9 +1,10 @@
-// Copyright 2020 The Chromium Authors
+// Copyright 2024 The Chromium Authors, Alex313031, and win32ss
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 #include "content/public/browser/frame_accept_header.h"
 
+#include "base/command_line.h"
 #include "content/browser/web_package/signed_exchange_consts.h"
 #include "content/browser/web_package/signed_exchange_utils.h"
 #include "content/common/content_constants_internal.h"
@@ -14,6 +15,8 @@ namespace content {
 
 std::string FrameAcceptHeaderValue(bool allow_sxg_responses,
                                    BrowserContext* browser_context) {
+  if (base::CommandLine::ForCurrentProcess()->HasSwitch("http-accept-header"))
+      return base::CommandLine::ForCurrentProcess()->GetSwitchValueASCII("http-accept-header");
   std::string header_value = kFrameAcceptHeaderValue;
 
 #if BUILDFLAG(ENABLE_JXL_DECODER)
