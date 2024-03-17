@@ -31,7 +31,7 @@ const char kEnableJXLDescription[] =
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling feed
   # and whatever else without interference from each other.
-  'highway_revision': 'ba0900a4957b929390ab73827235557959234fea',
+  'highway_revision': '58b52a717469e62b2d9b8eaa2f5dddb44d4a4cbf',
 
   'src/third_party/dav1d/libdav1d':
     Var('chromium_git') + '/external/github.com/videolan/dav1d.git' + '@' + '47107e384bd1dc25674acf04d000a8cdc6195234',

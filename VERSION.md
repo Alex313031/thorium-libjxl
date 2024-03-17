@@ -6,9 +6,9 @@
 
  - https://github.com/libjxl/libjxl/commit/41b8cdab7815c79a060938bfe0c24337e2eb9e54
 
-## libhighway Revision: ba0900a4957b929390ab73827235557959234fea (1.0.7)
+## libhighway Revision: 58b52a717469e62b2d9b8eaa2f5dddb44d4a4cbf (1.1.0)
 
- - https://github.com/google/highway/commit/ba0900a4957b929390ab73827235557959234fea
+ - https://github.com/google/highway/commit/58b52a717469e62b2d9b8eaa2f5dddb44d4a4cbf
 
 ## V8 Revision 1f1081349cc055d5bb75921b08cdccc035c59503
 
