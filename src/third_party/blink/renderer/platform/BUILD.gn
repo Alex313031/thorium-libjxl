@@ -1827,7 +1827,7 @@ component("platform") {
     sources += [ "text/hyphenation/hyphenation_null.cc" ]
   }
 
-  if (enable_jxl_decoder) {
+  if (enable_jxl_decoder && !is_android) {
     sources += [
       "image-decoders/jxl/jxl_image_decoder.cc",
       "image-decoders/jxl/jxl_image_decoder.h",
@@ -2282,7 +2282,7 @@ source_set("blink_platform_unittests_sources") {
     sources += [ "text/locale_icu_test.cc" ]
   }
 
-  if (enable_jxl_decoder) {
+  if (enable_jxl_decoder && !is_android) {
     sources += [ "image-decoders/jxl/jxl_image_decoder_test.cc" ]
   }
 
@@ -2329,7 +2329,6 @@ source_set("blink_platform_unittests_sources") {
     "//third_party/blink/renderer/platform/scheduler:unit_tests",
     "//third_party/blink/renderer/platform/wtf",
     "//third_party/libavif:libavif",
-    "//third_party/libjxl:libjxl",
     "//third_party/libyuv",
     "//third_party/webrtc/api/task_queue:task_queue_test",
     "//third_party/webrtc_overrides:metronome_like_task_queue_test",
@@ -2345,6 +2344,10 @@ source_set("blink_platform_unittests_sources") {
     "//url:url_test_support",
     "//url/mojom:test_url_mojom_gurl_blink",
   ]
+
+  if (!is_android) {
+    deps += [ "//third_party/libjxl:libjxl" ]
+  }
 
   deps += [ ":bridge_ice_controller_tests" ]
 
