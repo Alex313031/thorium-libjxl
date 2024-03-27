@@ -304,15 +304,15 @@ vars = {
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling V8
   # and whatever else without interference from each other.
-  'src_internal_revision': '7d2539a25058deee695198d7a738531c72e3c5de',
+  'src_internal_revision': 'e30132f7ff15b06fb92754250e55ff198982816f',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling Skia
   # and whatever else without interference from each other.
-  'skia_revision': 'c6835e2d5ff641dad9347ce4c2ff79dbc29cf9aa',
+  'skia_revision': '8464f41cf051974e499be9caeab3243506e025c2',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling V8
   # and whatever else without interference from each other.
-  'v8_revision': '1f1081349cc055d5bb75921b08cdccc035c59503',
+  'v8_revision': '7333002055c51e1ca42cc21daa42ec297c8283ff',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling ANGLE
   # and whatever else without interference from each other.
@@ -423,7 +423,7 @@ vars = {
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling feed
   # and whatever else without interference from each other.
-  'dawn_revision': '8917c648bdd68007c96b8ca9995533cc3ee995c2',
+  'dawn_revision': '6a6719ee09f1078356fdd31c69061e07b5c61c2d',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling feed
   # and whatever else without interference from each other.
@@ -827,7 +827,7 @@ deps = {
 
   'src/clank': {
     'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-    'ced081fcb5b1f1300390813806d25d41aef8a5e6',
+    '72e6a06b564cd1bc4f78b202e07d944860d65460',
     'condition': 'checkout_android and checkout_src_internal',
   },
 
@@ -1536,7 +1536,7 @@ deps = {
   },
 
   'src/third_party/libvpx/source/libvpx':
-    Var('chromium_git') + '/webm/libvpx.git' + '@' +  'b95d17572629c676bdcfd535fb3990b9f6f8fb11',
+    Var('chromium_git') + '/webm/libvpx.git' + '@' +  '893c9f6d070cc3bd8503152480089673f57fdf76',
 
   'src/third_party/libwebm/source':
     Var('chromium_git') + '/webm/libwebm.git' + '@' + 'e4fbea0c9751ae8aa86629b197a28d8276a2b0da',
