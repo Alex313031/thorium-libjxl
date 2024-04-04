@@ -1,13 +1,12 @@
-From f2fb7ac68ab60e98661dce5a8a99408b9b445704 Mon Sep 17 00:00:00 2001
+From 2109bbba4cc8687700c0e3d46fd48dbef64c6627 Mon Sep 17 00:00:00 2001
 From: Ho Cheung
-Date: Fri, 15 Mar 2024 14:11:30 +0800
+Date: Thu, 4 Apr 2024 12:39:30 +0800
 Subject: [PATCH] Restore-libjxl-in-M122
 
 ---
  DEPS                                          |   9 +-
  build/linux/unbundle/libjxl.gn                |  36 +
  build/linux/unbundle/replace_gn_files.py      |   1 +
- build/vs_toolchain.py                         |   7 +-
  cc/base/devtools_instrumentation.cc           |   3 +
  cc/base/devtools_instrumentation.h            |   2 +-
  cc/paint/paint_image.h                        |   2 +-
@@ -18,7 +17,7 @@ Subject: [PATCH] Restore-libjxl-in-M122
  chrome/browser/flag_descriptions.h            |   7 +-
  .../net/chrome_accept_header_browsertest.cc   |  19 +-
  .../network/accept_header_browsertest.cc      |   6 +
- content/public/browser/frame_accept_header.cc |  13 +
+ content/public/browser/frame_accept_header.cc |  18 +-
  net/base/mime_util.cc                         |   2 +
  net/base/mime_util_unittest.cc                |   3 +
  third_party/.gitignore                        |   1 +
@@ -34,7 +33,7 @@ Subject: [PATCH] Restore-libjxl-in-M122
  .../inspector_emulation_agent_test.cc         |  37 +
  .../generate_image_corpus.py                  |   1 +
  .../modules/webcodecs/image_decoder_fuzzer.cc |   5 +
- third_party/blink/renderer/platform/BUILD.gn  |  14 +
+ third_party/blink/renderer/platform/BUILD.gn  |  17 +
  ...nk_platform_unittests_bundle_data.filelist | 167 +++++
  .../platform/graphics/bitmap_image_metrics.cc |   5 +
  .../platform/graphics/bitmap_image_metrics.h  |   4 +-
@@ -44,7 +43,7 @@ Subject: [PATCH] Restore-libjxl-in-M122
  .../image-decoders/jxl/jxl_image_decoder.h    | 123 ++++
  .../jxl/jxl_image_decoder_test.cc             | 631 ++++++++++++++++
  .../blink/tools/commit_stats/git-dirs.txt     |   1 +
- third_party/blink/web_tests/TestExpectations  |   6 +
+ third_party/blink/web_tests/TestExpectations  |   9 +-
  third_party/blink/web_tests/TestLists/highdpi |   3 +-
  third_party/blink/web_tests/VirtualTestSuites |   9 +
  .../images/jxl/jxl-images-expected.png        | Bin 0 -> 7833 bytes
@@ -110,7 +109,6 @@ Subject: [PATCH] Restore-libjxl-in-M122
  .../images/jxl/jxl-images-expected.png        | Bin 0 -> 168618 bytes
  .../images/jxl/progressive-expected.png       | Bin 0 -> 2859 bytes
  third_party/highway/README.chromium           |  11 +-
- third_party/highway/src                       |   2 +-
  third_party/libjxl/BUILD.gn                   |  66 ++
  third_party/libjxl/DIR_METADATA               |   3 +
  third_party/libjxl/LICENSE                    |  27 +
@@ -122,9 +120,8 @@ Subject: [PATCH] Restore-libjxl-in-M122
  third_party/libjxl/gen_headers/jxl/version.h  |  42 ++
  ...-virtual-conditional-to-unconditional.json |   2 +-
  tools/metrics/histograms/enums.xml            |   1 +
- 118 files changed, 2377 insertions(+), 26 deletions(-)
+ 116 files changed, 2380 insertions(+), 25 deletions(-)
  create mode 100644 build/linux/unbundle/libjxl.gn
- mode change 100755 => 100644 build/linux/unbundle/replace_gn_files.py
  create mode 100644 third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.cc
  create mode 100644 third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.h
  create mode 100644 third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder_test.cc
@@ -201,7 +198,7 @@ Subject: [PATCH] Restore-libjxl-in-M122
  create mode 100644 third_party/libjxl/gen_headers/jxl/version.h
 
 diff --git a/DEPS b/DEPS
-index fd5670bc9f5cc..27d2582a3c55a 100644
+index 0b0e76f494638..e095b683d2b14 100644
 --- a/DEPS
 +++ b/DEPS
 @@ -487,7 +487,11 @@ vars = {
@@ -213,7 +210,7 @@ index fd5670bc9f5cc..27d2582a3c55a 100644
 +  # Three lines of non-changing comments so that
 +  # the commit queue can handle CLs rolling feed
 +  # and whatever else without interference from each other.
-+  'highway_revision': 'ba0900a4957b929390ab73827235557959234fea',
++  'highway_revision': '58b52a717469e62b2d9b8eaa2f5dddb44d4a4cbf',
    # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling ffmpeg
    # and whatever else without interference from each other.
@@ -270,9 +267,7 @@ index 0000000000000..a9334d006cbba
 +  public_configs = [ ":system_libjxl" ]
 +}
 diff --git a/build/linux/unbundle/replace_gn_files.py b/build/linux/unbundle/replace_gn_files.py
-old mode 100755
-new mode 100644
-index a015ea5f3fa6e..154d57a4ad78d
+index a015ea5f3fa6e..154d57a4ad78d 100755
 --- a/build/linux/unbundle/replace_gn_files.py
 +++ b/build/linux/unbundle/replace_gn_files.py
 @@ -55,6 +55,7 @@ REPLACEMENTS = {
@@ -283,39 +278,6 @@ index a015ea5f3fa6e..154d57a4ad78d
    'libpng': 'third_party/libpng/BUILD.gn',
    'libsecret' : 'third_party/libsecret/BUILD.gn',
    'libusb': 'third_party/libusb/BUILD.gn',
-diff --git a/build/vs_toolchain.py b/build/vs_toolchain.py
-index a9cd6f03d9214..3e5af8e5e062a 100755
---- a/build/vs_toolchain.py
-+++ b/build/vs_toolchain.py
-@@ -1,9 +1,8 @@
- #!/usr/bin/env python3
--# Copyright 2014 The Chromium Authors
-+# Copyright 2024 The Chromium Authors, Alex313031, and gz83
- # Use of this source code is governed by a BSD-style license that can be
- # found in the LICENSE file.
- 
--
- import collections
- import glob
- import json
-@@ -17,7 +16,7 @@ import sys
- 
- from gn_helpers import ToGNString
- 
--# VS 2022 17.4 with 10.0.22621.0 SDK with ARM64 libraries and UWP support.
-+# VS 2022 17.8.6 with 10.0.22621.2428 SDK with ARM64 libraries and UWP support.
- # See go/chromium-msvc-toolchain for instructions about how to update the
- # toolchain.
- #
-@@ -39,7 +38,7 @@ from gn_helpers import ToGNString
- #   Maps between Visual Studio version and MSVC toolset
- # * MSVS_VERSIONS in this file
- #   Records the packaged and default version of Visual Studio
--TOOLCHAIN_HASH = '27370823e7'
-+TOOLCHAIN_HASH = '195b2eb383'
- SDK_VERSION = '10.0.22621.0'
- 
- script_dir = os.path.dirname(os.path.realpath(__file__))
 diff --git a/cc/base/devtools_instrumentation.cc b/cc/base/devtools_instrumentation.cc
 index 1888c850430a9..17f7845972250 100644
 --- a/cc/base/devtools_instrumentation.cc
@@ -527,10 +489,18 @@ index 2370f6e89e9c5..c9c574785be0b 100644
      return result;
    }
 diff --git a/content/public/browser/frame_accept_header.cc b/content/public/browser/frame_accept_header.cc
-index 341a585720048..7d362b3267bd6 100644
+index 341a585720048..b8dc185d0c18e 100644
 --- a/content/public/browser/frame_accept_header.cc
 +++ b/content/public/browser/frame_accept_header.cc
-@@ -7,6 +7,8 @@
+@@ -1,19 +1,35 @@
+-// Copyright 2020 The Chromium Authors
++// Copyright 2024 The Chromium Authors, Alex313031, and win32ss
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+ #include "content/public/browser/frame_accept_header.h"
+ 
++#include "base/command_line.h"
  #include "content/browser/web_package/signed_exchange_consts.h"
  #include "content/browser/web_package/signed_exchange_utils.h"
  #include "content/common/content_constants_internal.h"
@@ -539,8 +509,10 @@ index 341a585720048..7d362b3267bd6 100644
  
  namespace content {
  
-@@ -14,6 +16,17 @@ std::string FrameAcceptHeaderValue(bool allow_sxg_responses,
+ std::string FrameAcceptHeaderValue(bool allow_sxg_responses,
                                     BrowserContext* browser_context) {
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch("http-accept-header"))
++      return base::CommandLine::ForCurrentProcess()->GetSwitchValueASCII("http-accept-header");
    std::string header_value = kFrameAcceptHeaderValue;
  
 +#if BUILDFLAG(ENABLE_JXL_DECODER)
@@ -911,14 +883,14 @@ index e5e980e2151c8..da69b871130d3 100644
    // NOTE: GC objects that need to survive iterations of the loop below
    // must be Persistent<>!
 diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
-index 17889a08bc6fb..8b4f2af186494 100644
+index 17889a08bc6fb..0a1dda4159945 100644
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
 @@ -1827,6 +1827,15 @@ component("platform") {
      sources += [ "text/hyphenation/hyphenation_null.cc" ]
    }
  
-+  if (enable_jxl_decoder) {
++  if (enable_jxl_decoder && !is_android) {
 +    sources += [
 +      "image-decoders/jxl/jxl_image_decoder.cc",
 +      "image-decoders/jxl/jxl_image_decoder.h",
@@ -934,21 +906,24 @@ index 17889a08bc6fb..8b4f2af186494 100644
      sources += [ "text/locale_icu_test.cc" ]
    }
  
-+  if (enable_jxl_decoder) {
++  if (enable_jxl_decoder && !is_android) {
 +    sources += [ "image-decoders/jxl/jxl_image_decoder_test.cc" ]
 +  }
 +
    sources += [ "testing/run_all_tests.cc" ]
  
    configs += [
-@@ -2316,6 +2329,7 @@ source_set("blink_platform_unittests_sources") {
-     "//third_party/blink/renderer/platform/scheduler:unit_tests",
-     "//third_party/blink/renderer/platform/wtf",
-     "//third_party/libavif:libavif",
-+    "//third_party/libjxl:libjxl",
-     "//third_party/libyuv",
-     "//third_party/webrtc/api/task_queue:task_queue_test",
-     "//third_party/webrtc_overrides:metronome_like_task_queue_test",
+@@ -2332,6 +2345,10 @@ source_set("blink_platform_unittests_sources") {
+     "//url/mojom:test_url_mojom_gurl_blink",
+   ]
+ 
++  if (!is_android) {
++    deps += [ "//third_party/libjxl:libjxl" ]
++  }
++
+   deps += [ ":bridge_ice_controller_tests" ]
+ 
+   data_deps = [ ":blink_platform_unittests_data" ]
 diff --git a/third_party/blink/renderer/platform/blink_platform_unittests_bundle_data.filelist b/third_party/blink/renderer/platform/blink_platform_unittests_bundle_data.filelist
 index eceaa60208592..4c0b0ff7f8382 100644
 --- a/third_party/blink/renderer/platform/blink_platform_unittests_bundle_data.filelist
@@ -2766,7 +2741,7 @@ index 61e87b99ea66d..abb1ac93022c0 100644
  ./third_party/wuffs/src,wuffs
  ./third_party/catapult,catapult
 diff --git a/third_party/blink/web_tests/TestExpectations b/third_party/blink/web_tests/TestExpectations
-index 59a96b95d3232..a61793c3f5079 100644
+index 028a195da4162..a61793c3f5079 100644
 --- a/third_party/blink/web_tests/TestExpectations
 +++ b/third_party/blink/web_tests/TestExpectations
 @@ -4569,6 +4569,12 @@ crbug.com/1199522 http/tests/devtools/layers/layers-3d-view-hit-testing.js [ Fai
@@ -2782,6 +2757,13 @@ index 59a96b95d3232..a61793c3f5079 100644
  # Sheriff 2021-11-15
  crbug.com/1270362 http/tests/devtools/sources/debugger-ui/debugger-inline-values.js [ Failure Pass Timeout ]
  
+@@ -6800,6 +6806,3 @@ crbug.com/1467464 http/tests/devtools/profiler/heap-snapshot.js [ Failure Pass T
+ 
+ # May fail due to test framework issue. Disabling while this is being resolved.
+ crbug.com/1367312 [ Win ] fast/dom/timer-throttling-hidden-page.html [ Failure Pass ]
+-
+-# TODO(crbug.com/328677885): Re-enable this test.
+-crbug.com/328677885 external/wpt/html/semantics/embedded-content/the-img-element/srcset/avoid-reload-on-resize.html [ Failure Pass ]
 diff --git a/third_party/blink/web_tests/TestLists/highdpi b/third_party/blink/web_tests/TestLists/highdpi
 index 250721a66503f..542db7d213a74 100644
 --- a/third_party/blink/web_tests/TestLists/highdpi
@@ -21034,7 +21016,7 @@ literal 0
 HcmV?d00001
 
 diff --git a/third_party/highway/README.chromium b/third_party/highway/README.chromium
-index baf3c75debf3d..6f502af636506 100644
+index baf3c75debf3d..8c3337d51c2f2 100644
 --- a/third_party/highway/README.chromium
 +++ b/third_party/highway/README.chromium
 @@ -1,17 +1,16 @@
@@ -21044,9 +21026,9 @@ index baf3c75debf3d..6f502af636506 100644
 -Version: 1.0.3
 -Date: 2023-01-19
 -Revision: 58746ca5b9f9444a2a3549704602ecc6239f8f41
-+Version: 1.0.7
-+Date: 2023-08-30
-+Revision: ba0900a4957b929390ab73827235557959234fea
++Version: 1.1.0
++Date: 2024-02-17
++Revision: 58b52a717469e62b2d9b8eaa2f5dddb44d4a4cbf
  License: Apache 2.0
 -License File: LICENSE
  Security Critical: yes
@@ -21060,13 +21042,6 @@ index baf3c75debf3d..6f502af636506 100644
  
  Local Modifications:
  None.
-diff --git a/third_party/highway/src b/third_party/highway/src
-index 8f20644eca693..ba0900a4957b9 160000
---- a/third_party/highway/src
-+++ b/third_party/highway/src
-@@ -1 +1 @@
--Subproject commit 8f20644eca693cfb74aa795b0006b6779c370e7a
-+Subproject commit ba0900a4957b929390ab73827235557959234fea
 diff --git a/third_party/libjxl/BUILD.gn b/third_party/libjxl/BUILD.gn
 new file mode 100644
 index 0000000000000..bd107ee22c19b
@@ -21441,5 +21416,5 @@ index 45a49f314d6a0..66e920d48d82a 100644
    <int value="191737931" label="enable-mark-http-as"/>
    <int value="191891628" label="AutocompleteExtendedSuggestions:enabled"/>
 -- 
-2.43.0
+2.44.0.windows.1
 
