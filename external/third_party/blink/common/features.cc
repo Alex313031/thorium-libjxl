@@ -1210,9 +1210,6 @@ BASE_FEATURE(kKeepAliveInBrowserMigration,
              "KeepAliveInBrowserMigration",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-// Enables the JPEG XL Image File Format (JXL).
-BASE_FEATURE(kJXL, "JXL", base::FEATURE_ENABLED_BY_DEFAULT);
-
 BASE_FEATURE(kAttributionReportingInBrowserMigration,
              "AttributionReportingInBrowserMigration",
              base::FEATURE_DISABLED_BY_DEFAULT);
@@ -1803,6 +1800,9 @@ BASE_FEATURE(kLocalCompileHints,
 BASE_FEATURE(kQueueBlockingGestureScrolls,
              "QueueBlockingGestureScrolls",
              base::FEATURE_ENABLED_BY_DEFAULT);
+
+// Enables the JPEG XL Image File Format (JXL).
+BASE_FEATURE(kJXL, "JXL", base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kQuoteEmptySecChUaStringHeadersConsistently,
              "QuoteEmptySecChUaStringHeadersConsistently",
