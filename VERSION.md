@@ -10,9 +10,9 @@
 
  - https://github.com/google/highway/commit/58b52a717469e62b2d9b8eaa2f5dddb44d4a4cbf
 
-## V8 Revision 1191d73c300f38ee2f8177ceae54d81f4d25a025
+## V8 Revision 181294cc2a037a7140979162dfc72fc857b3cc5f
 
- - https://chromium.googlesource.com/v8/v8.git/+/1191d73c300f38ee2f8177ceae54d81f4d25a025
+ - https://chromium.googlesource.com/v8/v8.git/+/181294cc2a037a7140979162dfc72fc857b3cc5f
 
 ## devtools_frontend Revision: 28024a30b41f110dcf0ba28026f9b9bc921f39a1
 
