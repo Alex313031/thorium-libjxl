@@ -112,6 +112,9 @@
 [submodule "net/third_party/quiche/src"]
 	path = net/third_party/quiche/src
 	url = https://quiche.googlesource.com/quiche
+[submodule "third_party/accessibility_test_framework/src"]
+	path = third_party/accessibility_test_framework/src
+	url = https://chromium.googlesource.com/external/github.com/google/Accessibility-Test-Framework-for-Android
 [submodule "third_party/android_protobuf/src"]
 	path = third_party/android_protobuf/src
 	url = https://android.googlesource.com/platform/external/protobuf
@@ -453,6 +456,9 @@
 	path = third_party/perl
 	url = https://chromium.googlesource.com/chromium/deps/perl
 	gclient-condition = checkout_win
+[submodule "third_party/protobuf-javascript/src"]
+	path = third_party/protobuf-javascript/src
+	url = https://chromium.googlesource.com/external/github.com/protocolbuffers/protobuf-javascript
 [submodule "third_party/pthreadpool/src"]
 	path = third_party/pthreadpool/src
 	url = https://chromium.googlesource.com/external/github.com/Maratyszcza/pthreadpool
@@ -570,6 +576,10 @@
 	path = chromeos/assistant/internal
 	url = https://chrome-internal.googlesource.com/chrome/assistant
 	gclient-condition = checkout_src_internal and checkout_chromeos
+[submodule "ash/webui/conch"]
+	path = ash/webui/conch
+	url = https://chrome-internal.googlesource.com/ash/webui/conch
+	gclient-condition = checkout_src_internal and checkout_chromeos
 [submodule "build/fuchsia/internal"]
 	path = build/fuchsia/internal
 	url = https://chrome-internal.googlesource.com/fuchsia/build
@@ -610,10 +620,6 @@
 	path = chrome/browser/platform_experience/win
 	url = https://chrome-internal.googlesource.com/chrome/browser/platform_experience/win
 	gclient-condition = checkout_src_internal
-[submodule "chrome/browser/resources/chromeos/quickoffice"]
-	path = chrome/browser/resources/chromeos/quickoffice
-	url = https://chrome-internal.googlesource.com/quickoffice/crx
-	gclient-condition = (checkout_chromeos or checkout_linux) and checkout_src_internal
 [submodule "chrome/browser/resources/settings/internal"]
 	path = chrome/browser/resources/settings/internal
 	url = https://chrome-internal.googlesource.com/chrome/browser/resources/settings_internal
