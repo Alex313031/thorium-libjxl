@@ -375,9 +375,8 @@ void JXLImageDecoder::DecodeImpl(wtf_size_t index, bool only_size) {
               JXL_DEC_SUCCESS == JxlDecoderGetColorAsICCProfile(
                                      dec_.get(), JXL_COLOR_PROFILE_TARGET_DATA,
                                      icc_profile.data(), icc_profile.size())) {
-
             profile =
-                ColorProfile::Create(base::span(icc_profile.data(), icc_profile.size()));
+                ColorProfile::Create(icc_profile.data(), icc_profile.size());
             have_data_profile = true;
 
             // Detect whether the ICC profile approximately equals PQ or HLG,
