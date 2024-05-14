@@ -1,3 +1,4 @@
+/* Copyright (c) 2024 the JPEG XL Project Authors. All rights reserved. */
 /* Moved from jxl_export.h */
 #ifndef JXL_THREADS_EXPORT_H
 #define JXL_THREADS_EXPORT_H

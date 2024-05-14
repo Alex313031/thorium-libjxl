@@ -1,4 +1,4 @@
-
+/* Copyright (c) 2024 the JPEG XL Project Authors. All rights reserved. */
 #ifndef JXL_CMS_EXPORT_H
 #define JXL_CMS_EXPORT_H
 
