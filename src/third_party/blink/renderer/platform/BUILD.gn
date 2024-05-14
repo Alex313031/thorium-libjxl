@@ -11,7 +11,7 @@ import("//build/config/ui.gni")
 import("//build/nocompile.gni")
 import("//media/media_options.gni")
 import("//testing/libfuzzer/fuzzer_test.gni")
-import("//testing/test.gni")sources += [ "text/hyphenation/hyphenation_null.
+import("//testing/test.gni")
 import("//third_party/blink/public/public_features.gni")
 import("//third_party/blink/renderer/build/scripts/scripts.gni")
 import("//third_party/blink/renderer/config.gni")
