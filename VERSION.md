@@ -1,6 +1,6 @@
 
-## Chromium Revision: 124.0.6367.218 (M124-stable)
- - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/124.0.6367.218
+## Chromium Revision: 126.0.6478.181 (M124-stable)
+ - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/126.0.6478.181
 
 ## libjxl Revision: e1489592a770b989303b0edc5cc1dc447bbe0515 (v0.10.2)
 
@@ -10,10 +10,10 @@
 
  - https://github.com/google/highway/commit/58b52a717469e62b2d9b8eaa2f5dddb44d4a4cbf
 
-## V8 Revision 1ecf7c4897c3ed68d65ac467cce5da142b495756
+## V8 Revision 825cc15c2d45976d72b4a5a1f9f7694d0cf07483
 
- - https://chromium.googlesource.com/v8/v8.git/+/1ecf7c4897c3ed68d65ac467cce5da142b495756
+ - https://chromium.googlesource.com/v8/v8.git/+/825cc15c2d45976d72b4a5a1f9f7694d0cf07483
 
-## devtools_frontend Revision: 694ad4ed3c55195acd701950d2b2528880e9201e
+## devtools_frontend Revision: c963f0c7472f41d9d4c3335fffdab4f9b8da25bb
 
-## ffmpeg Revision: 52d8ef3799b2f16b66351dd0972bb0bcee1648ac > https://github.com/StaZhu/enable-chromium-hevc-hardware-decoding
+## ffmpeg Revision: 092f84b6141055bfab609b6b2666b724eee2e130 > https://github.com/StaZhu/enable-chromium-hevc-hardware-decoding
