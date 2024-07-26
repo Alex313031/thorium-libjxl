@@ -1,6 +1,6 @@
 
-## Chromium Revision: 126.0.6478.190 (M124-stable)
- - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/126.0.6478.190
+## Chromium Revision: 126.0.6478.221 (M126-stable)
+ - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/126.0.6478.221
 
 ## libjxl Revision: 4a3b22d2600f92d8706fb72d85d52bfee2acbd54 (v0.10.3)
 
