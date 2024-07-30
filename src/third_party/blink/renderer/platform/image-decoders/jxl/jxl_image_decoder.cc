@@ -52,7 +52,7 @@ std::unique_ptr<ColorProfile> NewColorProfileWithSameBuffer(
   memcpy(owned_buffer.get(), buffer_donor.GetProfile()->buffer,
          buffer_donor.GetProfile()->size);
   new_profile.buffer = owned_buffer.get();
-  return std::make_unique<ColorProfile>(new_profile, std::move(owned_buffer));
+  return std::make_unique<ColorProfile>(new_profile);
 }
 }  // namespace
 

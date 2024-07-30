@@ -1,5 +1,7 @@
 # Notes for me when rebasing
 
+# OpenMandriva Patch > https://github.com/OpenMandrivaAssociation/chromium/blob/master/chromium-restore-jpeg-xl-support.patch
+
 Move jxl stuff from platform BUILD.gn to image_decoders BUILD.gn to fix includes
 
 # chrome/browser/flag_descriptions.cc
