@@ -8,10 +8,10 @@
  Chromium tree, and then Thorium's __//src/__ dir.
 
  &#62; @mo271's patch which this is based on: https://chromium-review.googlesource.com/c/chromium/src/+/4255409 \
- &#62; @gz83's patch which restores jxl devtools functionality: https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/4257582 \
+ &#62; @gz83's patch which restores jxl devtools functionality: https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/4257582 (DEPRECATED) \
  &#62; Also related, and needed for building is [libhighway](https://github.com/google/highway)
 
- &ndash; Both libjxl and libhighway versions are bumped to ~ Jun. 2023 revisions. \
+ &ndash; Both libjxl and libhighway versions are bumped to ~ Jun. 2024 revisions. \
  &ndash; For info on versions of these and other things, see the [VERSION.md](https://github.com/Alex313031/thorium-libjxl/blob/main/VERSION.md) file \
  &ndash; Note that PGO might be slightly less effective unless you generate your own *.profdata* file from a debug build of Thorium/Chromium.
 
@@ -38,4 +38,4 @@ gclient sync --with_branch_heads --with_tags -f -R -D # dont just use 'gclient s
  2. Run the `./setup.sh` script from within the repo. It assumes the Chromium repo is in *$HOME*, but can be overridden with the __CR_DIR__ env variable.
  3. [Build as normal](https://www.chromium.org/developers/how-tos/get-the-code/)
 
-__NOTE:__ You could also use the *.patch* files with "git am" or "git apply --reject".
+__NOTE:__ You could also use the *.patch* files with `git am /path/to/patchfile.patch` or `git apply --reject /path/to/patchfile.patch`.

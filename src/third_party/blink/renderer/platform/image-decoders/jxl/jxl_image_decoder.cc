@@ -52,7 +52,7 @@ std::unique_ptr<ColorProfile> NewColorProfileWithSameBuffer(
   memcpy(owned_buffer.get(), buffer_donor.GetProfile()->buffer,
          buffer_donor.GetProfile()->size);
   new_profile.buffer = owned_buffer.get();
-  return std::make_unique<ColorProfile>(new_profile);
+  return std::make_unique<ColorProfile>(new_profile, std::move(owned_buffer));
 }
 }  // namespace
 
@@ -376,7 +376,7 @@ void JXLImageDecoder::DecodeImpl(wtf_size_t index, bool only_size) {
                                      dec_.get(), JXL_COLOR_PROFILE_TARGET_DATA,
                                      icc_profile.data(), icc_profile.size())) {
             profile =
-                ColorProfile::Create(icc_profile.data(), icc_profile.size());
+                ColorProfile::Create(icc_profile);
             have_data_profile = true;
 
             // Detect whether the ICC profile approximately equals PQ or HLG,
