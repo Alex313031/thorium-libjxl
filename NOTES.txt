@@ -36,7 +36,7 @@ const char kEnableJXLDescription[] =
   'highway_revision': '457c891775a7397bdb0376bb1031e6e027af1c48',
 
   'src/third_party/dav1d/libdav1d':
-    Var('chromium_git') + '/external/github.com/videolan/dav1d.git' + '@' + '006ca01d387ac6652825d6cce1a57b2de67dbf8d',
+    Var('chromium_git') + '/external/github.com/videolan/dav1d.git' + '@' + '2355eeb8f254a1c34dbb0241be5c70cdf6ed46d1',
 
   'src/third_party/libjxl/src':
     Var('chromium_git') + '/external/github.com/libjxl/libjxl.git' + '@' + Var('libjxl_revision'),
