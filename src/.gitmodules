@@ -118,10 +118,6 @@
 [submodule "third_party/accessibility_test_framework/src"]
 	path = third_party/accessibility_test_framework/src
 	url = https://chromium.googlesource.com/external/github.com/google/Accessibility-Test-Framework-for-Android
-[submodule "third_party/android_protobuf/src"]
-	path = third_party/android_protobuf/src
-	url = https://android.googlesource.com/platform/external/protobuf
-	gclient-condition = checkout_android
 [submodule "third_party/androidx_javascriptengine/src"]
 	path = third_party/androidx_javascriptengine/src
 	url = https://chromium.googlesource.com/aosp/platform/frameworks/support/javascriptengine/javascriptengine/src
@@ -233,6 +229,9 @@
 [submodule "third_party/farmhash/src"]
 	path = third_party/farmhash/src
 	url = https://chromium.googlesource.com/external/github.com/google/farmhash
+[submodule "third_party/fast_float/src"]
+	path = third_party/fast_float/src
+	url = https://chromium.googlesource.com/external/github.com/fastfloat/fast_float
 [submodule "third_party/ffmpeg"]
 	path = third_party/ffmpeg
 	url = https://chromium.googlesource.com/chromium/third_party/ffmpeg
@@ -267,6 +266,12 @@
 [submodule "third_party/harfbuzz-ng/src"]
 	path = third_party/harfbuzz-ng/src
 	url = https://chromium.googlesource.com/external/github.com/harfbuzz/harfbuzz
+[submodule "third_party/ink/src"]
+	path = third_party/ink/src
+	url = https://chromium.googlesource.com/external/github.com/google/ink
+[submodule "third_party/ink_stroke_modeler/src"]
+	path = third_party/ink_stroke_modeler/src
+	url = https://chromium.googlesource.com/external/github.com/google/ink-stroke-modeler
 [submodule "third_party/instrumented_libs"]
 	path = third_party/instrumented_libs
 	url = https://chromium.googlesource.com/chromium/third_party/instrumented_libraries
@@ -333,6 +338,9 @@
 [submodule "third_party/fuzztest/src"]
 	path = third_party/fuzztest/src
 	url = https://chromium.googlesource.com/external/github.com/google/fuzztest
+[submodule "third_party/domato/src"]
+	path = third_party/domato/src
+	url = https://chromium.googlesource.com/external/github.com/googleprojectzero/domato
 [submodule "third_party/libaddressinput/src"]
 	path = third_party/libaddressinput/src
 	url = https://chromium.googlesource.com/external/libaddressinput
@@ -520,6 +528,33 @@
 [submodule "third_party/vulkan-deps"]
 	path = third_party/vulkan-deps
 	url = https://chromium.googlesource.com/vulkan-deps
+[submodule "third_party/glslang/src"]
+	path = third_party/glslang/src
+	url = https://chromium.googlesource.com/external/github.com/KhronosGroup/glslang
+[submodule "third_party/spirv-cross/src"]
+	path = third_party/spirv-cross/src
+	url = https://chromium.googlesource.com/external/github.com/KhronosGroup/SPIRV-Cross
+[submodule "third_party/spirv-headers/src"]
+	path = third_party/spirv-headers/src
+	url = https://chromium.googlesource.com/external/github.com/KhronosGroup/SPIRV-Headers
+[submodule "third_party/spirv-tools/src"]
+	path = third_party/spirv-tools/src
+	url = https://chromium.googlesource.com/external/github.com/KhronosGroup/SPIRV-Tools
+[submodule "third_party/vulkan-headers/src"]
+	path = third_party/vulkan-headers/src
+	url = https://chromium.googlesource.com/external/github.com/KhronosGroup/Vulkan-Headers
+[submodule "third_party/vulkan-loader/src"]
+	path = third_party/vulkan-loader/src
+	url = https://chromium.googlesource.com/external/github.com/KhronosGroup/Vulkan-Loader
+[submodule "third_party/vulkan-tools/src"]
+	path = third_party/vulkan-tools/src
+	url = https://chromium.googlesource.com/external/github.com/KhronosGroup/Vulkan-Tools
+[submodule "third_party/vulkan-utility-libraries/src"]
+	path = third_party/vulkan-utility-libraries/src
+	url = https://chromium.googlesource.com/external/github.com/KhronosGroup/Vulkan-Utility-Libraries
+[submodule "third_party/vulkan-validation-layers/src"]
+	path = third_party/vulkan-validation-layers/src
+	url = https://chromium.googlesource.com/external/github.com/KhronosGroup/Vulkan-ValidationLayers
 [submodule "third_party/vulkan_memory_allocator"]
 	path = third_party/vulkan_memory_allocator
 	url = https://chromium.googlesource.com/external/github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
@@ -594,10 +629,6 @@
 	path = chromeos/assistant/internal
 	url = https://chrome-internal.googlesource.com/chrome/assistant
 	gclient-condition = checkout_src_internal and checkout_chromeos
-[submodule "ash/webui/conch"]
-	path = ash/webui/conch
-	url = https://chrome-internal.googlesource.com/ash/webui/conch
-	gclient-condition = checkout_src_internal and checkout_chromeos
 [submodule "build/fuchsia/internal"]
 	path = build/fuchsia/internal
 	url = https://chrome-internal.googlesource.com/fuchsia/build
@@ -637,6 +668,10 @@
 [submodule "chrome/browser/platform_experience/win"]
 	path = chrome/browser/platform_experience/win
 	url = https://chrome-internal.googlesource.com/chrome/browser/platform_experience/win
+	gclient-condition = checkout_src_internal
+[submodule "chrome/browser/request_header_integrity/internal"]
+	path = chrome/browser/request_header_integrity/internal
+	url = https://chrome-internal.googlesource.com/chrome/browser/request_header_integrity/internal
 	gclient-condition = checkout_src_internal
 [submodule "chrome/browser/resources/downloads/internal"]
 	path = chrome/browser/resources/downloads/internal
@@ -694,6 +729,14 @@
 	path = chrome/services/speech/internal
 	url = https://chrome-internal.googlesource.com/chromeos/speech
 	gclient-condition = checkout_chromeos and checkout_src_internal
+[submodule "chrome/updater/internal"]
+	path = chrome/updater/internal
+	url = https://chrome-internal.googlesource.com/chrome/updater/internal
+	gclient-condition = checkout_src_internal
+[submodule "components/accessibility/internal"]
+	path = components/accessibility/internal
+	url = https://chrome-internal.googlesource.com/chrome-accessibility
+	gclient-condition = checkout_src_internal
 [submodule "components/autofill/core/browser/form_parsing/internal_resources"]
 	path = components/autofill/core/browser/form_parsing/internal_resources
 	url = https://chrome-internal.googlesource.com/chrome/components/autofill_regex_patterns
@@ -786,14 +829,6 @@
 	path = third_party/android_tools_internal
 	url = https://chrome-internal.googlesource.com/clank/third_party/android_tools
 	gclient-condition = checkout_android and checkout_src_internal
-[submodule "third_party/gles2_conform"]
-	path = third_party/gles2_conform
-	url = https://chrome-internal.googlesource.com/chrome/deps/gles2_conform
-	gclient-condition = checkout_src_internal
-[submodule "third_party/khronos_glcts"]
-	path = third_party/khronos_glcts
-	url = https://chrome-internal.googlesource.com/chrome/deps/khronos_glcts
-	gclient-condition = checkout_src_internal
 [submodule "third_party/widevine/cdm/chromeos"]
 	path = third_party/widevine/cdm/chromeos
 	url = https://chrome-internal.googlesource.com/chrome/deps/widevine/cdm/chromeos
