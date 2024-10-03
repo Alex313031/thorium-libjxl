@@ -15,4 +15,7 @@
 
 ## devtools_frontend Revision: 47f04a536265028feb1254a3663853e0ce526455
 
-## ffmpeg Revision: d941d9677bb4802f01750fd908ec284fb72c84df > https://github.com/StaZhu/enable-chromium-hevc-hardware-decoding
+## ffmpeg Revision: d941d9677bb4802f01750fd908ec284fb72c84df
+
+## https://chromium.googlesource.com/chromium/third_party/ffmpeg/
+## https://github.com/StaZhu/enable-chromium-hevc-hardware-decoding
