@@ -1,5 +1,5 @@
-## Chromium Revision: 128.0.6613.181 (M128-stable)
- - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/128.0.6613.181
+## Chromium Revision: 128.0.6613.189 (M128-stable)
+ - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/128.0.6613.189
 
 ## libjxl Revision: 4a3b22d2600f92d8706fb72d85d52bfee2acbd54 (v0.10.3)
 
@@ -9,9 +9,9 @@
 
  - https://github.com/google/highway/commit/457c891775a7397bdb0376bb1031e6e027af1c48
 
-## V8 Revision b6c9d1123e2167e82d94971e70bb30739897ca22
+## V8 Revision d213b3bbc0ecf17ccd2849fdef3bccb1946b01b3
 
- - https://chromium.googlesource.com/v8/v8.git/+/b6c9d1123e2167e82d94971e70bb30739897ca22
+ - https://chromium.googlesource.com/v8/v8.git/+/d213b3bbc0ecf17ccd2849fdef3bccb1946b01b3
 
 ## devtools_frontend Revision: 47f04a536265028feb1254a3663853e0ce526455
 
