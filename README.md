@@ -8,6 +8,7 @@
  Chromium tree, and then Thorium's __//src/__ dir.
 
  &#62; @mo271's patch which this is based on: https://chromium-review.googlesource.com/c/chromium/src/+/5454316 \
+ https://issues.chromium.org/issues/40256897
  &#62; @gz83's patch which restores jxl devtools functionality: https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/4257582 (DEPRECATED) \
  &#62; Also related, and needed for building is [libhighway](https://github.com/google/highway)
 
