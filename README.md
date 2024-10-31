@@ -7,7 +7,7 @@
  - This repo is added as a submodule to [the main Thorium repo](https://github.com/Alex313031/Thorium), and `setup.sh` therein copies this repos __//src/__ dir over the
  Chromium tree, and then Thorium's __//src/__ dir.
 
- &#62; @mo271's patch which this is based on: https://chromium-review.googlesource.com/c/chromium/src/+/4255409 \
+ &#62; @mo271's patch which this is based on: https://chromium-review.googlesource.com/c/chromium/src/+/5454316 \
  &#62; @gz83's patch which restores jxl devtools functionality: https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/4257582 (DEPRECATED) \
  &#62; Also related, and needed for building is [libhighway](https://github.com/google/highway)
 
