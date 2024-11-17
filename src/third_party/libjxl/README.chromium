@@ -7,6 +7,7 @@ Revision: 4a3b22d2600f92d8706fb72d85d52bfee2acbd54
 License: BSD 3-Clause
 License File: src/LICENSE
 Security Critical: yes
+License Android Compatible: yes
 CPEPrefix: cpe:/a:libjxl_project:libjxl:0.10.3
 
 Description:
