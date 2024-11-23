@@ -1,6 +1,11 @@
-// Copyright 2021 The Chromium Authors
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+#ifdef UNSAFE_BUFFERS_BUILD
+// TODO(crbug.com/351564777): Remove this and convert code to safer constructs.
+#pragma allow_unsafe_buffers
+#endif
 
 #include "third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.h"
 #include "base/logging.h"
@@ -64,6 +69,7 @@ JXLImageDecoder::JXLImageDecoder(
     : ImageDecoder(alpha_option,
                    high_bit_depth_decoding_option,
                    color_behavior,
+                   cc::AuxImage::kDefault,
                    max_decoded_bytes) {
   info_.have_animation = false;
 }

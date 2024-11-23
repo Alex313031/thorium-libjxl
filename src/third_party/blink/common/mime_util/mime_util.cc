@@ -45,9 +45,7 @@ constexpr auto kSupportedImageTypes = base::MakeFixedFlatSet<std::string_view>({
     "image/avif",
 #endif
 #if BUILDFLAG(ENABLE_JXL_DECODER)
-  if (base::FeatureList::IsEnabled(features::kJXL)) {
     "image/jxl",
-  }
 #endif
 });
 
