@@ -1,5 +1,5 @@
-## Chromium Revision: 130.0.6723.135 (M130-stable)
- - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/130.0.6723.135
+## Chromium Revision: 130.0.6723.141 (M130-stable)
+ - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/130.0.6723.141
 
 ## libjxl Revision: 4a3b22d2600f92d8706fb72d85d52bfee2acbd54 (v0.10.3)
 
@@ -13,7 +13,7 @@
 
  - https://chromium.googlesource.com/v8/v8.git/+/94570c6458ba721e4bd1967759844653acc71081
 
-## devtools_frontend Revision: 488f45da141d9e2b3fe6f86aa0e3bca05ad95b64
+## devtools_frontend Revision: deee9c11c9f76ef595b7d0b52fcf677d25aac5f2
 
 ## ffmpeg Revision: 91903c28af60a732a051c343b496e1188eec9b05
 
