@@ -1,5 +1,5 @@
-## Chromium Revision: 132.0.6834.210 (M132-stable)
- - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/132.0.6834.210
+## Chromium Revision: 138.0.7204.193 (M138-stable)
+ - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/138.0.7204.193
 
 ## libjxl Revision: 4a3b22d2600f92d8706fb72d85d52bfee2acbd54 (v0.10.3)
 
@@ -9,13 +9,15 @@
 
  - https://github.com/google/highway/commit/00fe003dac355b979f36157f9407c7c46448958e
 
-## V8 Revision 7130a7a08a7075cc1967528402ec536f6fd85ed2
+## V8 Revision 54f355e9ad22c93162d7d9d94c849c729d64bee7
 
- - https://chromium.googlesource.com/v8/v8.git/+/7130a7a08a7075cc1967528402ec536f6fd85ed2
+ - https://chromium.googlesource.com/v8/v8.git/+/54f355e9ad22c93162d7d9d94c849c729d64bee7
 
-## devtools_frontend Revision: f2f3682c9db8ca427f8c64f0402cc2c5152c6c24
+## devtools_frontend Revision: 634ef4ab735f8fc717eb17935d5a0f1b9831d852
 
-## ffmpeg Revision: 591ae4b02eaff9a03e2ec863da895128b0b49910
+## ffmpeg Revision: dcdd0fa51b65a0b1688ff6b8f0cc81908f09ded2
+
+## depot_tools Revision: a8900cc0f023d6a662eb66b317e8ddceeb113490
 
 ## https://chromium.googlesource.com/chromium/third_party/ffmpeg/
 ## https://github.com/StaZhu/enable-chromium-hevc-hardware-decoding

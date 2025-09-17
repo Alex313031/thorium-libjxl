@@ -44,6 +44,7 @@
 /data_sharing_sdk
 /devserver
 /directxsdk
+/dragonbox/src
 /edk2
 /elfutils/src
 /espresso/lib/
@@ -80,6 +81,7 @@
 /libjingle/source
 /libjxl/src
 /libupnp
+/libva-fake-driver/src
 /llvm
 /llvm-allocated-type
 /llvm-bootstrap
@@ -152,6 +154,7 @@
 /vulkan-tools/src
 /vulkan-utility-libraries/src
 /vulkan-validation-layers/src
+/wasm_tts_engine/src
 /webdriver/python/selenium
 /webgl
 /webpagereplay

@@ -53,9 +53,7 @@ REPLACEMENTS = {
     'icu': 'third_party/icu/BUILD.gn',
     'jsoncpp': 'third_party/jsoncpp/BUILD.gn',
     'libaom': 'third_party/libaom/BUILD.gn',
-    'libavif': 'third_party/libavif/BUILD.gn',
     'libdrm': 'third_party/libdrm/BUILD.gn',
-    'libevent': 'third_party/libevent/BUILD.gn',
     'libjpeg': 'third_party/libjpeg.gni',
     'libjxl': 'third_party/libjxl/BUILD.gn',
     'libpng': 'third_party/libpng/BUILD.gn',
@@ -70,6 +68,7 @@ REPLACEMENTS = {
     'openh264': 'third_party/openh264/BUILD.gn',
     'opus': 'third_party/opus/BUILD.gn',
     're2': 'third_party/re2/BUILD.gn',
+    'simdutf': 'third_party/simdutf/BUILD.gn',
     'snappy': 'third_party/snappy/BUILD.gn',
     # Use system libSPIRV-Tools in Swiftshader.
     # These two shims MUST be used together.
