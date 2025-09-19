@@ -24,10 +24,12 @@ source_set("libjxl") {
   sources += rebase_path(libjxl_dec_box_sources, ".", "src/lib")
   sources += rebase_path(libjxl_cms_sources, ".", "src/lib")
 
-  if (is_win) {
-    cflags = [ "/O2", ]
-  } else {
-    cflags = [ "-O3", ]
+  if (is_official_build) {
+    if (is_win) {
+      cflags = [ "/O2", ]
+    } else {
+      cflags = [ "-O3", ]
+    }
   }
 
   cflags_cc = [

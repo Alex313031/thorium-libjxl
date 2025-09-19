@@ -1,11 +1,6 @@
-// Copyright 2024 The Chromium Authors and Alex313031
+// Copyright 2025 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
-#ifdef UNSAFE_BUFFERS_BUILD
-// TODO(crbug.com/351564777): Remove this and convert code to safer constructs.
-#pragma allow_unsafe_buffers
-#endif
 
 #include "third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.h"
 #include "base/logging.h"
@@ -52,12 +47,10 @@ std::unique_ptr<ColorProfile> NewColorProfileWithSameBuffer(
   // The input ColorProfile owns the buffer memory, make a new copy for
   // the newly created one and pass the ownership of the new copy to the new
   // color profile.
-  std::unique_ptr<uint8_t[]> owned_buffer(
-      new uint8_t[buffer_donor.GetProfile()->size]);
-  memcpy(owned_buffer.get(), buffer_donor.GetProfile()->buffer,
-         buffer_donor.GetProfile()->size);
-  new_profile.buffer = owned_buffer.get();
-  return std::make_unique<ColorProfile>(new_profile);
+  base::HeapArray<uint8_t> owned_buffer=base::HeapArray<uint8_t>::Uninit(buffer_donor.GetProfile()->size);
+  memcpy(owned_buffer.data(), buffer_donor.GetProfile()->buffer, buffer_donor.GetProfile()->size);
+  new_profile.buffer = owned_buffer.data();
+  return std::make_unique<ColorProfile>(new_profile, std::move(owned_buffer));
 }
 }  // namespace
 
@@ -65,7 +58,8 @@ JXLImageDecoder::JXLImageDecoder(
     AlphaOption alpha_option,
     HighBitDepthDecodingOption high_bit_depth_decoding_option,
     const ColorBehavior& color_behavior,
-    wtf_size_t max_decoded_bytes)
+    wtf_size_t max_decoded_bytes,
+    AnimationOption animation_option)
     : ImageDecoder(alpha_option,
                    high_bit_depth_decoding_option,
                    color_behavior,
