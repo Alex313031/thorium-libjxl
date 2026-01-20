@@ -1,5 +1,5 @@
-## Chromium Revision: 138.0.7204.300 (M138-stable)
- - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/138.0.7204.300
+## Chromium Revision: 138.0.7204.301 (M138-stable)
+ - https://chromium.googlesource.com/chromium/src.git/+/refs/tags/138.0.7204.301
 
 ## libjxl Revision: 4a3b22d2600f92d8706fb72d85d52bfee2acbd54 (v0.10.3)
 
