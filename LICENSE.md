@@ -1,4 +1,4 @@
-Copyright (c) 2024 Alex313031
+Copyright (c) 2026 Alex313031
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

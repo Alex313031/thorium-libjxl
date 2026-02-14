@@ -743,7 +743,7 @@ index 6633b02073845..cec34eb7fc83e 100644
 +++ b/third_party/blink/public/public_features.gni
 @@ -1,9 +1,17 @@
 -# Copyright 2016 The Chromium Authors
-+# Copyright 2024 The Chromium Authors and Alex313031
++# Copyright 2026 The Chromium Authors and Alex313031
  # Use of this source code is governed by a BSD-style license that can be
  # found in the LICENSE file.
  
@@ -1045,7 +1045,7 @@ index 6668b18e562d6..d59943ad25d1a 100644
 +++ b/third_party/blink/renderer/platform/image-decoders/BUILD.gn
 @@ -1,4 +1,4 @@
 -# Copyright 2023 The Chromium Authors
-+# Copyright 2024 The Chromium Authors and Alex313031
++# Copyright 2026 The Chromium Authors and Alex313031
  # Use of this source code is governed by a BSD-style license that can be
  # found in the LICENSE file.
  
@@ -1132,7 +1132,7 @@ index 0000000000000..c6ba76b9a8fb2
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.cc
 @@ -0,0 +1,697 @@
-+// Copyright 2024 The Chromium Authors and Alex313031
++// Copyright 2026 The Chromium Authors and Alex313031
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -20909,7 +20909,7 @@ index 0000000000000..bd107ee22c19b
 --- /dev/null
 +++ b/third_party/libjxl/BUILD.gn
 @@ -0,0 +1,66 @@
-+# Copyright 2024 The Chromium Authors and Alex313031
++# Copyright 2026 The Chromium Authors and Alex313031
 +# Use of this source code is governed by a BSD-style license that can be
 +# found in the LICENSE file.
 +
