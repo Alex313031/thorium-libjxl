@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors, Alex313031, and win32ss
+// Copyright 2026 The Chromium Authors, Alex313031, and win32ss
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
