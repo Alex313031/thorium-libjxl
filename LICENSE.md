@@ -1,4 +1,6 @@
-Copyright (c) 2026 Alex313031
+BSD 3-Clause License
+
+Copyright (c) 2023-2026, Alexander Frick <alex313031>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
