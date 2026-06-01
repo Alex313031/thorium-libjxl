@@ -5,10 +5,10 @@
 #include "third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.h"
 
 #include <array>
-#include <cstring>
 #include <memory>
 #include <vector>
 
+#include "base/compiler_specific.h"
 #include "base/containers/heap_array.h"
 #include "base/containers/span.h"
 #include "base/logging.h"
@@ -18,11 +18,6 @@
 #include "third_party/blink/renderer/platform/wtf/text/atomic_string.h"
 #include "third_party/skia/include/core/SkColorSpace.h"
 #include "ui/gfx/color_space.h"
-
-#ifdef UNSAFE_BUFFERS_BUILD
-// TODO(crbug.com/351564777): Remove this and convert code to safer constructs.
-#pragma allow_unsafe_buffers
-#endif
 
 namespace blink {
 
@@ -40,9 +35,9 @@ skcms_ICCProfile ReplaceTransferFunction(skcms_ICCProfile profile,
                                          const skcms_TransferFunction& tf) {
   // Override the transfer function with a known parametric curve.
   profile.has_trc = true;
-  for (int c = 0; c < 3; c++) {
-    profile.trc[c].table_entries = 0;
-    profile.trc[c].parametric = tf;
+  for (skcms_Curve& trc : base::span(profile.trc)) {
+    trc.table_entries = 0;
+    trc.parametric = tf;
   }
   return profile;
 }
@@ -63,10 +58,9 @@ std::unique_ptr<ColorProfile> NewColorProfileWithSameBuffer(
   // The input ColorProfile owns the buffer memory, make a new copy for
   // the newly created one and pass the ownership of the new copy to the new
   // color profile.
-  base::HeapArray<uint8_t> owned_buffer =
-      base::HeapArray<uint8_t>::Uninit(buffer_donor.GetProfile()->size);
-  memcpy(owned_buffer.data(), buffer_donor.GetProfile()->buffer,
-         buffer_donor.GetProfile()->size);
+  const skcms_ICCProfile* donor_profile = buffer_donor.GetProfile();
+  base::HeapArray<uint8_t> owned_buffer = base::HeapArray<uint8_t>::CopiedFrom(
+      UNSAFE_TODO(base::span(donor_profile->buffer, donor_profile->size)));
   new_profile.buffer = owned_buffer.data();
   return std::make_unique<ColorProfile>(new_profile, std::move(owned_buffer));
 }
@@ -561,6 +555,11 @@ void JXLImageDecoder::DecodeImpl(wtf_size_t index, bool only_size) {
 
 bool JXLImageDecoder::MatchesJXLSignature(
     const FastSharedBufferReader& fast_reader) {
+  static constexpr auto kDirectCodestreamSignature =
+      std::to_array<uint8_t>({0xFF, 0x0A});
+  static constexpr auto kContainerSignature = std::to_array<uint8_t>(
+      {0x00, 0x00, 0x00, 0x0C, 'J', 'X', 'L', ' ', 0x0D, 0x0A, 0x87, 0x0A});
+
   std::array<uint8_t, 12> buffer;
   if (fast_reader.size() < sizeof(buffer)) {
     return false;
@@ -568,11 +567,12 @@ bool JXLImageDecoder::MatchesJXLSignature(
   base::span<const uint8_t> contents =
       fast_reader.GetConsecutiveData(0, sizeof(buffer), buffer);
   // Direct codestream
-  if (!memcmp(contents.data(), "\xFF\x0A", 2)) {
+  if (contents.first<kDirectCodestreamSignature.size()>() ==
+      base::span(kDirectCodestreamSignature)) {
     return true;
   }
   // Box format container
-  if (!memcmp(contents.data(), "\0\0\0\x0CJXL \x0D\x0A\x87\x0A", 12)) {
+  if (contents == base::span(kContainerSignature)) {
     return true;
   }
   return false;
