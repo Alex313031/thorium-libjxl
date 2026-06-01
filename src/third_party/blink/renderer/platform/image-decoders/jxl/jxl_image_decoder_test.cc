@@ -5,6 +5,9 @@
 #include "third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.h"
 
 #include <memory>
+
+#include "base/compiler_specific.h"
+#include "base/containers/span.h"
 #include "testing/gtest/include/gtest/gtest.h"
 #include "third_party/blink/renderer/platform/image-decoders/image_decoder_test_helpers.h"
 #include "third_party/skia/include/core/SkColorSpace.h"
@@ -144,8 +147,8 @@ struct FramePoint {
 
 void TestPixel(const char* jxl_file,
                gfx::Size expected_size,
-               const WTF::Vector<FramePoint>& coordinates,
-               const WTF::Vector<SkColor>& expected_colors,
+               const Vector<FramePoint>& coordinates,
+               const Vector<SkColor>& expected_colors,
                ImageDecoder::AlphaOption alpha_option,
                ColorBehavior color_behavior,
                int accuracy,
@@ -197,12 +200,12 @@ class PerByteSegmentReader : public SegmentReader {
  public:
   PerByteSegmentReader(SharedBuffer& buffer) : buffer_(buffer) {}
   size_t size() const override { return buffer_.size(); }
-  size_t GetSomeData(const char*& data, size_t position) const override {
+  base::span<const uint8_t> GetSomeData(size_t position) const override {
     if (position >= buffer_.size()) {
-      return 0;
+      return {};
     }
-    data = buffer_.Data() + position;
-    return 1;
+    return base::as_bytes(
+        UNSAFE_BUFFERS(base::span(buffer_.Data() + position, 1u)));
   }
   sk_sp<SkData> GetAsSkData() const override { return nullptr; }
 
@@ -284,7 +287,7 @@ TEST(JXLTests, PixelTest) {
             ImageDecoder::AlphaOption::kAlphaPremultiplied,
             ColorBehavior::Tag(), 0);
 
-  WTF::Vector<FramePoint> coordinates_3x3 = {
+  Vector<FramePoint> coordinates_3x3 = {
       {0, {0, 0}}, {0, {1, 0}}, {0, {2, 0}}, {0, {0, 1}}, {0, {1, 1}},
       {0, {2, 1}}, {0, {0, 2}}, {0, {1, 2}}, {0, {2, 2}},
   };
