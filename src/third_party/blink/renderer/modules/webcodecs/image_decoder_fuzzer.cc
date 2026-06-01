@@ -38,13 +38,13 @@ namespace blink {
 
 namespace {
 
-String ToColorSpaceConversion(
+V8ColorSpaceConversion::Enum ToColorSpaceConversion(
     wc_fuzzer::ImageBitmapOptions_ColorSpaceConversion type) {
   switch (type) {
     case wc_fuzzer::ImageBitmapOptions_ColorSpaceConversion_CS_NONE:
-      return "none";
+      return V8ColorSpaceConversion::Enum::kNone;
     case wc_fuzzer::ImageBitmapOptions_ColorSpaceConversion_CS_DEFAULT:
-      return "default";
+      return V8ColorSpaceConversion::Enum::kDefault;
   }
 }
 
@@ -114,8 +114,8 @@ DEFINE_BINARY_PROTO_FUZZER(
   Persistent<ImageDecoderInit> image_decoder_init =
       MakeGarbageCollected<ImageDecoderInit>();
   image_decoder_init->setType(proto.config().type().c_str());
-  Persistent<DOMArrayBuffer> data_copy = DOMArrayBuffer::Create(
-      proto.config().data().data(), proto.config().data().size());
+  Persistent<DOMArrayBuffer> data_copy =
+      DOMArrayBuffer::Create(base::as_byte_span(proto.config().data()));
   image_decoder_init->setData(
       MakeGarbageCollected<V8ImageBufferSource>(data_copy));
   image_decoder_init->setColorSpaceConversion(ToColorSpaceConversion(

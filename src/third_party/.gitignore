@@ -37,7 +37,6 @@
 /chromeos_login_manager
 /chromeos_text_input
 /cld_2/src
-/cronet_android_mainline_clang/linux-amd64
 /cros
 /custom_tabs_client/src
 /cygwin
@@ -90,6 +89,7 @@
 /llvm-build/
 /mesa/src
 /microsoft_dxheaders/src
+/webauthn/src
 /mingw-w64
 /mkl
 /mocha
@@ -120,12 +120,13 @@
 /qemu-linux-arm64
 /qemu-linux-x64
 /qemu-mac-x64
+/readability
 /rust-src
 /rust-toolchain-intermediate
 /rust-toolchain/
 /scan-build/src
 /scons-2.0.1
-/screen-ai
+/screen-ai/*/*
 /shaka-player/dist/
 /siso/.versions/
 /siso/cipd/
