@@ -5,6 +5,7 @@
 #ifndef CC_PAINT_PAINT_IMAGE_H_
 #define CC_PAINT_PAINT_IMAGE_H_
 
+#include <array>
 #include <optional>
 #include <string>
 #include <vector>
@@ -12,7 +13,6 @@
 #include "base/gtest_prod_util.h"
 #include "base/memory/scoped_refptr.h"
 #include "cc/paint/deferred_paint_record.h"
-#include "cc/paint/frame_metadata.h"
 #include "cc/paint/image_animation_count.h"
 #include "cc/paint/paint_export.h"
 #include "cc/paint/paint_record.h"
@@ -37,6 +37,7 @@ class VideoFrame;
 
 namespace cc {
 
+struct FrameMetadata;
 class PaintImageGenerator;
 class PaintWorkletInput;
 class TextureBacking;
@@ -309,9 +310,6 @@ class CC_PAINT_EXPORT PaintImage {
   }
   bool NeedsLayer() const;
   bool IsTextureBacked() const;
-  // Skia internally buffers commands and flushes them as necessary but there
-  // are some cases where we need to force a flush.
-  void FlushPendingSkiaOps();
   int width() const { return GetSkImageInfo().width(); }
   int height() const { return GetSkImageInfo().height(); }
   SkColorSpace* color_space() const {
@@ -323,7 +321,7 @@ class CC_PAINT_EXPORT PaintImage {
   }
   bool GetReinterpretAsSRGB() const { return reinterpret_as_srgb_; }
 
-  gfx::ContentColorUsage GetContentColorUsage(bool* is_hlg = nullptr) const;
+  gfx::ContentColorUsage GetContentColorUsage() const;
 
   // Returns whether this image will be decoded and rendered from YUV data
   // and fills out |info|. |supported_data_types| indicates the bit depths and
@@ -365,14 +363,14 @@ class CC_PAINT_EXPORT PaintImage {
   }
 
   bool IsOpaque() const;
-  bool HasGainmap() const {
+  bool HasGainmapInfo() const {
     DCHECK_EQ(gainmap_paint_image_generator_ != nullptr ||
                   gainmap_sk_image_ != nullptr,
               gainmap_info_.has_value());
     return gainmap_info_.has_value();
   }
   const SkGainmapInfo& GetGainmapInfo() const {
-    DCHECK(HasGainmap());
+    DCHECK(HasGainmapInfo());
     return gainmap_info_.value();
   }
 
@@ -429,9 +427,6 @@ class CC_PAINT_EXPORT PaintImage {
   // If true, then this images will be reinterpreted as being sRGB during paint.
   // This is used by createImageBitmap's colorSpaceConversion:"none".
   bool reinterpret_as_srgb_ = false;
-
-  // The target HDR headroom for gainmap and global tone map application.
-  float target_hdr_headroom_ = 1.f;
 
   // Gainmap HDR metadata.
   sk_sp<SkImage> gainmap_sk_image_;
