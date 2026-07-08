@@ -4,7 +4,7 @@
 
 Move jxl stuff from platform BUILD.gn to image_decoders BUILD.gn to fix includes
 
-# chrome/browser/flag_descriptions.cc
+# chrome/browser/flag_descriptions.h
 
 
 #if BUILDFLAG(ENABLE_JXL_DECODER)
@@ -27,16 +27,16 @@ const char kEnableJXLDescription[] =
 
 # DEPS
 
-  'highway_revision': '00fe003dac355b979f36157f9407c7c46448958e',
+  'highway_revision': '84379d1c73de9681b54fbe1c035a23c7bd5d272d',
 
-  'libjxl_revision': '4a3b22d2600f92d8706fb72d85d52bfee2acbd54',
+  'libjxl_revision': '332feb17d17311c748445f7ee75c4fb55cc38530',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling feed
   # and whatever else without interference from each other.
-  'highway_revision': '00fe003dac355b979f36157f9407c7c46448958e',
+  'highway_revision': '84379d1c73de9681b54fbe1c035a23c7bd5d272d',
 
   'src/third_party/dav1d/libdav1d':
-    Var('chromium_git') + '/external/github.com/videolan/dav1d.git' + '@' + '8d956180934f16244bdb58b39175824775125e55',
+    Var('chromium_git') + '/external/github.com/videolan/dav1d.git' + '@' + 'fcbc3d1b93f91c709293ed9faea8b7cbcac9030b',
 
   'src/third_party/libjxl/src':
     Var('chromium_git') + '/external/github.com/libjxl/libjxl.git' + '@' + Var('libjxl_revision'),

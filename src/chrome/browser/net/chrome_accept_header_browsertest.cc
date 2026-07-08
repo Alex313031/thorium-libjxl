@@ -15,7 +15,6 @@
 
 using ChromeAcceptHeaderTest = InProcessBrowserTest;
 
-
 namespace {
 #if BUILDFLAG(ENABLE_AV1_DECODER) || BUILDFLAG(ENABLE_JXL_DECODER)
 std::string GetOptionalImageCodecs() {

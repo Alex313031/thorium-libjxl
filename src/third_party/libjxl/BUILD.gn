@@ -33,9 +33,12 @@ source_set("libjxl") {
   }
 
   cflags_cc = [
+    "-Wno-extra-semi",
     "-Wno-shadow",
     "-Wno-unused-function",
   ]
+
+  configs += [ "//build/config/compiler:no_exit_time_destructors" ]
 
   defines = [
     "JPEGXL_ENABLE_SKCMS=1",

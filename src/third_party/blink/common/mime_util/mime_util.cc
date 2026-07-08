@@ -151,12 +151,18 @@ bool IsWasmMIMEType(std::string_view mime_type) {
   return net::MatchesMimeType("application/wasm", mime_type);
 }
 
-// TODO(crbug.com/362282752): Allow non-application `*/*+json` MIME types.
 // https://mimesniff.spec.whatwg.org/#json-mime-type
 bool IsJSONMimeType(std::string_view mime_type) {
-  return net::MatchesMimeType("application/json", mime_type) ||
-         net::MatchesMimeType("text/json", mime_type) ||
-         net::MatchesMimeType("application/*+json", mime_type);
+  if (net::MatchesMimeType("application/json", mime_type) ||
+      net::MatchesMimeType("text/json", mime_type)) {
+    return true;
+  }
+  const net::MimeTypeValidationLevel level =
+      base::FeatureList::IsEnabled(
+          blink::features::kStrictJsonMimeTypeTokenValidation)
+          ? net::MimeTypeValidationLevel::kWildcardSlashAndTokens
+          : net::MimeTypeValidationLevel::kWildcardSlashOnly;
+  return net::MatchesMimeType("*+json", mime_type, level);
 }
 
 // TODO(crbug.com/362282752): Allow other `*/*+xml` MIME types.

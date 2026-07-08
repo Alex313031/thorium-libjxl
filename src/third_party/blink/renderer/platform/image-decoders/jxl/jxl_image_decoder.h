@@ -34,7 +34,6 @@
 #include "base/memory/raw_ptr.h"
 #include "third_party/blink/renderer/platform/image-decoders/fast_shared_buffer_reader.h"
 #include "third_party/blink/renderer/platform/image-decoders/image_decoder.h"
-
 #include "third_party/libjxl/src/lib/include/jxl/decode.h"
 #include "third_party/libjxl/src/lib/include/jxl/decode_cxx.h"
 
@@ -46,8 +45,7 @@ class PLATFORM_EXPORT JXLImageDecoder final : public ImageDecoder {
   JXLImageDecoder(AlphaOption,
                   HighBitDepthDecodingOption high_bit_depth_decoding_option,
                   const ColorBehavior&,
-                  wtf_size_t max_decoded_bytes,
-                  AnimationOption);
+                  wtf_size_t max_decoded_bytes);
 
   // ImageDecoder:
   String FilenameExtension() const override { return "jxl"; }
@@ -81,7 +79,7 @@ class PLATFORM_EXPORT JXLImageDecoder final : public ImageDecoder {
   // available or if Failed() was set.
   bool ReadBytes(size_t remaining,
                  wtf_size_t* offset,
-                 WTF::Vector<uint8_t>* segment,
+                 Vector<uint8_t>* segment,
                  FastSharedBufferReader* reader,
                  const uint8_t** jxl_data,
                  size_t* jxl_size);
@@ -112,12 +110,12 @@ class PLATFORM_EXPORT JXLImageDecoder final : public ImageDecoder {
   wtf_size_t num_decoded_frames_ = 0;
   bool has_full_frame_count_ = false;
   size_t size_at_last_frame_count_ = 0;
-  WTF::Vector<float> frame_durations_;
+  Vector<float> frame_durations_;
   // Multiple concatenated segments from the FastSharedBufferReader, these are
   // only used when a single segment did not contain enough data for the JXL
   // parser.
-  WTF::Vector<uint8_t> segment_;
-  WTF::Vector<uint8_t> frame_count_segment_;
+  Vector<uint8_t> segment_;
+  Vector<uint8_t> frame_count_segment_;
 };
 
 }  // namespace blink

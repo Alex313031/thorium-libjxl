@@ -3,15 +3,21 @@
 // found in the LICENSE file.
 
 #include "third_party/blink/renderer/platform/image-decoders/jxl/jxl_image_decoder.h"
+
+#include <array>
+#include <memory>
+#include <vector>
+
+#include "base/compiler_specific.h"
+#include "base/containers/heap_array.h"
+#include "base/containers/span.h"
 #include "base/logging.h"
+#include "base/numerics/safe_conversions.h"
 #include "base/time/time.h"
 #include "third_party/blink/renderer/platform/image-decoders/fast_shared_buffer_reader.h"
+#include "third_party/blink/renderer/platform/wtf/text/atomic_string.h"
 #include "third_party/skia/include/core/SkColorSpace.h"
-
-#ifdef UNSAFE_BUFFERS_BUILD
-// TODO(crbug.com/351564777): Remove this and convert code to safer constructs.
-#pragma allow_unsafe_buffers
-#endif
+#include "ui/gfx/color_space.h"
 
 namespace blink {
 
@@ -29,9 +35,9 @@ skcms_ICCProfile ReplaceTransferFunction(skcms_ICCProfile profile,
                                          const skcms_TransferFunction& tf) {
   // Override the transfer function with a known parametric curve.
   profile.has_trc = true;
-  for (int c = 0; c < 3; c++) {
-    profile.trc[c].table_entries = 0;
-    profile.trc[c].parametric = tf;
+  for (skcms_Curve& trc : base::span(profile.trc)) {
+    trc.table_entries = 0;
+    trc.parametric = tf;
   }
   return profile;
 }
@@ -52,8 +58,9 @@ std::unique_ptr<ColorProfile> NewColorProfileWithSameBuffer(
   // The input ColorProfile owns the buffer memory, make a new copy for
   // the newly created one and pass the ownership of the new copy to the new
   // color profile.
-  base::HeapArray<uint8_t> owned_buffer=base::HeapArray<uint8_t>::Uninit(buffer_donor.GetProfile()->size);
-  memcpy(owned_buffer.data(), buffer_donor.GetProfile()->buffer, buffer_donor.GetProfile()->size);
+  const skcms_ICCProfile* donor_profile = buffer_donor.GetProfile();
+  base::HeapArray<uint8_t> owned_buffer = base::HeapArray<uint8_t>::CopiedFrom(
+      UNSAFE_TODO(base::span(donor_profile->buffer, donor_profile->size)));
   new_profile.buffer = owned_buffer.data();
   return std::make_unique<ColorProfile>(new_profile, std::move(owned_buffer));
 }
@@ -63,8 +70,7 @@ JXLImageDecoder::JXLImageDecoder(
     AlphaOption alpha_option,
     HighBitDepthDecodingOption high_bit_depth_decoding_option,
     const ColorBehavior& color_behavior,
-    wtf_size_t max_decoded_bytes,
-    AnimationOption animation_option)
+    wtf_size_t max_decoded_bytes)
     : ImageDecoder(alpha_option,
                    high_bit_depth_decoding_option,
                    color_behavior,
@@ -82,7 +88,7 @@ const AtomicString& JXLImageDecoder::MimeType() const {
 
 bool JXLImageDecoder::ReadBytes(size_t remaining,
                                 wtf_size_t* offset,
-                                WTF::Vector<uint8_t>* segment,
+                                Vector<uint8_t>* segment,
                                 FastSharedBufferReader* reader,
                                 const uint8_t** jxl_data,
                                 size_t* jxl_size) {
@@ -98,13 +104,13 @@ bool JXLImageDecoder::ReadBytes(size_t remaining,
     // decoding in the next call.
     return false;
   }
-  const char* buffer = nullptr;
-  size_t read = reader->GetSomeData(buffer, *offset);
+  base::span<const uint8_t> buffer = reader->GetSomeData(*offset);
+  size_t read = buffer.size();
 
   if (read > remaining) {
     // Sufficient data present in the segment from the
     // FastSharedBufferReader, no need to copy to segment_.
-    *jxl_data = reinterpret_cast<const uint8_t*>(buffer);
+    *jxl_data = buffer.data();
     *jxl_size = read;
     *offset += read;
     segment->clear();
@@ -133,7 +139,7 @@ bool JXLImageDecoder::ReadBytes(size_t remaining,
     for (;;) {
       if (read) {
         *offset += read;
-        segment->Append(buffer, base::checked_cast<wtf_size_t>(read));
+        segment->Append(buffer.data(), base::checked_cast<wtf_size_t>(read));
       }
       if (segment->size() > remaining) {
         *jxl_data = segment->data();
@@ -142,7 +148,8 @@ bool JXLImageDecoder::ReadBytes(size_t remaining,
         // copy more input than needed into segment_.
         break;
       }
-      read = reader->GetSomeData(buffer, *offset);
+      buffer = reader->GetSomeData(*offset);
+      read = buffer.size();
       if (read == 0) {
         // We tested above that *offset + remaining >= reader.size() so
         // should be able to read all data.
@@ -380,8 +387,7 @@ void JXLImageDecoder::DecodeImpl(wtf_size_t index, bool only_size) {
               JXL_DEC_SUCCESS == JxlDecoderGetColorAsICCProfile(
                                      dec_.get(), JXL_COLOR_PROFILE_TARGET_DATA,
                                      icc_profile.data(), icc_profile.size())) {
-            profile =
-                ColorProfile::Create(icc_profile);
+            profile = ColorProfile::Create(icc_profile);
             have_data_profile = true;
 
             // Detect whether the ICC profile approximately equals PQ or HLG,
@@ -391,9 +397,10 @@ void JXLImageDecoder::DecodeImpl(wtf_size_t index, bool only_size) {
             skcms_TransferFunction tf_pq;
             skcms_TransferFunction tf_hlg01;
             skcms_TransferFunction tf_hlg12;
-            skcms_TransferFunction_makePQ(&tf_pq);
+            gfx::ColorSpace::CreateHDR10().ToSkColorSpace()->transferFn(&tf_pq);
             MakeTransferFunctionHLG01(&tf_hlg01);
-            skcms_TransferFunction_makeHLG(&tf_hlg12);
+            gfx::ColorSpace::CreateHLG().ToSkColorSpace()->transferFn(
+                &tf_hlg12);
 
             if (ApproximatelyMatchesTF(*profile, tf_pq)) {
               is_hdr_ = true;
@@ -548,18 +555,24 @@ void JXLImageDecoder::DecodeImpl(wtf_size_t index, bool only_size) {
 
 bool JXLImageDecoder::MatchesJXLSignature(
     const FastSharedBufferReader& fast_reader) {
-  char buffer[12];
+  static constexpr auto kDirectCodestreamSignature =
+      std::to_array<uint8_t>({0xFF, 0x0A});
+  static constexpr auto kContainerSignature = std::to_array<uint8_t>(
+      {0x00, 0x00, 0x00, 0x0C, 'J', 'X', 'L', ' ', 0x0D, 0x0A, 0x87, 0x0A});
+
+  std::array<uint8_t, 12> buffer;
   if (fast_reader.size() < sizeof(buffer)) {
     return false;
   }
-  const char* contents = reinterpret_cast<const char*>(
-      fast_reader.GetConsecutiveData(0, sizeof(buffer), buffer));
+  base::span<const uint8_t> contents =
+      fast_reader.GetConsecutiveData(0, sizeof(buffer), buffer);
   // Direct codestream
-  if (!memcmp(contents, "\xFF\x0A", 2)) {
+  if (contents.first<kDirectCodestreamSignature.size()>() ==
+      base::span(kDirectCodestreamSignature)) {
     return true;
   }
   // Box format container
-  if (!memcmp(contents, "\0\0\0\x0CJXL \x0D\x0A\x87\x0A", 12)) {
+  if (contents == base::span(kContainerSignature)) {
     return true;
   }
   return false;
